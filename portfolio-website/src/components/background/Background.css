@@ -1,0 +1,10 @@
+
+.animated-background {
+    background-color: #000435
+}
+
+.circle {
+    position: absolute;
+    filter: blur(100px);
+}
+
