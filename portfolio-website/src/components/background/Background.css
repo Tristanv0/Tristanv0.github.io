@@ -1,6 +1,10 @@
 
 .animated-background {
-    background-color: #000435
+    position: relative;
+    background-color: #000435;
+    min-width: 100vw;
+    min-height: 100vh;
+    z-index: 1;
 }
 
 .circle {

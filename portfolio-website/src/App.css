@@ -1,10 +1,11 @@
 .App {
-  text-align: center;
-  overflow: hidden;
+  background-color: #000435;
 }
+
 body, html {
   overflow: hidden;
 }
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -17,12 +18,23 @@ body, html {
 }
 
 .App-header {
-  min-height: 100vh;
+  position: relative;
+  text-align: center;
   font-size: calc(10px + 2vmin);
   color: white;
   z-index: 2;
 }
 
+.App-background {
+  position: relative;
+  z-index: 1;
+}
+
+.App-navbar {
+  display: flex;
+  position: relative;
+  z-index: 3;
+}
 
 @keyframes App-logo-spin {
   from {

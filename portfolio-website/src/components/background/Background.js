@@ -8,8 +8,8 @@ function getRandomNum(min, max) {
 const Background = ({ children }) => {
     
     useEffect(() => {
-        const maxX = window.innerWidth - 500;
-        const maxY = window.innerHeight - 500;
+        const maxX = window.innerWidth * 0.55;
+        const maxY = window.innerHeight * 0.55;
         const circleArray = ['first', 'second', 'third', 'fourth'];
         
         //randomizes position of circle on screen initially
@@ -26,8 +26,8 @@ const Background = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        const maxX = window.innerWidth - 500;
-        const maxY = window.innerHeight - 500;
+        const maxX = window.innerWidth * 0.55;
+        const maxY = window.innerHeight * 0.55;
         const circleArray = ['first', 'second', 'third', 'fourth'];
 
         circleArray.forEach((id) => {
@@ -60,17 +60,17 @@ const Background = ({ children }) => {
 
     return (
       <div className="animated-background">
-        <svg className="circle" id="first" width="400" height="400">
-            <circle cx="200" cy="200" r="160" fill="#2ecc71" />
+        <svg className="circle" id="first" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet" style={{width: '25%', height: '25%'}}>
+            <circle cx="100" cy="100" r="80" fill="#2ecc71" />
         </svg>
-        <svg className="circle" id="second" width="400" height="400">
-            <circle cx="200" cy="200" r="160" fill="#2ecc71" />
+        <svg className="circle" id="second" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet" style={{width: '25%', height: '25%'}}>
+            <circle cx="100" cy="100" r="80" fill="#2ecc71" />
         </svg>
-        <svg className="circle" id="third" width="400" height="400">
-            <circle cx="200" cy="200" r="160" fill="#2ecc71" />
+        <svg className="circle" id="third" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet" style={{width: '25%', height: '25%'}}>
+            <circle cx="100" cy="100" r="80" fill="#2ecc71" />
         </svg>
-        <svg className="circle" id="fourth" width="400" height="400">
-            <circle cx="200" cy="200" r="160" fill="#2ecc71" />
+        <svg className="circle" id="fourth" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet" style={{width: '25%', height: '25%'}}>
+            <circle cx="100" cy="100" r="80" fill="#2ecc71" />
         </svg>
         <div className="other-content">
             {children}
