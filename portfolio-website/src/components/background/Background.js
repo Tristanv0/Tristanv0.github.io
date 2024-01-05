@@ -51,9 +51,7 @@ const Background = ({ children }) => {
                 requestAnimationFrame(animateCircles);
             }, 1000);
         };
-        setTimeout(function(){
-            animateCircles();
-        }, 1000);
+        animateCircles();
         
     }, []);
 

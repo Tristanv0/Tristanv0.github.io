@@ -12,3 +12,6 @@
     filter: blur(100px);
 }
 
+.other-content {
+    position: relative;
+}
