@@ -1,53 +1,40 @@
 .App {
-  background-color: #000435;
   position: relative;
+  display: flex;
+  z-index: 1;
 }
-.App-home, .App-about {
-  transition: opacity 0.5s ease-in-out;
-}
+
 .fade-out {
-  opacity: 0%;
+  opacity: 0;
+  display: none;
+  animation: fadeOutAnimation 1s ease-in-out;
 }
 
 .fade-in {
-  opacity: 100%;
+  opacity: 1;
+  display: block;
+  animation: fadeInAnimation 1s ease-in-out;
+}
+
+@keyframes fadeOutAnimation {
+  0% { opacity: 1; }
+  100% { opacity: 0; display: none; }
+}
+
+@keyframes fadeInAnimation {
+  0% { opacity: 0; display: block; }
+  100% { opacity: 1; }
 }
 
 body, html {
   overflow: hidden;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
 .App-Content {
   position: relative;
-
-}
-
-.App-header {
-  position: inherit;
-  text-align: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-  z-index: 2;
-}
-
-.App-about {
-  position: inherit;
-  text-align: center;
-  z-index: 3;
-}
-
-.App-background {
-  position: relative;
-  z-index: 1;
 }
 
 .App-navbar {
-  display: flex;
   position: relative;
   z-index: 5;
 }
