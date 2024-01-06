@@ -33,7 +33,7 @@ const Background = ({ children }) => {
         circleArray.forEach((id) => {
             const svgCircle = document.getElementById(id);
             if (svgCircle) {
-              svgCircle.style.transition = `transform 2s linear`; // Adjust the duration as needed
+              svgCircle.style.transition = `transform 4s linear`; // Adjust the duration as needed
             }
         });
 
