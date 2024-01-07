@@ -1,6 +1,75 @@
 .ContactPage {
-    position: relative;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
     color: white;
-    z-index: 3;
+    margin: 4%;
+}
+
+.container-title {
+    text-align: center;
+    border: 2px solid white;
+    padding: 20px;
+    border-radius: 15px;
+    max-width: 80%;
+    width: 20%;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.container-form {
+    text-align: left;
+    border: 2px solid white;
+    padding: 20px;
+    border-radius: 15px;
+    max-width: 80%;
+    width: 60%;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.contact-title {
+    font-size: 200%;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+label {
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+input,
+textarea {
+    width: 100%;
+    max-width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    color: white;
+    background-color: transparent;
+    box-sizing: border-box;
+}
+
+#message {
+    height: 15vh;
+    max-height: 30vh;
+}
+
+button {
+    background-color: transparent;
+    color: white;
+    padding: 10px 15px;
+    border: 1px solid white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: color 0.5s ease, background-color 0.5s ease;
+}
+
+button:hover {
+    color: black;
+    background-color: #ddd;
 }
