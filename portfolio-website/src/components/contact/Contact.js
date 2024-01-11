@@ -1,26 +1,24 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import './Contact.css';
 import Container from 'react-bootstrap/Container';
+import emailjs from '@emailjs/browser';
 
 const Contact = () => {
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        message: '',
-    });
+    const form = useRef();
+    const [isEmailSent, setIsEmailSent] = useState(false);
+    const [isEmailSentFail, setIsEmailSentFail] = useState(false);
 
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
-    };
-
-    const handleSubmit = (e) => {
+    const sendEmail = (e) => {
         e.preventDefault();
-        // For demonstration purposes, log the form data to the console
-        console.log('Form Data:', formData);
-        // You can add logic here to send the form data to a server or perform other actions
+
+        emailjs.sendForm('service_sahxgfh', 'template_blrw6hc', form.current, 'WrivdiSFuL1utf1eu')
+        .then((result) => {
+            console.log(result.text);
+            setIsEmailSent(true);
+        }, (error) => {
+            console.log(error.text);
+            setIsEmailSentFail(true);
+        });
     };
 
     return (
@@ -30,42 +28,50 @@ const Contact = () => {
                     <p className="contact-title">Contact Me!</p>
                 </Container>
                 <Container className="container-form">
-                    <form onSubmit={handleSubmit}>
-                        <label className="userid" htmlFor="name">Name:</label>
+                    <form ref={form} onSubmit={sendEmail}>
+                        <div className="userid">
+                            <label>Name:</label>
+                            <input
+                                type="text"
+                                name="from_name"
+                                placeholder='Your Name'
+                                required
+                            />
+                            <br/>
+                            <br/>
+                            <label>Email:</label>
+                            <input
+                                type="email"
+                                name="user_email"
+                                placeholder='example@gmail.com'
+                                required
+                            />
+                        </div>
+                        <br/>
+                        <label>Subject:</label>
                         <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            required
+                            type="subject"
+                            name="subject"
+                            placeholder='Optional'
                         />
-                        <br></br>
-                        <br></br>
-                        <label className="userid" htmlFor="email">Email:</label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            required
-                        />
-                        <br></br>
-                        <br></br>
-                        <label htmlFor="message">Message:</label>
+                        <br/>
+                        <br/>
+                        <label>Message:</label>
                         <textarea
-                            id="message"
                             name="message"
-                            value={formData.message}
-                            onChange={handleChange}
+                            placeholder='Type your message here...'
                             required
                         ></textarea>
-
-                        <button type="submit">Submit</button>
+                        {isEmailSent && (
+                            <p><code className='success-message'>Your email has been sent successfully!</code></p>
+                        )}
+                        {isEmailSentFail && (
+                            <p><code className='fail-message'>An error occured while trying to send your email! Refresh the page or try again later.</code></p>
+                        )}
+                        <button type="submit" value="Send">Submit</button>
                     </form>
-                </Container>
 
+                </Container>
         </div>
     );
 };

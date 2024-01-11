@@ -18,7 +18,7 @@
 }
 
 .container-form {
-    text-align: center!important;
+    text-align:left!important;
     border: 2px solid white;
     padding: 20px;
     border-radius: 15px;
@@ -27,6 +27,9 @@
     width: 100%;
     margin-bottom: 20px;
     display: block;
+}
+.userid {
+    text-align: center;
 }
 
 .contact-title {
@@ -83,6 +86,14 @@ button {
 }
 
 button:hover {
-    color: black;
-    background-color: #ddd;
+    color: black!important;
+    background-color: #ddd!important;
+}
+
+.success-message {
+    color: #39FF14;
+}
+
+.fail-message {
+    color: #FF2c2c;
 }
