@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Contact.css';
+import Container from 'react-bootstrap/Container';
 
 const Contact = () => {
     const [formData, setFormData] = useState({
@@ -25,12 +26,12 @@ const Contact = () => {
     return (
         <div className="ContactPage">
 
-                <div className="container-title">
-                    <p className="contact-title">Contact Me</p>
-                </div>
-                <div className="container-form">
+                <Container className="title">
+                    <p className="contact-title">Contact Me!</p>
+                </Container>
+                <Container className="container-form">
                     <form onSubmit={handleSubmit}>
-                        <label htmlFor="name">Name:</label>
+                        <label className="userid" htmlFor="name">Name:</label>
                         <input
                             type="text"
                             id="name"
@@ -39,8 +40,9 @@ const Contact = () => {
                             onChange={handleChange}
                             required
                         />
-
-                        <label htmlFor="email">Email:</label>
+                        <br></br>
+                        <br></br>
+                        <label className="userid" htmlFor="email">Email:</label>
                         <input
                             type="email"
                             id="email"
@@ -49,7 +51,8 @@ const Contact = () => {
                             onChange={handleChange}
                             required
                         />
-
+                        <br></br>
+                        <br></br>
                         <label htmlFor="message">Message:</label>
                         <textarea
                             id="message"
@@ -61,7 +64,7 @@ const Contact = () => {
 
                         <button type="submit">Submit</button>
                     </form>
-                </div>
+                </Container>
 
         </div>
     );

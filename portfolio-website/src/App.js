@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 import Background from './components/background/Background';
-import Navbar from './components/navbar/Navbar';
+import NavbarNav from './components/navbar/Navbar';
 import About from './components/about/AboutPage';
 import Home from './components/home/Home';
 import Contact from './components/contact/Contact';
@@ -109,7 +109,7 @@ function App() {
   return (
     <div className="App">
       <Background className="App-background">
-        <Navbar 
+        <NavbarNav 
           onHomeClick={handleHomeClick} 
           onResumeClick={handleResumeClick} 
           onAboutClick={handleAboutClick}

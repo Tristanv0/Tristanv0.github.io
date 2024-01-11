@@ -7,24 +7,24 @@
     margin: 4%;
 }
 
-.container-title {
+.title {
     text-align: center;
     border: 2px solid white;
     padding: 20px;
     border-radius: 15px;
-    max-width: 80%;
-    width: 20%;
+    max-width: 350px!important;
     margin-bottom: 20px;
     display: block;
 }
 
 .container-form {
-    text-align: left;
+    text-align: center!important;
     border: 2px solid white;
     padding: 20px;
     border-radius: 15px;
-    max-width: 80%;
-    width: 60%;
+    min-width: 400px!important;
+    max-width: 1000px!important;
+    width: 100%;
     margin-bottom: 20px;
     display: block;
 }
@@ -39,9 +39,11 @@
 label {
     font-size: 1rem;
     margin-bottom: 5px;
+    padding-right: 5px;
+    padding-left: 5px;
 }
 
-input,
+
 textarea {
     width: 100%;
     max-width: 100%;
@@ -53,18 +55,29 @@ textarea {
     background-color: transparent;
     box-sizing: border-box;
 }
+input {
+    width: 40%;
+    max-width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    color: white;
+    background-color: transparent;
+    box-sizing: border-box;
+}
 
 #message {
-    height: 15vh;
+    height: 20vh;
     max-height: 30vh;
 }
 
 button {
     background-color: transparent;
-    color: white;
+    color: white!important;
     padding: 10px 15px;
     border: 1px solid white;
-    border-radius: 5px;
+    border-radius: 5px!important;
     cursor: pointer;
     transition: color 0.5s ease, background-color 0.5s ease;
 }

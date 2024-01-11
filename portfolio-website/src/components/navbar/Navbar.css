@@ -1,29 +1,20 @@
-nav {
-    display: flex;
-    justify-content: flex-end;
-    position: relative;
-    background-color: transparent;
-    padding: 20px;
+.ml-auto {
+    margin-left: auto!important;
 }
 
-ul {
-    list-style-type: none;
-    display: flex;
-    padding-right: 40px;
-}
-
-li {
-    margin-right: 40px;
-}
-
-a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
+.animation {
+    font-weight: bold!important;
     text-transform: uppercase;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    display: inline;
+    margin: 0;
+    padding: 10px!important;
+    padding-right: 30px!important;
 }
 
-a:after {
+.animation:after {
     content: '';
     display: block;
     border-bottom: 3px solid white;
@@ -31,10 +22,19 @@ a:after {
     transition: transform 250ms ease-in-out;
 }
 
-a:hover:after {
+.animation:hover:after {
     transform: scaleX(1);
 }
 
-a:after {
+.animation:after {
     transform-origin: 0% 50%;
+}
+button {
+    float: right;
+    background-color: transparent!important;
+    color: transparent!important;
+}
+button:hover {
+    background-color: transparent!important;
+    color: transparent!important;
 }
