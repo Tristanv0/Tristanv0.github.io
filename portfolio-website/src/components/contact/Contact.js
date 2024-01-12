@@ -63,10 +63,10 @@ const Contact = () => {
                             required
                         ></textarea>
                         {isEmailSent && (
-                            <p><code className='success-message'>Your email has been sent successfully!</code></p>
+                            <p><code className='success-message'>|√| Your email has been sent successfully!</code></p>
                         )}
                         {isEmailSentFail && (
-                            <p><code className='fail-message'>An error occured while trying to send your email! Refresh the page or try again later.</code></p>
+                            <p><code className='fail-message'>|X| An error occured while trying to send your email! Refresh the page or try again later.</code></p>
                         )}
                         <button type="submit" value="Send">Submit</button>
                     </form>
