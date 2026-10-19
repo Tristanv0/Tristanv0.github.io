@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #faf8f3;
+  --color-hobby-paper: #f5f1e8;
+  --color-run-paper: #fffefa;
+  --color-ink: #292a25;
+  --color-muted: #737168;
+  --color-rust: #c05228;
+  --color-line: #e3e0d6;
+
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --breakpoint-phone: 381px;
+  --breakpoint-tablet: 701px;
+  --breakpoint-desktop: 1001px;
+  --breakpoint-wide: 1500px;
+}
+
+/* Shared browser defaults; section and component styles live in their markup. */
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  ::selection {
+    background: #efb89b;
+    color: var(--color-ink);
+  }
+
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button:not(:disabled),
+  a {
+    cursor: pointer;
+  }
+
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--color-rust);
+    outline-offset: 6px;
+  }
+
+  button:focus-visible {
+    outline-offset: 8px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0s !important;
+      animation-duration: 0s !important;
+    }
+  }
+}

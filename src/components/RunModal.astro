@@ -1,0 +1,110 @@
+---
+import type { Run } from '../data/runs';
+
+interface Props {
+  run: Run;
+}
+
+const { run } = Astro.props;
+const titleId = `run-modal-title-${run.id}`;
+const metrics = [
+  { label: 'Distance', value: run.distance, unit: 'km' },
+  { label: 'Moving time', value: run.time, unit: '' },
+  { label: 'Pace', value: run.pace, unit: '/km' },
+  { label: 'Avg. heart rate', value: run.averageHeartRate, unit: 'bpm' },
+  { label: 'Elevation gain', value: run.elevationGain, unit: 'm' },
+  { label: 'Relative effort', value: run.relativeEffort, unit: '' },
+];
+---
+
+<dialog
+  id={`run-modal-${run.id}`}
+  class="fixed inset-0 m-0 h-dvh max-h-none w-screen max-w-none flex-col items-center overflow-hidden border-0 bg-transparent px-4 pt-16 pb-4 text-ink open:flex backdrop:bg-ink/45 backdrop:backdrop-blur-[6px] tablet:p-8"
+  aria-labelledby={titleId}
+  data-run-dialog
+>
+  <button
+    type="button"
+    class="fixed top-3 right-4 z-20 flex size-10 shrink-0 items-center justify-center rounded-full border border-line bg-paper p-0 text-ink shadow-sm transition-colors hover:bg-hobby-paper tablet:top-5 tablet:right-6"
+    aria-label="Close run details"
+    autofocus
+    data-run-close
+  >
+    <svg class="block size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false">
+      <path d="m6 6 12 12M18 6 6 18" />
+    </svg>
+  </button>
+
+  <article class="relative my-auto max-h-[calc(100dvh-96px)] w-full max-w-[1000px] shrink-0 overflow-y-auto overscroll-contain rounded-[14px] border border-line bg-paper shadow-[0_24px_100px_#292a2533] tablet:max-h-[calc(100dvh-64px)]" data-run-panel>
+    <div class="grid min-w-0 tablet:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
+      <div class:list={[
+        'grid min-w-0 gap-4 bg-hobby-paper p-4 tablet:p-5',
+        run.photoUrl && run.mapImage ? 'tablet:grid-rows-2' : '',
+      ]}>
+        {run.photoUrl && (
+          <figure class="flex min-w-0 flex-col gap-2">
+            <figcaption class="font-mono text-[10px] leading-[1.5] tracking-[1px] text-muted uppercase">From this run</figcaption>
+            <div class="relative flex aspect-[16/10] min-h-[160px] flex-1 items-center justify-center overflow-hidden rounded-[6px] bg-run-paper tablet:aspect-auto tablet:min-h-[205px]">
+              <img class="absolute inset-0 h-full w-full object-cover" src={run.photoUrl} alt={`Photo from ${run.title}`} loading="lazy" decoding="async" data-modal-image />
+              <span class="p-4 text-[12px] text-muted" hidden data-modal-image-fallback>Photo unavailable</span>
+            </div>
+          </figure>
+        )}
+
+        {run.mapImage && (
+          <figure class="flex min-w-0 flex-col gap-2">
+            <figcaption class="font-mono text-[10px] leading-[1.5] tracking-[1px] text-muted uppercase">Route map</figcaption>
+            <div class:list={[
+              'relative flex aspect-[16/10] min-h-[160px] flex-1 items-center justify-center overflow-hidden rounded-[6px] bg-run-paper tablet:aspect-auto tablet:min-h-[205px]',
+              !run.photoUrl ? 'tablet:min-h-[440px]' : '',
+            ]}>
+              <img class="absolute inset-0 h-full w-full object-contain" src={run.mapImage.src} width={run.mapImage.width} height={run.mapImage.height} alt={`Route map for ${run.title}`} loading="lazy" decoding="async" data-modal-image />
+              <span class="p-4 text-[12px] text-muted" hidden data-modal-image-fallback>Map unavailable</span>
+            </div>
+          </figure>
+        )}
+
+        {!run.photoUrl && !run.mapImage && (
+          <p class="flex min-h-[240px] items-center justify-center rounded-[6px] bg-run-paper p-5 text-[13px] text-muted tablet:min-h-[440px]">No images available for this run.</p>
+        )}
+      </div>
+
+      <div class="min-w-0 p-6 tablet:p-8" data-run-details>
+        <div class="flex items-center justify-between gap-4">
+          <time class="font-mono text-[11px] leading-[1.5] text-muted" datetime={run.dateTime ?? undefined}>{run.dateLabel}</time>
+          <span class="rounded-full border border-rust/15 bg-rust/5 px-2.5 py-1 font-mono text-[10px] leading-[1.5] tracking-[0.5px] text-rust" data-run-sport>{run.sportType.replace(/([a-z])([A-Z])/g, '$1 $2')}</span>
+        </div>
+        <h2 id={titleId} class="mt-5 mb-6 font-serif text-[32px] leading-[1.12] font-normal tracking-[-1px] break-words tablet:text-[36px]">{run.title}</h2>
+        <dl class="divide-y divide-line border-y border-line">
+          {metrics.map(metric => (
+            <div class="flex items-baseline justify-between gap-4 py-[13px]">
+              <dt class="text-[12px] leading-[1.5] text-muted">{metric.label}</dt>
+              <dd class="text-right text-[21px] leading-[1.2] tracking-[-0.5px] tabular-nums">
+                {metric.value}
+                {metric.value !== '—' && metric.unit && <span class="ml-1 text-[11px] tracking-normal text-muted">{metric.unit}</span>}
+              </dd>
+            </div>
+          ))}
+        </dl>
+        {run.stravaUrl && (
+          <a class="mt-6 inline-flex items-center gap-6 text-[12px] text-rust underline-offset-4 hover:underline" href={run.stravaUrl} target="_blank" rel="noreferrer">View activity on Strava <span aria-hidden="true">↗</span></a>
+        )}
+      </div>
+    </div>
+  </article>
+</dialog>
+
+<script>
+  import { initRunModals } from '../scripts/run-modal';
+  initRunModals();
+
+  document.querySelectorAll<HTMLImageElement>('[data-modal-image]').forEach(image => {
+    function showFallback() {
+      image.hidden = true;
+      const fallback = image.parentElement?.querySelector<HTMLElement>('[data-modal-image-fallback]');
+      if (fallback) fallback.hidden = false;
+    }
+    image.addEventListener('error', showFallback);
+    if (image.complete && image.naturalWidth === 0) showFallback();
+  });
+</script>

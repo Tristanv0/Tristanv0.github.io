@@ -1,0 +1,121 @@
+---
+import type { Run } from '../data/runs';
+
+interface Props {
+  run: Run;
+  index: number;
+}
+
+const { run, index } = Astro.props;
+// Keep complete class names here so Tailwind can discover every variant.
+const variants = [
+  { tilt: '-rotate-3', paper: 'bg-[#f2eee4]' },
+  { tilt: 'rotate-[2.5deg] tablet:translate-y-[27px]', paper: 'bg-[#edf0e4]' },
+  { tilt: '-rotate-[1.5deg] translate-y-[3px]', paper: 'bg-[#f5eadd]' },
+];
+const variant = variants[index % variants.length];
+---
+
+<button
+  class:list={[
+    'group relative block w-full max-w-[370px] min-w-0 justify-self-center rounded-[3px] border border-[#ded9cb] bg-run-paper p-[11px] text-left text-ink shadow-[0_5px_14px_#342c1d07] transition duration-[220ms] ease-[ease] hover:-translate-y-[7px] hover:rotate-0 hover:shadow-[0_10px_28px_#342c1d0c] aria-pressed:border-[#cf9978] tablet:max-w-none tablet:p-2 tablet:hover:-translate-y-[7px] desktop:p-[11px]',
+    variant.tilt,
+  ]}
+  type="button"
+  data-run-card
+  data-run-note={run.note}
+  data-run-label={run.title}
+  data-run-url={run.stravaUrl ?? ''}
+  data-run-modal={`run-modal-${run.id}`}
+  aria-pressed={index === 0 ? 'true' : 'false'}
+  aria-haspopup="dialog"
+  aria-expanded="false"
+  aria-controls={`run-modal-${run.id}`}
+  aria-label={`View ${run.title} details`}
+>
+  <div class:list={['relative px-[13px] pt-[13px] pb-[18px]', variant.paper]}>
+    <div class="flex justify-between font-mono text-[9px] leading-[1.5] tracking-[0.7px] text-[#7b7769] uppercase">
+      <span>Route no. 0{index + 1}</span>
+      <span class="font-sans text-[14px] text-rust" aria-hidden="true">↗</span>
+    </div>
+    <div
+      class="group/media relative isolate flex aspect-[260/210] max-h-[235px] w-full items-center justify-center overflow-hidden tablet:max-h-none"
+      data-run-media
+      data-has-photo={Boolean(run.photoUrl)}
+    >
+      {run.photoUrl && (
+        <img
+          class="absolute inset-0 z-0 h-full w-full object-cover"
+          src={run.photoUrl}
+          alt={`Photo from ${run.title}`}
+          loading="lazy"
+          decoding="async"
+          data-run-photo
+        />
+      )}
+      <span class="pointer-events-none absolute inset-0 z-10 bg-black/20" hidden={!run.photoUrl} aria-hidden="true" data-photo-shade></span>
+      {run.routeImage && (
+        <img
+          class="absolute inset-0 z-20 h-full w-full object-contain p-3 group-data-[has-photo=true]/media:drop-shadow-[0_0_2px_rgba(255,255,255,0.95)]"
+          src={run.routeImage.src}
+          width={run.routeImage.width}
+          height={run.routeImage.height}
+          alt={`Route for ${run.title}`}
+          loading="lazy"
+          decoding="async"
+          data-run-route
+        />
+      )}
+      <span class="relative z-20 text-[12px] text-muted" hidden={Boolean(run.routeImage || run.photoUrl)} data-media-unavailable>Image unavailable</span>
+    </div>
+    <span class="block text-center font-serif text-[17px] leading-[1.3] text-[#726a58] italic">{run.day}</span>
+  </div>
+  <div class="px-3 pt-[23px] pb-[18px] tablet:px-[7px] tablet:pt-5 tablet:pb-[15px] desktop:px-3 desktop:pt-[25px] desktop:pb-[17px]">
+    <time class="font-mono text-[9px] leading-[1.5] text-muted" datetime={run.dateTime ?? undefined}>{run.dateLabel}</time>
+    <h4 class="mt-2.5 mb-[23px] font-serif text-[25px] leading-[1.3] font-normal tracking-[-0.7px] break-words tablet:text-[clamp(18px,2vw,25px)]">{run.title}</h4>
+    <div class="flex justify-between gap-3 tablet:gap-[7px] desktop:gap-3">
+      <span class="grid gap-[7px]">
+        <strong class="text-[16px] font-normal whitespace-nowrap tabular-nums tablet:text-[13px] desktop:text-[15px]">{run.distance}<small class="text-[10px] text-muted"> km</small></strong>
+        <span class="font-mono text-[9px] leading-[1.5] text-muted tablet:text-[8px]">Distance</span>
+      </span>
+      <span class="grid gap-[7px]">
+        <strong class="text-[16px] font-normal whitespace-nowrap tabular-nums tablet:text-[13px] desktop:text-[15px]">{run.time}</strong>
+        <span class="font-mono text-[9px] leading-[1.5] text-muted tablet:text-[8px]">Moving time</span>
+      </span>
+      <span class="grid gap-[7px]">
+        <strong class="text-[16px] font-normal whitespace-nowrap tabular-nums tablet:text-[13px] desktop:text-[15px]">{run.pace}</strong>
+        <span class="font-mono text-[9px] leading-[1.5] text-muted tablet:text-[8px]">Pace / km</span>
+      </span>
+    </div>
+  </div>
+  <span class="invisible flex justify-between border-t border-[#eee6db] px-3 pt-2.5 font-mono text-[9px] leading-[1.5] text-rust group-aria-pressed:visible">
+    Selected run <span aria-hidden="true">↗</span>
+  </span>
+</button>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-run-media]').forEach(frame => {
+    const photo = frame.querySelector<HTMLImageElement>('[data-run-photo]');
+    const route = frame.querySelector<HTMLImageElement>('[data-run-route]');
+    const shade = frame.querySelector<HTMLElement>('[data-photo-shade]');
+    const fallback = frame.querySelector<HTMLElement>('[data-media-unavailable]');
+
+    function updateLayers() {
+      const hasPhoto = Boolean(photo && !photo.hidden);
+      const hasRoute = Boolean(route && !route.hidden);
+      frame.dataset.hasPhoto = String(hasPhoto);
+      if (shade) shade.hidden = !hasPhoto;
+      if (fallback) fallback.hidden = hasPhoto || hasRoute;
+    }
+
+    [photo, route].forEach(image => {
+      if (!image) return;
+      image.addEventListener('error', () => {
+        image.hidden = true;
+        updateLayers();
+      });
+      if (image.complete && image.naturalWidth === 0) image.hidden = true;
+    });
+    updateLayers();
+  });
+</script>
