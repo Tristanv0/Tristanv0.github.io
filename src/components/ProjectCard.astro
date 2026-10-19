@@ -1,12 +1,11 @@
 ---
 interface Props {
-  number: string;
   title: string;
   category: string;
   style: 'circles' | 'windows' | 'lines';
 }
 
-const { number, title, category, style } = Astro.props;
+const { title, category, style } = Astro.props;
 const backgrounds = {
   circles: 'bg-[#e9ebdd]',
   windows: 'bg-[#f2e8dc]',
@@ -31,7 +30,6 @@ const windowPositions = [
     {style === 'lines' && ['h-[90px]', 'h-[60px]', 'h-[30px]'].map(height => (
       <span class:list={['absolute w-[170px] -rotate-30 rounded-[50%] border border-[#899ca0]', height]}></span>
     ))}
-    <span class="absolute bottom-3.5 left-[15px] font-mono text-[10px] leading-none text-[#686c58]">{number}</span>
   </div>
   <div class="pt-[17px] tablet:pt-[22px]">
     <span class="block font-mono text-[9px] leading-[1.5] tracking-[1px] text-muted uppercase">{category}</span>

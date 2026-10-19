@@ -5,9 +5,9 @@ import SectionHeading from '../components/SectionHeading.astro';
 import '../styles/global.css';
 
 const projects = [
-  { number: '01', title: 'Your next great idea', category: 'Web application', style: 'circles' },
-  { number: '02', title: 'Something useful', category: 'Developer tool', style: 'windows' },
-  { number: '03', title: 'A little experiment', category: 'Creative project', style: 'lines' },
+  { title: 'Your next great idea', category: 'Web application', style: 'circles' },
+  { title: 'Something useful', category: 'Developer tool', style: 'windows' },
+  { title: 'A little experiment', category: 'Creative project', style: 'lines' },
 ] as const;
 
 const experiences = [
@@ -48,7 +48,7 @@ const experiences = [
           <a class="py-1 text-[#68685e] transition-colors duration-150 hover:text-rust tablet:py-2.5" href="#about">About</a>
           <a class="py-1 text-[#68685e] transition-colors duration-150 hover:text-rust tablet:py-2.5" href="#experience">Experience</a>
           <a class="py-1 text-[#68685e] transition-colors duration-150 hover:text-rust tablet:py-2.5" href="#projects">Projects</a>
-          <a class="py-1 text-rust tablet:py-2.5" href="#hobbies">Hobbies <span class="ml-[3px]" aria-hidden="true">↗</span></a>
+          <a class="py-1 text-rust tablet:py-2.5" href="#hobbies">Hobbies</a>
         </nav>
       </div>
     </header>
@@ -56,7 +56,7 @@ const experiences = [
     <main id="main">
       <section class="mx-auto w-[calc(100%-44px)] max-w-[1100px] scroll-mt-[30px] pt-10 tablet:w-[calc(100%-72px)] tablet:pt-[65px] desktop:w-[calc(100%-112px)]" id="about" aria-labelledby="about-title">
         <div class="flex justify-between gap-5">
-          <span class="block font-mono text-[11px] leading-[1.5] tracking-[1.65px] text-muted uppercase">01 / A little about me</span>
+          <span class="block font-mono text-[11px] leading-[1.5] tracking-[1.65px] text-muted uppercase">A little about me</span>
           <span class="hidden text-[11px] text-muted tablet:block">A personal corner of the internet</span>
         </div>
         <div class="grid grid-cols-1 items-center gap-[46px] pt-[30px] pb-[50px] tablet:grid-cols-[1fr_210px] tablet:gap-[45px] tablet:pt-[49px] tablet:pb-[66px] desktop:grid-cols-[1fr_255px] desktop:gap-20">
@@ -68,8 +68,8 @@ const experiences = [
             <p class="mt-3.5 max-w-[465px] text-[13px] leading-[1.85] text-muted tablet:text-[14px]">
               A short introduction will live here. A bit about who I am, what I'm learning, and the kinds of things I like to build. For now, I'm getting the foundations in place.
             </p>
-            <a class="mt-[25px] inline-flex items-center gap-[26px] text-[13px] text-rust underline-offset-[5px] hover:underline" href="#projects">
-              Take a look around <span aria-hidden="true">↘</span>
+            <a class="mt-[25px] inline-flex text-[13px] text-rust underline-offset-[5px] hover:underline" href="#projects">
+              Take a look around
             </a>
           </div>
           <aside class="relative mr-[15px] max-w-[230px] rotate-5 justify-self-end bg-[#edeedc] px-[27px] pt-[26px] pb-5 shadow-[2px_9px_15px_#41432408] tablet:mr-0 tablet:max-w-none tablet:justify-self-stretch tablet:px-[23px] tablet:pt-9 tablet:pb-[21px] desktop:px-[27px]" aria-label="A note from Tristan">
@@ -81,12 +81,12 @@ const experiences = [
         </div>
         <div class="flex flex-wrap justify-between gap-3 border-y border-line py-[22px] text-[10px] text-muted tablet:flex-nowrap tablet:gap-5 tablet:text-[11px]">
           <span>Software, side projects & a few miles in between.</span>
-          <a class="text-ink" href="https://github.com/Tristanv0" target="_blank" rel="noreferrer">Find me on GitHub <span aria-hidden="true">↗</span></a>
+          <a class="text-ink" href="https://github.com/Tristanv0" target="_blank" rel="noreferrer">Find me on GitHub</a>
         </div>
       </section>
 
       <section class="mx-auto w-[calc(100%-44px)] max-w-[1100px] scroll-mt-[30px] pt-[65px] tablet:w-[calc(100%-72px)] tablet:pt-[94px] desktop:w-[calc(100%-112px)]" id="experience" aria-labelledby="experience-title">
-        <SectionHeading id="experience-title" eyebrow="02 / Along the way" title="A few stops so far">
+        <SectionHeading id="experience-title" eyebrow="Along the way" title="A few stops so far">
           A space for the work,<br>and what it taught me.
         </SectionHeading>
         <div class="border-t border-line">
@@ -105,7 +105,7 @@ const experiences = [
       </section>
 
       <section class="mx-auto w-[calc(100%-44px)] max-w-[1100px] scroll-mt-[30px] pt-[65px] tablet:w-[calc(100%-72px)] tablet:pt-[94px] desktop:w-[calc(100%-112px)]" id="projects" aria-labelledby="projects-title">
-        <SectionHeading id="projects-title" eyebrow="03 / Things I've made" title="Ideas, made tangible">
+        <SectionHeading id="projects-title" eyebrow="Things I've made" title="Ideas, made tangible">
           Some useful. Some just<br>to see what happens.
         </SectionHeading>
         <div class="grid grid-cols-1 gap-[35px] tablet:grid-cols-3 tablet:gap-5 desktop:gap-[25px]">

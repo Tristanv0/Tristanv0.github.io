@@ -34,10 +34,6 @@ const variant = variants[index % variants.length];
   aria-label={`View ${run.title} details`}
 >
   <div class:list={['relative px-[13px] pt-[13px] pb-[18px]', variant.paper]}>
-    <div class="flex justify-between font-mono text-[9px] leading-[1.5] tracking-[0.7px] text-[#7b7769] uppercase">
-      <span>Route no. 0{index + 1}</span>
-      <span class="font-sans text-[14px] text-rust" aria-hidden="true">↗</span>
-    </div>
     <div
       class="group/media relative isolate flex aspect-[260/210] max-h-[235px] w-full items-center justify-center overflow-hidden tablet:max-h-none"
       data-run-media
@@ -89,7 +85,7 @@ const variant = variants[index % variants.length];
     </div>
   </div>
   <span class="invisible flex justify-between border-t border-[#eee6db] px-3 pt-2.5 font-mono text-[9px] leading-[1.5] text-rust group-aria-pressed:visible">
-    Selected run <span aria-hidden="true">↗</span>
+    Selected run
   </span>
 </button>
 
