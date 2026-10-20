@@ -105,8 +105,10 @@ function normalizeRun(run: StrevyRun, apiOrigin: string): Run {
   const imageSrc = httpUrl(run.routeImage?.url, apiOrigin);
   const imageWidth = run.routeImage?.width;
   const imageHeight = run.routeImage?.height;
-  // Saved media paths are relative to the runs endpoint, rather than the site.
-  const mapSrc = httpUrl(text(run.mapImage?.url) ?? run.mapImage?.path, new URL('/api/runs/', apiOrigin).href);
+  // Use Strava's static map URL directly. Older snapshots may still store an
+  // API-relative image URL or a saved path relative to the runs endpoint.
+  const mapSrc = httpUrl(run.mapImage?.url, apiOrigin)
+    ?? httpUrl(run.mapImage?.path, new URL('/api/runs/', apiOrigin).href);
   const mapWidth = run.mapImage?.width;
   const mapHeight = run.mapImage?.height;
   const photoUrl = Array.isArray(run.photos)

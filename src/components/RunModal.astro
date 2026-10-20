@@ -37,14 +37,11 @@ const metrics = [
 
   <article class="relative my-auto max-h-[calc(100dvh-96px)] w-full max-w-[1000px] shrink-0 overflow-y-auto overscroll-contain rounded-[14px] border border-line bg-paper shadow-[0_24px_100px_#292a2533] tablet:max-h-[calc(100dvh-64px)]" data-run-panel>
     <div class="grid min-w-0 tablet:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
-      <div class:list={[
-        'grid min-w-0 gap-4 bg-hobby-paper p-4 tablet:p-5',
-        run.photoUrl && run.mapImage ? 'tablet:grid-rows-2' : '',
-      ]}>
+      <div class="flex min-w-0 flex-col gap-4 bg-hobby-paper p-4 tablet:p-5">
         {run.photoUrl && (
           <figure class="flex min-w-0 flex-col gap-2">
             <figcaption class="font-mono text-[10px] leading-[1.5] tracking-[1px] text-muted uppercase">From this run</figcaption>
-            <div class="relative flex aspect-[16/10] min-h-[160px] flex-1 items-center justify-center overflow-hidden rounded-[6px] bg-run-paper tablet:aspect-auto tablet:min-h-[205px]">
+            <div class="relative flex aspect-[16/10] min-h-[160px] items-center justify-center overflow-hidden rounded-[6px] bg-run-paper">
               <img class="absolute inset-0 h-full w-full object-cover" src={run.photoUrl} alt={`Photo from ${run.title}`} loading="lazy" decoding="async" data-modal-image />
               <span class="p-4 text-[12px] text-muted" hidden data-modal-image-fallback>Photo unavailable</span>
             </div>
@@ -54,12 +51,9 @@ const metrics = [
         {run.mapImage && (
           <figure class="flex min-w-0 flex-col gap-2">
             <figcaption class="font-mono text-[10px] leading-[1.5] tracking-[1px] text-muted uppercase">Route map</figcaption>
-            <div class:list={[
-              'relative flex aspect-[16/10] min-h-[160px] flex-1 items-center justify-center overflow-hidden rounded-[6px] bg-run-paper tablet:aspect-auto tablet:min-h-[205px]',
-              !run.photoUrl ? 'tablet:min-h-[440px]' : '',
-            ]}>
-              <img class="absolute inset-0 h-full w-full object-contain" src={run.mapImage.src} width={run.mapImage.width} height={run.mapImage.height} alt={`Route map for ${run.title}`} loading="lazy" decoding="async" data-modal-image />
-              <span class="p-4 text-[12px] text-muted" hidden data-modal-image-fallback>Map unavailable</span>
+            <div class="overflow-hidden rounded-[6px] bg-run-paper">
+              <img class="block h-auto w-full" src={run.mapImage.src} width={run.mapImage.width} height={run.mapImage.height} alt={`Route map for ${run.title}`} loading="lazy" decoding="async" data-modal-image data-modal-map />
+              <span class="flex min-h-[160px] items-center justify-center p-4 text-[12px] text-muted" hidden data-modal-image-fallback>Map unavailable</span>
             </div>
           </figure>
         )}
@@ -104,6 +98,11 @@ const metrics = [
       const fallback = image.parentElement?.querySelector<HTMLElement>('[data-modal-image-fallback]');
       if (fallback) fallback.hidden = false;
     }
+    image.addEventListener('load', () => {
+      image.hidden = false;
+      const fallback = image.parentElement?.querySelector<HTMLElement>('[data-modal-image-fallback]');
+      if (fallback) fallback.hidden = true;
+    });
     image.addEventListener('error', showFallback);
     if (image.complete && image.naturalWidth === 0) showFallback();
   });
