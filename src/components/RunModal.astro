@@ -22,6 +22,7 @@ const metrics = [
   class="fixed inset-0 m-0 h-dvh max-h-none w-screen max-w-none flex-col items-center overflow-hidden border-0 bg-transparent px-4 pt-16 pb-4 text-ink open:flex backdrop:bg-ink/45 backdrop:backdrop-blur-[6px] tablet:p-8"
   aria-labelledby={titleId}
   data-run-dialog
+  data-activity-dialog
 >
   <button
     type="button"
@@ -29,13 +30,14 @@ const metrics = [
     aria-label="Close run details"
     autofocus
     data-run-close
+    data-activity-close
   >
     <svg class="block size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false">
       <path d="m6 6 12 12M18 6 6 18" />
     </svg>
   </button>
 
-  <article class="relative my-auto max-h-[calc(100dvh-96px)] w-full max-w-[1000px] shrink-0 overflow-y-auto overscroll-contain rounded-[14px] border border-line bg-paper shadow-[0_24px_100px_#292a2533] tablet:max-h-[calc(100dvh-64px)]" data-run-panel>
+  <article class="relative my-auto max-h-[calc(100dvh-96px)] w-full max-w-[1000px] shrink-0 overflow-y-auto overscroll-contain rounded-[14px] border border-line bg-paper shadow-[0_24px_100px_#292a2533] tablet:max-h-[calc(100dvh-64px)]" data-run-panel data-activity-panel>
     <div class="grid min-w-0 tablet:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
       <div class="flex min-w-0 flex-col gap-4 bg-hobby-paper p-4 tablet:p-5">
         {run.photoUrl && (
@@ -89,9 +91,6 @@ const metrics = [
 </dialog>
 
 <script>
-  import { initRunModals } from '../scripts/run-modal';
-  initRunModals();
-
   document.querySelectorAll<HTMLImageElement>('[data-modal-image]').forEach(image => {
     function showFallback() {
       image.hidden = true;

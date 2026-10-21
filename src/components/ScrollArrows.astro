@@ -1,38 +1,40 @@
 ---
 const arrows = [
-  'M -85 155 C 80 20 226 151 148 291 C 70 431 -98 312 2 256 C 156 168 322 500 191 659 C 98 773 9 640 100 595 C 301 495 485 840 376 1060 C 300 1214 64 1209 110 1068',
-  'M 1510 65 C 1261 -13 1040 74 1115 218 C 1190 362 1459 160 1379 414 C 1304 650 1058 467 1112 345 C 1171 213 1467 677 1348 915 C 1235 1142 1055 1126 943 1239',
-  'M 597 60 C 449 97 555 312 764 234 C 974 155 1083 356 912 491 C 741 626 565 435 718 384 C 939 310 1100 841 865 948 C 631 1056 639 1259 827 1319 C 1016 1379 1208 1247 1145 1155',
+  'M -85 155 C 80 20 226 151 148 291 C 70 431 -98 312 2 256 C 156 168 322 500 191 659 C 98 773 9 640 100 595 C 301 495 485 740 376 920 C 300 1074 64 1069 110 928 C 156 787 -280 860 -520 780',
+  'M 1510 65 C 1261 -13 1040 74 1115 218 C 1190 362 1459 160 1379 414 C 1304 650 1058 467 1112 345 C 1171 213 1467 597 1348 795 C 1235 1022 1055 1006 943 1119 C 831 1232 1660 1290 1960 1320',
+  'M 597 60 C 449 97 555 312 764 234 C 974 155 1083 356 912 491 C 741 626 565 435 718 384 C 939 310 1100 721 865 828 C 631 936 639 1059 827 1119 C 1016 1179 1208 1047 1145 955 C 1082 863 1630 780 1960 860',
 ];
 ---
 <div class="pointer-events-none absolute inset-0 -z-10 max-tablet:-inset-x-[55%] wide:left-[calc(50%-750px)] wide:w-[1500px]" aria-hidden="true">
-  <svg class="size-full overflow-visible fill-none stroke-current stroke-[10] text-[#FC4C02]" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 1440 1400" preserveAspectRatio="none" focusable="false" data-scroll-arrows>
-    <defs>
-      <marker
-        id="hobbies-arrow-tip"
-        viewBox="-24 -30 28 60"
-        refX="-15"
-        refY="0"
-        markerWidth="28"
-        markerHeight="60"
-        markerUnits="userSpaceOnUse"
-        orient="auto"
-        overflow="visible"
-      >
-        <path
-          class="fill-current stroke-none"
-          transform="scale(1 0.88)"
-          d="M -20 -21 Q -20 -26 -17 -22.1 L -2.7 -3.5 Q 0 0 -2.7 3.5 L -17 22.1 Q -20 26 -20 21 Z"
-        />
-      </marker>
-    </defs>
-    {arrows.map((path, index) => (
-      <g data-flow-arrow data-direction={index % 2 === 0 ? '-1' : '1'}>
-        <path class="opacity-[0.09]" vector-effect="non-scaling-stroke" d={path} data-arrow-guide />
-        <path class="opacity-[0.65]" vector-effect="non-scaling-stroke" d={path} marker-end="url(#hobbies-arrow-tip)" data-arrow-path />
-      </g>
-    ))}
-  </svg>
+  <div class="sticky top-[var(--run-background-top,0px)] h-[calc(100%-var(--run-scroll-distance,0px))]" data-arrow-scene>
+    <svg class="size-full overflow-visible fill-none stroke-current stroke-[10] text-[#FC4C02]" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 1440 1200" preserveAspectRatio="xMidYMid slice" focusable="false" data-scroll-arrows>
+      <defs>
+        <marker
+          id="hobbies-arrow-tip"
+          viewBox="-24 -30 28 60"
+          refX="-15"
+          refY="0"
+          markerWidth="28"
+          markerHeight="60"
+          markerUnits="userSpaceOnUse"
+          orient="auto"
+          overflow="visible"
+        >
+          <path
+            class="fill-current stroke-none"
+            transform="scale(1 0.88)"
+            d="M -20 -21 Q -20 -26 -17 -22.1 L -2.7 -3.5 Q 0 0 -2.7 3.5 L -17 22.1 Q -20 26 -20 21 Z"
+          />
+        </marker>
+      </defs>
+      {arrows.map((path, index) => (
+        <g data-flow-arrow data-direction={index % 2 === 0 ? '-1' : '1'}>
+          <path class="opacity-[0.09]" vector-effect="non-scaling-stroke" d={path} data-arrow-guide />
+          <path class="opacity-[0.65]" vector-effect="non-scaling-stroke" d={path} marker-end="url(#hobbies-arrow-tip)" data-arrow-path />
+        </g>
+      ))}
+    </svg>
+  </div>
 </div>
 <script>
   import { initHobbiesMotion } from '../scripts/hobbies-motion';

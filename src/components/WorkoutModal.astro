@@ -1,0 +1,64 @@
+---
+import type { Workout } from '../data/workouts';
+import WorkoutPhoto from './WorkoutPhoto.astro';
+import WorkoutExercise from './WorkoutExercise.astro';
+
+interface Props { workout: Workout }
+const { workout } = Astro.props;
+const titleId = `workout-modal-title-${workout.id}`;
+const metrics = [
+  { label: 'Duration', value: workout.duration, unit: '' },
+  { label: 'Volume', value: workout.volume, unit: workout.volumeUnit },
+  { label: 'Sets', value: String(workout.sets), unit: '' },
+  { label: 'Exercises', value: String(workout.exerciseCount), unit: '' },
+  { label: 'Avg. heart rate', value: workout.averageHeartRate, unit: 'bpm' },
+  { label: 'Calories', value: workout.calories, unit: 'kcal' },
+  { label: 'Personal records', value: String(workout.recordCount), unit: '' },
+  { label: 'Yearly records', value: String(workout.yearlyRecordCount), unit: '' },
+];
+const timeLabel = (value: string) => new Intl.DateTimeFormat('en-CA', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Toronto' }).format(new Date(value));
+---
+
+<dialog id={`workout-modal-${workout.id}`} class="fixed inset-0 m-0 h-dvh max-h-none w-screen max-w-none flex-col items-center overflow-hidden border-0 bg-transparent px-4 pt-16 pb-4 text-ink open:flex backdrop:bg-ink/45 backdrop:backdrop-blur-[6px] tablet:p-8" aria-labelledby={titleId} data-workout-dialog data-activity-dialog>
+  <button type="button" class="fixed top-3 right-4 z-20 flex size-10 shrink-0 items-center justify-center rounded-full border border-line bg-paper p-0 text-ink shadow-sm transition-colors hover:bg-hobby-paper focus-visible:outline-[#1E6FFF] tablet:top-5 tablet:right-6" aria-label="Close workout details" autofocus data-activity-close>
+    <svg class="block size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18" /></svg>
+  </button>
+
+  <article class="relative my-auto grid max-h-[calc(100dvh-96px)] w-full max-w-[800px] shrink-0 auto-rows-max grid-cols-1 overflow-y-auto overscroll-contain rounded-[16px] border border-line bg-paper shadow-[0_24px_100px_#292a2533] tablet:h-[min(640px,calc(100dvh-64px))] tablet:max-h-[calc(100dvh-64px)] tablet:auto-rows-auto tablet:grid-cols-[300px_minmax(0,1fr)] tablet:overflow-hidden" data-activity-panel>
+    <div class="min-w-0 bg-[#e7edfb]/30 p-5 tablet:min-h-0 tablet:overflow-y-auto tablet:overscroll-contain tablet:p-6" data-workout-overview data-activity-scroll>
+      <div class="mx-auto mb-4 w-full max-w-[200px] tablet:max-w-[240px]">
+        <div class="flex snap-x snap-mandatory gap-2 overflow-x-auto rounded-[10px] [scrollbar-width:thin]" aria-label="Workout photos" data-activity-scroll>
+          {workout.photoUrls.length ? workout.photoUrls.map((src, index) => (
+            <figure class="w-full shrink-0 snap-center overflow-hidden rounded-[10px] bg-[#e7edfb]">
+              <WorkoutPhoto src={src} alt={`Photo ${index + 1} from ${workout.title}`} contain />
+            </figure>
+          )) : <div class="w-full shrink-0 overflow-hidden rounded-[10px] bg-[#e7edfb]"><WorkoutPhoto alt="" /></div>}
+        </div>
+        {workout.photoUrls.length > 1 && <p class="mt-1 text-center text-[9px] text-muted">{workout.photoUrls.length} photos · scroll to view</p>}
+      </div>
+      <time class="font-mono text-[10px] text-muted" datetime={workout.startedAt}>{workout.dateLabel}</time>
+      {workout.startTime && <p class="mt-1 font-mono text-[9px] text-muted"><time datetime={workout.startTime}>{timeLabel(workout.startTime)}</time>{workout.endTime && <> – <time datetime={workout.endTime}>{timeLabel(workout.endTime)}</time></>}</p>}
+      <h2 id={titleId} class="mt-3 mb-3 font-serif text-[28px] leading-[1.12] font-normal tracking-[-0.8px] break-words">{workout.title}</h2>
+      {workout.description && <p class="mb-4 text-[12px] leading-relaxed whitespace-pre-line text-muted">{workout.description}</p>}
+      <dl class="grid grid-cols-2 gap-x-4 border-t border-line" data-workout-stats>
+        {metrics.map(metric => <div class="border-b border-line py-2.5">
+          <dt class="text-[10px] text-muted">{metric.label}</dt>
+          <dd class="mt-0.5 text-[18px] tracking-[-0.4px] tabular-nums">{metric.value}{metric.value !== '—' && metric.unit && <span class="ml-1 text-[10px] tracking-normal text-muted">{metric.unit}</span>}</dd>
+        </div>)}
+      </dl>
+    </div>
+
+    <section class="flex h-[380px] max-h-[65dvh] min-h-0 min-w-0 flex-col border-t border-line tablet:h-auto tablet:max-h-none tablet:border-t-0 tablet:border-l" aria-labelledby={`workout-exercises-${workout.id}`}>
+      <header class="flex shrink-0 items-baseline justify-between gap-3 border-b border-line px-5 py-4 tablet:px-6">
+        <h3 id={`workout-exercises-${workout.id}`} class="font-serif text-[24px] tracking-[-0.5px]">Exercises &amp; sets</h3>
+        <span class="font-mono text-[10px] text-muted">{workout.exercises.length} exercises</span>
+      </header>
+      <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 tablet:p-4" tabindex="0" role="region" aria-label="Workout exercise list" data-workout-exercise-list data-activity-scroll>
+        <div class="grid gap-2.5">
+          {workout.exercises.map((exercise, index) => <WorkoutExercise exercise={exercise} index={index} workoutId={workout.id} />)}
+          {!workout.exercises.length && <p class="p-3 text-[13px] text-muted">Exercise details are unavailable for this workout.</p>}
+        </div>
+      </div>
+    </section>
+  </article>
+</dialog>

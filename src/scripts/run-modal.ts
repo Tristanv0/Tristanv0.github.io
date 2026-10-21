@@ -29,8 +29,9 @@ interface ModalState {
   previousPadding: string;
 }
 
-export function initRunModals() {
-  const cards = document.querySelectorAll<HTMLButtonElement>('[data-run-card][data-run-modal]');
+// Runs and workouts share one controller, including focus and scroll locking.
+export function initActivityModals() {
+  const cards = document.querySelectorAll<HTMLButtonElement>('[data-activity-card][data-activity-modal]');
   if (cards.length === 0) return;
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let active: ModalState | null = null;
@@ -40,6 +41,11 @@ export function initRunModals() {
     ghost.removeAttribute('id');
     ghost.removeAttribute('data-run-card');
     ghost.removeAttribute('data-run-modal');
+    ghost.removeAttribute('data-workout-card');
+    ghost.removeAttribute('data-hobby-card');
+    ghost.removeAttribute('data-activity-card');
+    ghost.removeAttribute('data-activity-modal');
+    ghost.dataset.activityGhost = '';
     ghost.removeAttribute('aria-controls');
     ghost.removeAttribute('aria-haspopup');
     ghost.setAttribute('aria-hidden', 'true');
@@ -72,9 +78,9 @@ export function initRunModals() {
 
   async function open(card: HTMLButtonElement) {
     if (active) return;
-    const dialog = document.getElementById(card.dataset.runModal ?? '');
+    const dialog = document.getElementById(card.dataset.activityModal ?? '');
     if (!(dialog instanceof HTMLDialogElement)) return;
-    const panel = dialog.querySelector<HTMLElement>('[data-run-panel]');
+    const panel = dialog.querySelector<HTMLElement>('[data-activity-panel]');
     if (!panel) return;
 
     const root = document.documentElement;
@@ -91,6 +97,10 @@ export function initRunModals() {
     if (scrollbar > 0) root.style.paddingRight = `${parseFloat(getComputedStyle(root).paddingRight) + scrollbar}px`;
     panel.style.opacity = '0';
     panel.scrollTop = 0;
+    panel.querySelectorAll<HTMLElement>('[data-activity-scroll]').forEach(region => {
+      region.scrollTop = 0;
+      region.scrollLeft = 0;
+    });
     dialog.showModal();
     card.setAttribute('aria-expanded', 'true');
     card.style.visibility = 'hidden';
@@ -166,9 +176,9 @@ export function initRunModals() {
   }
 
   cards.forEach(card => card.addEventListener('click', () => { void open(card); }));
-  document.querySelectorAll<HTMLDialogElement>('[data-run-dialog]').forEach(dialog => {
+  document.querySelectorAll<HTMLDialogElement>('[data-activity-dialog]').forEach(dialog => {
     let backdropPressed = false;
-    dialog.querySelector<HTMLButtonElement>('[data-run-close]')?.addEventListener('click', () => { void close(); });
+    dialog.querySelector<HTMLButtonElement>('[data-activity-close]')?.addEventListener('click', () => { void close(); });
     dialog.addEventListener('cancel', event => {
       event.preventDefault();
       void close();

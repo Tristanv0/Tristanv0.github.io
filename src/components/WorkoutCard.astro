@@ -1,0 +1,24 @@
+---
+import type { Workout } from '../data/workouts';
+import WorkoutPhoto from './WorkoutPhoto.astro';
+
+interface Props { workout: Workout; index: number }
+const { workout, index } = Astro.props;
+const tilts = ['-rotate-2', 'rotate-3', '-rotate-[1.5deg]', 'rotate-2', '-rotate-3'];
+const papers = ['bg-[#e7edfb]', 'bg-[#e9eef3]', 'bg-[#e0e9fc]', 'bg-[#edf0f7]', 'bg-[#e7edfb]'];
+---
+
+<button class:list={['group relative block w-full min-w-0 rounded-[3px] border border-[#d4dce9] bg-run-paper p-2 text-left text-ink shadow-[0_5px_14px_#342c1d07] transition duration-[220ms] ease-[ease] hover:-translate-y-[7px] hover:rotate-0 hover:shadow-[0_10px_28px_#342c1d0c] focus-visible:outline-[#1E6FFF] desktop:p-2.5', tilts[index % tilts.length]]} type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls={`workout-modal-${workout.id}`} aria-label={`View ${workout.title} workout details`} data-hobby-card data-workout-card data-activity-card data-activity-modal={`workout-modal-${workout.id}`}>
+  <div class:list={['p-2.5', papers[index % papers.length]]}>
+    <WorkoutPhoto src={workout.photoUrls[0]} alt={`Photo from ${workout.title}`} />
+  </div>
+  <div class="px-2 pt-4 pb-3">
+    <time class="font-mono text-[9px] text-[#52617a]" datetime={workout.startedAt}>{workout.dateLabel}</time>
+    <h4 class="mt-2 mb-4 font-serif text-[23px] leading-[1.25] tracking-[-0.5px]">{workout.title}</h4>
+    <dl class="flex justify-between gap-2 tabular-nums">
+      <div><dt class="font-mono text-[8px] text-muted">Duration</dt><dd class="mt-1.5 text-[13px]">{workout.duration}</dd></div>
+      <div><dt class="font-mono text-[8px] text-muted">Volume</dt><dd class="mt-1.5 text-[13px]">{workout.volume}<small class="text-[9px] text-muted"> {workout.volumeUnit}</small></dd></div>
+      <div><dt class="font-mono text-[8px] text-muted">Sets</dt><dd class="mt-1.5 text-[13px]">{workout.sets}</dd></div>
+    </dl>
+  </div>
+</button>

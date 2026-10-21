@@ -11,7 +11,6 @@ export interface Run {
   averageHeartRate: string;
   elevationGain: string;
   relativeEffort: string;
-  note: string;
   stravaUrl: string | null;
   photoUrl: string | null;
   routeImage: { src: string; width: number; height: number } | null;
@@ -38,7 +37,6 @@ interface StrevyRun {
   elevationGainMeters?: number | null;
   elevationGain?: { value?: number | null; unit?: string | null } | null;
   relativeEffort?: number | null;
-  description?: string | null;
   url?: string | null;
   photos?: Array<{ url?: string | null } | null> | null;
   routeImage?: { url?: string | null; width?: number; height?: number } | null;
@@ -135,9 +133,6 @@ function normalizeRun(run: StrevyRun, apiOrigin: string): Run {
       ? String(Math.round(run.averageHeartRateBpm)) : '—',
     elevationGain: elevationMeters === null ? '—' : String(Math.round(elevationMeters)),
     relativeEffort: nonNegativeNumber(run.relativeEffort) ? String(Math.round(run.relativeEffort)) : '—',
-    note: text(run.description) ?? (distance !== '—' && time !== '—'
-      ? distance + ' km in ' + time + '.'
-      : 'No description for this run.'),
     stravaUrl: httpUrl(run.url, apiOrigin),
     photoUrl,
     routeImage: imageSrc ? {

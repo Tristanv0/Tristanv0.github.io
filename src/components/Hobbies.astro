@@ -2,158 +2,105 @@
 import RunCard from './RunCard.astro';
 import RunModal from './RunModal.astro';
 import ScrollArrows from './ScrollArrows.astro';
+import GymBackground from './GymBackground.astro';
+import GymCalendar from './GymCalendar.astro';
+import WorkoutCard from './WorkoutCard.astro';
+import WorkoutModal from './WorkoutModal.astro';
+import HobbyTab from './HobbyTab.astro';
 import { getRecentRuns } from '../data/runs';
+import { getRecentWorkouts } from '../data/workouts';
 
 const apiOrigin = import.meta.env.STREVY_API_ORIGIN || 'http://localhost:3001';
-const { runs, scrapedAt, available } = await getRecentRuns(apiOrigin);
-const firstRun = runs[0];
-const updatedLabel = scrapedAt ? new Intl.DateTimeFormat('en-CA', {
-  month: 'short', day: 'numeric', year: 'numeric', timeZone: 'America/Toronto',
-}).format(new Date(scrapedAt)) : null;
+const [{ runs, available }, workoutSnapshot] = await Promise.all([
+  getRecentRuns(apiOrigin), getRecentWorkouts(apiOrigin),
+]);
+
+// A consistent scattered arrangement, with complete classes for Tailwind.
+const runLayouts = [
+  { width: 'w-[240px] tablet:w-[260px]', offset: 'pt-[calc(var(--run-stagger)*0.45)]', gap: 'mr-8 tablet:mr-[76px] desktop:mr-[96px]' },
+  { width: 'w-[200px] tablet:w-[210px]', offset: 'pt-0', gap: 'mr-12 tablet:mr-[96px] desktop:mr-[124px]' },
+  { width: 'w-[250px] tablet:w-[285px]', offset: 'pt-[calc(var(--run-stagger)*0.85)]', gap: 'mr-10 tablet:mr-[70px] desktop:mr-[90px]' },
+  { width: 'w-[215px] tablet:w-[235px]', offset: 'pt-[calc(var(--run-stagger)*0.18)]', gap: 'mr-14 tablet:mr-[110px] desktop:mr-[132px]' },
+  { width: 'w-[225px] tablet:w-[250px]', offset: 'pt-[var(--run-stagger)]', gap: '' },
+];
+const hobbies = [{ id: 'running', label: 'Running' }, { id: 'gym', label: 'The gym' }];
+// Attendance can use the full history while the carousel keeps five sessions.
+const recentWorkouts = workoutSnapshot.workouts;
+const scrollerClass = 'flex h-full min-w-0 snap-x snap-mandatory items-start overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-px-[var(--run-edge)] pt-5 pb-10 [--run-stagger-max:96px] [--run-stagger:var(--run-stagger-max)] data-[pinned=true]:snap-none tablet:pt-6 tablet:pb-14 tablet:[--run-stagger-max:170px] desktop:[--run-stagger-max:210px]';
 ---
 
 <section
-  class="relative isolate scroll-mt-[30px] overflow-clip bg-hobby-paper pt-[67px] pb-[45px] tablet:pt-[103px] tablet:pb-[75px]"
+  class="relative isolate scroll-mt-[30px] overflow-clip bg-hobby-paper pt-[67px] pb-5 [--hobby-color:#FC4C02] tablet:pt-[103px] tablet:pb-8"
   id="hobbies"
   aria-labelledby="hobbies-title"
   data-hobbies
 >
   <ScrollArrows />
+  <GymBackground />
   <div class="relative mx-auto w-[calc(100%-44px)] max-w-[1100px] tablet:w-[calc(100%-72px)] desktop:w-[calc(100%-112px)]">
     <div class="flex items-start justify-between gap-5 tablet:items-center tablet:gap-[70px]">
       <div class="relative bg-hobby-paper shadow-[0_0_35px_22px_var(--color-hobby-paper)]">
         <span class="block font-mono text-[11px] leading-[1.5] tracking-[1.65px] text-muted uppercase">Life outside the editor</span>
         <h2 id="hobbies-title" class="mt-6 mb-[25px] font-serif text-[clamp(54px,11vw,76px)] leading-[0.99] font-normal tracking-[-2.8px] tablet:text-[clamp(60px,7vw,94px)] tablet:tracking-[-4px]">
-          Away from<br>the <em class="font-normal text-rust">keyboard.</em>
+          Away from<br>the <em class="font-normal text-[var(--hobby-color)] transition-colors duration-200 ease-out">keyboard.</em>
         </h2>
         <p class="max-w-[280px] text-[12px] leading-[1.9] text-[#747064] tablet:max-w-none tablet:text-[14px]">
-          A little movement between projects.<br>A few miles, a clear head, and a different kind of progress.
+          A little movement between projects.<br>A few miles, a few reps, and a different kind of progress.
         </p>
       </div>
-      <span class="absolute top-[245px] right-[5px] -rotate-12 bg-hobby-paper text-center font-serif text-[16px] leading-[1.1] text-rust italic shadow-[0_0_20px_12px_var(--color-hobby-paper)] phone:text-[19px] tablet:static tablet:mr-[5%] tablet:text-[29px] desktop:mr-[11%]" aria-hidden="true">
+      <span class="absolute top-[245px] right-[5px] -rotate-12 bg-hobby-paper text-center font-serif text-[16px] leading-[1.1] text-rust italic shadow-[0_0_20px_12px_var(--color-hobby-paper)] phone:text-[19px] tablet:static tablet:mr-[5%] tablet:text-[29px] desktop:mr-[11%]" aria-hidden="true" data-hobby-decoration="running">
         taking the<br>scenic route
       </span>
     </div>
 
-    <div class="mt-[60px] mb-[35px] flex items-center justify-between tablet:mt-20 tablet:mb-[30px]">
-      <div class="flex items-center gap-2.5">
-        <span class="size-1.5 rounded-full bg-rust" aria-hidden="true"></span>
-        <h3 id="recent-runs-title" class="text-[14px] font-medium tracking-[-0.5px] tablet:text-[16px]">Out for a run</h3>
-      </div>
-      <div class="flex items-center gap-3">
-        <span class="text-[14px] font-medium tracking-[-0.5px] text-black tablet:text-[16px]">{runs.length ? `Latest ${runs.length} runs` : 'Recent activities'}</span>
-        {runs.length > 1 && (
-          <span hidden data-run-scroll-controls>
-            <span class="inline-flex gap-2">
-              <button type="button" class="flex size-8 shrink-0 items-center justify-center rounded-full border border-line bg-run-paper p-0 text-rust transition-colors hover:bg-paper disabled:cursor-default disabled:opacity-30" aria-label="Previous runs" aria-controls="recent-runs" data-run-previous>
-                <svg class="block size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                  <path d="M19 12H5m7 7-7-7 7-7" />
-                </svg>
-              </button>
-              <button type="button" class="flex size-8 shrink-0 items-center justify-center rounded-full border border-line bg-run-paper p-0 text-rust transition-colors hover:bg-paper disabled:cursor-default disabled:opacity-30" aria-label="Next runs" aria-controls="recent-runs" data-run-next>
-                <svg class="block size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                  <path d="M5 12h14m-7-7 7 7-7 7" />
-                </svg>
-              </button>
-            </span>
-          </span>
-        )}
+    <div class="relative left-[calc(50%-var(--run-viewport-width,100vw)/2)] mt-[60px] w-[var(--run-viewport-width,100vw)] [--run-edge:22px] tablet:mt-20 tablet:[--run-edge:36px] desktop:[--run-edge:56px]" data-run-scroll-track>
+      <div class="relative data-[pinned=true]:sticky data-[pinned=true]:top-[var(--run-pin-top)]" data-run-sticky>
+        <GymCalendar workouts={workoutSnapshot.calendarEntries} />
+        <div class="flex items-center gap-2 px-[var(--run-edge)] pb-4" role="tablist" aria-label="Choose a hobby" data-hobby-tabs>
+          {hobbies.map(hobby => <HobbyTab id={hobby.id} label={hobby.label} />)}
+        </div>
+        <div class="grid" data-hobby-panels>
+          {hobbies.map(hobby => (
+            <div class:list={['min-w-0 [grid-area:1/1]', { invisible: hobby.id !== 'running' }]} id={`hobby-panel-${hobby.id}`} role="tabpanel" aria-labelledby={`hobby-tab-${hobby.id}`} aria-hidden={hobby.id !== 'running' ? 'true' : 'false'} inert={hobby.id !== 'running'} data-hobby-panel={hobby.id}>
+              <div class={scrollerClass} tabindex="0" role="region" aria-label={hobby.id === 'running' ? 'Latest runs' : 'Latest gym workouts'} data-run-scroller>
+                <div class="h-px w-[var(--run-edge)] shrink-0" aria-hidden="true" data-run-edge="start"></div>
+                {hobby.id === 'running' ? runs.map((run, index) => {
+                  const layout = runLayouts[index % runLayouts.length];
+                  return <div class:list={['min-w-0 shrink-0 snap-start', layout.width, layout.offset, index < runs.length - 1 ? layout.gap : '']} data-run-slot><RunCard run={run} index={index} /></div>;
+                }) : recentWorkouts.map((workout, index) => {
+                  const layout = runLayouts[index % runLayouts.length];
+                  return <div class:list={['min-w-0 shrink-0 snap-start', layout.width, layout.offset, index < recentWorkouts.length - 1 ? layout.gap : '']} data-run-slot><WorkoutCard workout={workout} index={index} /></div>;
+                })}
+                {hobby.id === 'running' && runs.length === 0 && (
+                  <p class="w-[calc(100%-2*var(--run-edge))] shrink-0 rounded-[3px] border border-line bg-run-paper px-6 py-10 text-center text-[14px] leading-[1.8] text-muted" role="status">
+                    {available ? 'No runs to show yet.' : 'Recent runs are unavailable right now. Please check back soon.'}
+                  </p>
+                )}
+                {hobby.id === 'gym' && recentWorkouts.length === 0 && (
+                  <p class="w-[calc(100%-2*var(--run-edge))] shrink-0 rounded-[3px] border border-line bg-run-paper px-6 py-10 text-center text-[14px] leading-[1.8] text-muted" role="status">
+                    {workoutSnapshot.available ? 'No workouts to show yet.' : 'Recent workouts are unavailable right now. Please check back soon.'}
+                  </p>
+                )}
+                <div class="h-px w-[var(--run-edge)] shrink-0" aria-hidden="true" data-run-edge="end"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <p class="sr-only" role="status" aria-live="polite" data-hobby-status></p>
       </div>
     </div>
-    {runs.length > 0 && (
-      <div id="recent-runs" class="-mx-4 grid snap-x snap-mandatory auto-cols-[88%] grid-flow-col items-start gap-6 overflow-x-auto overscroll-x-contain scroll-px-4 px-4 pt-5 pb-10 tablet:auto-cols-[calc((100%-40px)/3)] tablet:gap-5 tablet:pt-6 tablet:pb-14 desktop:auto-cols-[calc((100%-58px)/3)] desktop:gap-[29px]" role="region" aria-labelledby="recent-runs-title" tabindex="0" data-run-scroller>
-        {runs.map((run, index) => <div class="min-w-0 snap-start"><RunCard run={run} index={index} /></div>)}
-      </div>
-    )}
 
-    {runs.length === 0 && (
-      <p class="rounded-[3px] border border-line bg-run-paper px-6 py-10 text-center text-[14px] leading-[1.8] text-muted" role="status">
-        {available ? 'No runs to show yet.' : 'Recent runs are unavailable right now. Please check back soon.'}
-      </p>
-    )}
-
-    {firstRun && (
-    <div class="mt-[25px] flex min-h-[135px] items-center justify-between gap-[35px] px-2 tablet:mt-[45px] tablet:min-h-[150px] tablet:px-[15px]">
-      <div class="max-w-[470px] bg-hobby-paper shadow-[0_0_22px_15px_var(--color-hobby-paper)]">
-        <p id="run-note" aria-live="polite" aria-atomic="true">
-          <span class="mb-[9px] block font-mono text-[10px] leading-[1.5] tracking-[0.8px] text-rust uppercase" data-selected-label>{firstRun.title}</span>
-          <span class="font-serif text-[22px] leading-[1.5] whitespace-pre-line text-[#6f6a5e] italic tablet:text-[24px]" data-selected-note>{firstRun.note}</span>
-        </p>
-        <a class="mt-3 inline-flex text-[12px] text-rust underline-offset-4 hover:underline" href={firstRun.stravaUrl ?? undefined} hidden={!firstRun.stravaUrl} target="_blank" rel="noreferrer" data-selected-link>View on Strava</a>
-      </div>
-      <span class="mr-[7%] hidden rotate-9 bg-hobby-paper text-center font-serif text-[20px] leading-[1.2] text-rust italic shadow-[0_0_18px_10px_var(--color-hobby-paper)] tablet:block" aria-hidden="true">
-        one foot in front<br>of the other.
-      </span>
-    </div>
-    )}
-    <div class="mt-5 border-t border-[#dcd6c9] pt-7 tablet:mt-[30px] tablet:flex tablet:items-end tablet:justify-between tablet:gap-10 tablet:pt-[35px]">
-      <div>
-        <span class="block font-mono text-[11px] leading-[1.5] tracking-[1.65px] text-muted uppercase">The project behind the miles</span>
-        <p class="mt-3 font-serif text-[23px] leading-[1.5] font-normal tracking-[-0.5px]">
-          A home for my runs.<br>A little experiment called <a class="border-b border-rust/33 text-rust hover:border-rust" href="https://github.com/Tristanv0/Strevy" target="_blank" rel="noreferrer">Strevy</a>
-        </p>
-      </div>
-      <p class="mt-[22px] text-[11px] leading-[1.9] text-[#747064] tablet:mt-0 tablet:text-right">
-        Latest runs from Strava, brought here by Strevy.
-        {updatedLabel && <><br />Updated <time datetime={scrapedAt ?? undefined}>{updatedLabel}</time></>}
-      </p>
-    </div>
   </div>
 </section>
 
 {runs.map(run => <RunModal run={run} />)}
+{recentWorkouts.map(workout => <WorkoutModal workout={workout} />)}
 
 <script>
-  const scroller = document.querySelector<HTMLElement>('[data-run-scroller]');
-  const scrollControls = document.querySelector<HTMLElement>('[data-run-scroll-controls]');
-  const previous = document.querySelector<HTMLButtonElement>('[data-run-previous]');
-  const next = document.querySelector<HTMLButtonElement>('[data-run-next]');
-
-  if (scroller && scrollControls && previous && next) {
-    function updateScrollControls() {
-      if (!scroller || !scrollControls || !previous || !next) return;
-      const end = scroller.scrollWidth - scroller.clientWidth;
-      scrollControls.hidden = end <= 1;
-      previous.disabled = scroller.scrollLeft <= 1;
-      next.disabled = scroller.scrollLeft >= end - 1;
-    }
-
-    function scrollRuns(direction: number) {
-      if (!scroller) return;
-      const first = scroller.firstElementChild as HTMLElement | null;
-      if (!first) return;
-      const step = first.offsetWidth + parseFloat(getComputedStyle(scroller).columnGap);
-      scroller.scrollBy({
-        left: direction * step,
-        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
-      });
-    }
-
-    previous.addEventListener('click', () => scrollRuns(-1));
-    next.addEventListener('click', () => scrollRuns(1));
-    scroller.addEventListener('scroll', updateScrollControls, { passive: true });
-    const observer = new ResizeObserver(updateScrollControls);
-    observer.observe(scroller);
-    document.addEventListener('astro:before-swap', () => observer.disconnect(), { once: true });
-    updateScrollControls();
-  }
-
-  const cards = document.querySelectorAll<HTMLButtonElement>('[data-run-card]');
-  const selectedLabel = document.querySelector<HTMLElement>('[data-selected-label]');
-  const selectedNote = document.querySelector<HTMLElement>('[data-selected-note]');
-  const selectedLink = document.querySelector<HTMLAnchorElement>('[data-selected-link]');
-
-  cards.forEach(card => {
-    card.addEventListener('click', () => {
-      cards.forEach(other => other.setAttribute('aria-pressed', String(other === card)));
-      if (selectedLabel) selectedLabel.textContent = card.dataset.runLabel ?? '';
-      if (selectedNote) selectedNote.textContent = card.dataset.runNote ?? '';
-      if (selectedLink) {
-        const url = card.dataset.runUrl;
-        selectedLink.hidden = !url;
-        if (url) selectedLink.href = url;
-        else selectedLink.removeAttribute('href');
-      }
-    });
-  });
+  import { initRunCarousel } from '../scripts/run-carousel';
+  import { initHobbyTabs } from '../scripts/hobby-tabs';
+  import { initActivityModals } from '../scripts/run-modal';
+  initRunCarousel();
+  initHobbyTabs();
+  initActivityModals();
 </script>

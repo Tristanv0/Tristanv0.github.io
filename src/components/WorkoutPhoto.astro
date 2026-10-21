@@ -1,0 +1,29 @@
+---
+interface Props { src?: string | null; alt: string; contain?: boolean }
+const { src, alt, contain = false } = Astro.props;
+---
+
+<div class="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden text-[#1E6FFF]" data-workout-media>
+  {src && <img class:list={['absolute inset-0 h-full w-full', contain ? 'object-contain' : 'object-cover']} src={src} alt={alt} loading="lazy" decoding="async" data-workout-photo />}
+  <svg class="h-16 w-28 -rotate-[20deg] fill-none stroke-current stroke-[5]" viewBox="0 0 120 70" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" hidden={Boolean(src)} data-workout-photo-fallback>
+    <path d="M 36 35 H 84 M 13 35 H 20 M 100 35 H 107" />
+    <rect x="21" y="13" width="15" height="44" rx="4" />
+    <rect x="84" y="13" width="15" height="44" rx="4" />
+    <path d="M 42 12 L 46 5 M 75 58 L 79 65" class="opacity-40" />
+  </svg>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-workout-media]').forEach(frame => {
+    const photo = frame.querySelector<HTMLImageElement>('[data-workout-photo]');
+    const fallback = frame.querySelector<SVGElement>('[data-workout-photo-fallback]');
+    if (!photo || !fallback) return;
+    function update(loaded: boolean) {
+      photo!.hidden = !loaded;
+      fallback!.toggleAttribute('hidden', loaded);
+    }
+    photo.addEventListener('load', () => update(true));
+    photo.addEventListener('error', () => update(false));
+    if (photo.complete) update(photo.naturalWidth > 0);
+  });
+</script>

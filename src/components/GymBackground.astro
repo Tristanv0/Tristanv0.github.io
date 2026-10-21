@@ -1,0 +1,24 @@
+---
+const dots = Array.from({ length: 13 }, (_, index) => index);
+const initialY = [255, 195, 225, 180, 142.5];
+---
+
+<div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+  <div class="sticky top-[var(--run-background-top,0px)] h-[calc(100%-var(--run-scroll-distance,0px))] [--gym-offset:max(0px,calc(-1*var(--run-background-top,0px)))]" data-gym-scene>
+    <div class="invisible absolute top-[calc(var(--gym-offset)+290px)] left-[3%] aspect-[33/19] w-[clamp(300px,49vw,700px)] text-[#1E6FFF] tablet:top-[calc(var(--gym-offset)+clamp(225px,25vh,285px))] tablet:left-[5%]" data-gym-art="graph" data-particle-color="#1E6FFF">
+      <svg class="size-full overflow-visible fill-none stroke-current" viewBox="0 0 660 380" focusable="false" data-gym-graph>
+        <path d="M 16 255 L 66 195 L 116 225 L 166 180 L 216 142.5" class="opacity-65" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" data-graph-line data-gym-ink />
+        {dots.map(index => <circle cx={16 + index * 50} cy={initialY[index] ?? initialY.at(-1)} r={index < initialY.length ? 5 : 0} class="fill-current stroke-none opacity-70" data-graph-dot data-gym-ink />)}
+      </svg>
+      <canvas class="absolute -inset-x-20 -inset-y-[120px] h-[calc(100%+240px)] w-[calc(100%+160px)]" data-gym-particles></canvas>
+    </div>
+    <div class="invisible absolute top-[calc(var(--gym-offset)+clamp(510px,66vh,650px))] right-[3%] aspect-[4/5] w-[clamp(187.5px,23.75vw,312.5px)] -translate-y-[10%] text-[#b58116] tablet:top-[calc(var(--gym-offset)+clamp(390px,55vh,650px))] tablet:right-[8%]" data-gym-art="medal" data-particle-color="#b58116">
+      <svg class="size-full overflow-visible fill-none stroke-current" viewBox="0 0 240 300" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false" data-gym-medal>
+        <path class="opacity-30" data-medal-back data-gym-ink />
+        <path class="opacity-45" data-medal-edges data-gym-ink />
+        <path class="text-[#c39320] opacity-85" data-medal-front data-gym-ink />
+      </svg>
+      <canvas class="absolute -inset-x-20 -inset-y-[120px] h-[calc(100%+240px)] w-[calc(100%+160px)]" data-gym-particles></canvas>
+    </div>
+  </div>
+</div>

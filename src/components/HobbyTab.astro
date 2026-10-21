@@ -1,0 +1,83 @@
+---
+interface Props { id: string; label: string }
+const { id, label } = Astro.props;
+const running = id === 'running';
+const color = running ? '#FC4C02' : '#1E6FFF';
+const trail = running ? '#bc3900' : '#134cc7';
+---
+
+<button
+  class="group relative isolate rounded-full border border-[var(--tab-rest-border)] bg-paper px-5 py-2.5 text-[13px] text-muted transition-colors hover:text-ink focus-visible:outline-[var(--tab-trail-color)] aria-selected:border-[var(--tab-color)] aria-selected:bg-[var(--tab-color)] aria-selected:text-white"
+  style={`--tab-color:${color};--tab-trail-color:${trail};--tab-rest-border:color-mix(in srgb,${trail} 24%,var(--color-line))`}
+  type="button"
+  role="tab"
+  id={`hobby-tab-${id}`}
+  aria-controls={`hobby-panel-${id}`}
+  aria-selected={running ? 'true' : 'false'}
+  tabindex={running ? 0 : -1}
+  data-hobby-tab={id}
+  disabled
+>
+  <span class="pointer-events-none absolute -inset-[3px] overflow-hidden rounded-full opacity-55 blur-[3px] transition-opacity duration-200 group-aria-selected:opacity-0 motion-reduce:transition-none" aria-hidden="true" data-tab-halo>
+    <span class="hobby-orbit"></span>
+  </span>
+  <span class="pointer-events-none absolute -inset-px overflow-hidden rounded-full opacity-95 transition-opacity duration-200 group-aria-selected:opacity-0 motion-reduce:transition-none" aria-hidden="true" data-tab-trail>
+    <span class="hobby-orbit"></span>
+  </span>
+  <span class="pointer-events-none absolute inset-0 z-10 rounded-full bg-paper transition-colors duration-200 group-aria-selected:bg-[var(--tab-color)] motion-reduce:transition-none" aria-hidden="true"></span>
+  <span class="relative z-20">{label}</span>
+</button>
+
+<style>
+  /* Clip a rotating gradient to the pill, then cover its center with the face.
+     The outer copy adds a soft halo while the inner copy defines the edge. */
+  .hobby-orbit {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: 160px;
+    height: 160px;
+    margin: -80px;
+    background: conic-gradient(
+      transparent 0deg 190deg,
+      color-mix(in srgb, var(--tab-trail-color) 8%, transparent) 225deg,
+      color-mix(in srgb, var(--tab-trail-color) 45%, transparent) 285deg,
+      var(--tab-trail-color) 335deg,
+      transparent 360deg
+    );
+    animation: hobby-border-orbit 3.6s linear infinite;
+    animation-play-state: paused;
+  }
+
+  button[aria-selected='false'][data-motion-visible='true']:not(:disabled) .hobby-orbit {
+    animation-play-state: running;
+  }
+
+  @keyframes hobby-border-orbit {
+    to { transform: rotate(1turn); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hobby-orbit { animation: none; }
+  }
+</style>
+
+<script>
+  const tabs = Array.from(document.querySelectorAll<HTMLElement>('[data-hobby-tab]'));
+  const visible = new Set<HTMLElement>();
+  const update = () => tabs.forEach(tab => {
+    tab.dataset.motionVisible = String(visible.has(tab) && !document.hidden);
+  });
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) visible.add(entry.target as HTMLElement);
+      else visible.delete(entry.target as HTMLElement);
+    });
+    update();
+  });
+  tabs.forEach(tab => observer.observe(tab));
+  document.addEventListener('visibilitychange', update);
+  document.addEventListener('astro:before-swap', () => {
+    observer.disconnect();
+    document.removeEventListener('visibilitychange', update);
+  }, { once: true });
+</script>

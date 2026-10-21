@@ -1,0 +1,31 @@
+---
+import { buildWorkoutCalendar, calendarDayClass, CALENDAR_TITLE_CLASS, CALENDAR_TITLE_FADE, WEEKDAYS, WORKOUT_TIME_ZONE, type WorkoutCalendarEntry } from '../data/workout-calendar';
+
+interface Props { workouts: WorkoutCalendarEntry[] }
+const { workouts } = Astro.props;
+const calendar = buildWorkoutCalendar(new Date(), workouts);
+---
+
+    <aside class="pointer-events-none invisible relative mx-auto mb-6 w-[calc(100%-2*var(--run-edge,22px))] max-w-[360px] max-tablet:[&.invisible]:hidden tablet:absolute tablet:top-[var(--calendar-baseline,44px)] tablet:right-[var(--run-edge,36px)] tablet:mb-0 tablet:w-[280px] tablet:max-w-none tablet:-translate-y-full desktop:w-[360px] wide:w-[380px]" aria-labelledby="gym-calendar-month" aria-hidden="true" inert data-gym-calendar data-run-leading data-workout-dates={JSON.stringify(workouts)} data-time-zone={WORKOUT_TIME_ZONE}>
+      <div data-calendar-content>
+      <h3 id="gym-calendar-month" class="mb-3 text-center text-[15px] font-medium tracking-[-0.3px] text-ink tablet:text-[18px]" data-calendar-month>{calendar.monthLabel}</h3>
+      <table class="w-full table-fixed border-separate border-spacing-y-1 text-center" aria-label={`${calendar.monthLabel} gym attendance`} data-calendar-table>
+        <thead><tr>{WEEKDAYS.map(day => <th scope="col" class="border-b border-line pb-2 text-[10px] font-normal text-muted tablet:text-[11px]"><abbr title={day} class="no-underline">{day[0]}</abbr></th>)}</tr></thead>
+        <tbody data-calendar-days>
+          {calendar.weeks.map(week => <tr>{week.map(day => <td class="h-11 p-0 align-top tablet:h-12" aria-hidden={!day ? 'true' : undefined}>
+            {day && <span class={calendarDayClass(day)} data-calendar-day={day.date} data-attended={String(day.attended)} data-calendar-today-dot={day.today ? '' : undefined}>
+              <time datetime={day.date} aria-label={day.label} aria-current={day.today ? 'date' : undefined}>{day.day}</time>
+            </span>}
+            {day?.title && <span class={CALENDAR_TITLE_CLASS} style={Array.from(day.title).length > 10 ? CALENDAR_TITLE_FADE : undefined} title={day.title} aria-hidden="true" data-calendar-workout-title><span class="shrink-0">{day.title}</span></span>}
+          </td>)}</tr>)}
+        </tbody>
+      </table>
+      <p class="sr-only" data-calendar-note>{calendar.attendanceCount ? 'Blue circles mark training days.' : calendar.hasHistory ? 'No workouts logged this month.' : 'Workout dates coming soon.'}</p>
+      </div>
+      <canvas class="absolute -inset-x-20 -inset-y-[120px] h-[calc(100%+240px)] w-[calc(100%+160px)]" aria-hidden="true" data-calendar-particles></canvas>
+    </aside>
+
+<script>
+  import { initWorkoutCalendars } from '../scripts/workout-calendar';
+  initWorkoutCalendars();
+</script>

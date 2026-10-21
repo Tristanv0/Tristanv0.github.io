@@ -1,0 +1,172 @@
+---
+import type { WorkoutExercise } from '../data/workouts';
+
+interface Props { exercise: WorkoutExercise; index: number; workoutId: string }
+const { exercise, index, workoutId } = Astro.props;
+const headingId = `workout-exercise-${workoutId}-${index}`;
+let workingSetNumber = 0;
+const sets = exercise.sets.map(set => ({
+  ...set,
+  label: set.type === 'warmup' ? 'W' : String(++workingSetNumber),
+}));
+---
+
+<details class="group min-w-0 overflow-hidden rounded-[12px] border border-line bg-run-paper open:border-[#1E6FFF]/20" aria-labelledby={headingId} data-workout-exercise>
+  <summary class="flex cursor-pointer list-none items-center gap-3 p-4 transition-colors hover:bg-[#1E6FFF]/4 focus-visible:outline-2 focus-visible:-outline-offset-3 focus-visible:outline-[#1E6FFF] [&::-webkit-details-marker]:hidden">
+    <div class="min-w-0 flex-1">
+      <h4 id={headingId} class="text-[15px] leading-[1.4] font-semibold tracking-[-0.2px] break-words">{exercise.name}</h4>
+      <span class="mt-1 block font-mono text-[9px] text-muted" data-workout-exercise-meta>{exercise.sets.length} {exercise.sets.length === 1 ? 'set' : 'sets'}{exercise.rest !== '—' && <> · {exercise.rest} rest</>}</span>
+    </div>
+    <svg class="size-4 shrink-0 text-muted transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+  </summary>
+
+  <div class="flow-root" data-workout-set-details>
+  {exercise.notes && <p class="mx-4 mb-4 border-l-2 border-[#1E6FFF]/25 pl-3 text-[12px] leading-relaxed whitespace-pre-line text-muted tablet:mx-5">{exercise.notes}</p>}
+
+  {sets.length ? <div class="px-3 pt-3 pb-3 tablet:px-4 tablet:pb-4">
+    <div class="grid grid-cols-[44px_minmax(0,1fr)] gap-3 px-3 pb-2 text-[9px] tracking-[0.6px] text-muted uppercase tablet:grid-cols-[52px_minmax(0,1fr)]" aria-hidden="true">
+      <span class="text-center">Sets</span><span>Weight &amp; reps</span>
+    </div>
+    <ol class="grid gap-1" aria-label={`${exercise.name} sets`}>
+      {sets.map(set => {
+        const weight = set.weight !== '—' ? `${set.weight}${set.weightUnit ? ` ${set.weightUnit}` : ''}` : '';
+        const reps = set.reps !== '—' ? `${set.reps} ${set.reps === '1' ? 'rep' : 'reps'}` : '';
+        const weightAndReps = [weight, reps].filter(Boolean).join(' × ');
+        const otherMetrics = [set.duration !== '—' ? set.duration : '', set.distance !== '—' ? set.distance : ''].filter(Boolean).join(' · ');
+        return <li class="grid min-h-12 min-w-0 grid-cols-[44px_minmax(0,1fr)] items-center gap-3 rounded-[10px] px-3 py-3 even:bg-[#f0f2f5] tablet:grid-cols-[52px_minmax(0,1fr)]" data-workout-set data-set-type={set.type}>
+          <div class="flex min-w-0 flex-col items-center justify-center gap-1">
+            <span class:list={['text-[18px] leading-[1.3] font-medium tabular-nums', set.type === 'warmup' ? 'text-[#ba8200]' : 'text-ink']}>
+              <span class="sr-only">{set.type === 'warmup' ? 'Warmup set' : 'Set '}</span><span aria-hidden={set.type === 'warmup' ? 'true' : undefined}>{set.label}</span>
+            </span>
+            {set.type !== 'normal' && set.type !== 'warmup' && <span class="max-w-full text-center text-[9px] leading-tight break-words text-muted capitalize">{set.type}</span>}
+          </div>
+          <div class="min-w-0">
+            <p class="text-[16px] leading-[1.5] tracking-[-0.2px] tabular-nums" data-set-performance>{weightAndReps || otherMetrics || 'No metrics recorded'}</p>
+            {weightAndReps && otherMetrics && <p class="mt-1 text-[11px] leading-relaxed text-muted tabular-nums">{otherMetrics}</p>}
+            {(set.rpe !== '—' || set.personalRecords.length > 0 || set.yearlyRecords.length > 0) && <div class="mt-2 flex flex-wrap gap-1.5 text-[9px] leading-relaxed">
+              {set.rpe !== '—' && <span class="rounded-full border border-[#1E6FFF]/15 px-2 py-0.5 text-muted"><abbr title="Rating of perceived exertion" class="no-underline">RPE</abbr> {set.rpe}</span>}
+              {set.personalRecords.map(record => <span class="rounded-full bg-[#b58116]/10 px-2 py-0.5 text-[#8a6510] capitalize">PR · {record}</span>)}
+              {set.yearlyRecords.map(record => <span class="rounded-full bg-[#1E6FFF]/8 px-2 py-0.5 text-[#1E6FFF] capitalize">Year · {record}</span>)}
+            </div>}
+          </div>
+        </li>;
+      })}
+    </ol>
+  </div> : <p class="px-5 pb-5 text-[12px] text-muted">No sets recorded.</p>}
+  </div>
+</details>
+
+<script>
+  document.querySelectorAll<HTMLDetailsElement>('[data-workout-exercise]').forEach(exercise => {
+    const summary = exercise.querySelector<HTMLElement>('summary')!;
+    const content = exercise.querySelector<HTMLElement>('[data-workout-set-details]')!;
+    const chevron = summary.querySelector<SVGElement>('svg');
+    const canHover = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let hovered = false;
+    let pinned = false;
+    let pointerInside = false;
+    let suppressHover = false;
+    let previewTimer = 0;
+    let timer = 0;
+    let expanded = exercise.open;
+    let animation: Animation | null = null;
+
+    const setExpanded = (next: boolean, instant = false) => {
+      if (!instant && next === expanded && (animation || exercise.open === next)) return;
+      // Read the current frame before canceling so rapid hover/click changes
+      // reverse smoothly instead of jumping to the fully open/closed height.
+      const height = exercise.open ? content.getBoundingClientRect().height : 0;
+      const opacity = exercise.open ? getComputedStyle(content).opacity : '0';
+      animation?.cancel();
+      animation = null;
+      expanded = next;
+      summary.setAttribute('aria-expanded', String(next));
+      content.inert = !next;
+      content.setAttribute('aria-hidden', String(!next));
+      chevron?.style.setProperty('rotate', next ? '180deg' : '0deg');
+
+      if (instant || reducedMotion.matches || typeof content.animate !== 'function') {
+        exercise.open = next;
+        content.style.overflow = '';
+        return;
+      }
+
+      // Keep native details open until the closing animation finishes, so
+      // the browser does not hide the content before it has collapsed.
+      exercise.open = true;
+      content.style.overflow = 'hidden';
+      const current = content.animate([
+        { height: `${height}px`, opacity },
+        { height: `${next ? content.scrollHeight : 0}px`, opacity: next ? 1 : 0 },
+      ], {
+        duration: next ? 280 : 220,
+        easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+        fill: 'both',
+      });
+      animation = current;
+      void current.finished.then(() => {
+        if (animation !== current) return;
+        animation = null;
+        exercise.open = next;
+        content.style.overflow = '';
+        current.cancel();
+      }).catch(() => { /* Reversing or resetting cancels the old animation. */ });
+    };
+    const update = () => { setExpanded(pinned || hovered); };
+    const enter = (event: PointerEvent) => {
+      if (!canHover.matches || event.pointerType === 'touch') return;
+      window.clearTimeout(timer);
+      window.clearTimeout(previewTimer);
+      pointerInside = true;
+      if (pinned || suppressHover) return;
+      // A short preview delay lets a quick click behave like a normal toggle.
+      previewTimer = window.setTimeout(() => {
+        if (!pointerInside || suppressHover) return;
+        hovered = true;
+        update();
+      }, 160);
+    };
+    const leave = () => {
+      window.clearTimeout(previewTimer);
+      window.clearTimeout(timer);
+      pointerInside = false;
+      suppressHover = false;
+      hovered = false;
+      timer = window.setTimeout(update, 140);
+    };
+    const toggle = (event: MouseEvent) => {
+      event.preventDefault();
+      window.clearTimeout(previewTimer);
+      window.clearTimeout(timer);
+      // Toggle the visible target, not the separate pinned flag: clicking
+      // an item that was opened by hover must close it as well.
+      pinned = !expanded;
+      hovered = false;
+      suppressHover = !pinned && pointerInside;
+      update();
+    };
+    const reset = () => {
+      window.clearTimeout(timer);
+      window.clearTimeout(previewTimer);
+      hovered = pinned = pointerInside = suppressHover = false;
+      setExpanded(false, true);
+    };
+    const motionChange = () => { if (reducedMotion.matches) setExpanded(expanded, true); };
+    const dialog = exercise.closest('dialog');
+    setExpanded(exercise.open, true);
+    exercise.addEventListener('pointerenter', enter);
+    exercise.addEventListener('pointerleave', leave);
+    summary.addEventListener('click', toggle);
+    dialog?.addEventListener('close', reset);
+    reducedMotion.addEventListener('change', motionChange);
+    document.addEventListener('astro:before-swap', () => {
+      reset();
+      exercise.removeEventListener('pointerenter', enter);
+      exercise.removeEventListener('pointerleave', leave);
+      summary.removeEventListener('click', toggle);
+      dialog?.removeEventListener('close', reset);
+      reducedMotion.removeEventListener('change', motionChange);
+    }, { once: true });
+  });
+</script>
