@@ -30,6 +30,9 @@ export function initRunCarousel() {
     frame = 0;
     if (needsMeasure) {
       needsMeasure = false;
+      if (pendingProgress === null && pinned && window.scrollY >= start() && window.scrollY <= start() + distance) {
+        pendingProgress = distance > 0 ? clamp(window.scrollY - start(), distance) / distance : 0;
+      }
       // A full-width viewport lets cards flow off either screen edge. The
       // first/last flex spacers provide the section inset only at the ends.
       track.style.setProperty('--run-viewport-width', `${document.documentElement.clientWidth}px`);
@@ -38,34 +41,42 @@ export function initRunCarousel() {
       const buttonHeight = track.querySelector<HTMLElement>('[data-hobby-tab]')?.offsetHeight ?? 44;
       track.style.setProperty('--calendar-baseline', `${buttonHeight}px`);
       const leadingStyle = leading ? getComputedStyle(leading) : null;
-      const nextLeadingHeight = leading && leadingStyle?.position !== 'absolute' && leadingStyle?.display !== 'none'
+      leadingHeight = leading && leadingStyle?.position !== 'absolute' && leadingStyle?.display !== 'none'
         ? leading.offsetHeight + (parseFloat(leadingStyle?.marginBottom ?? '') || 0) : 0;
-      if (nextLeadingHeight !== leadingHeight && pinned && window.scrollY >= start() && window.scrollY <= start() + distance) {
-        pendingProgress = distance > 0 ? clamp(window.scrollY - start(), distance) / distance : 0;
-      }
-      leadingHeight = nextLeadingHeight;
       distance = Math.max(0, scroller.scrollWidth - scroller.clientWidth);
-      pinTop = (header?.getBoundingClientRect().height ?? 0) + 16;
+      const contentPinTop = (header?.getBoundingClientRect().height ?? 0) + 16;
       const styles = getComputedStyle(scroller);
       const cards = Array.from(track.querySelectorAll<HTMLElement>('[data-run-card], [data-hobby-card]'));
       const tallest = Math.max(0, ...cards.map(card => card.offsetHeight));
       const padding = (parseFloat(styles.paddingTop) || 0) + (parseFloat(styles.paddingBottom) || 0);
       const desiredStagger = parseFloat(styles.getPropertyValue('--run-stagger-max')) || 80;
       const tabsHeight = track.querySelector<HTMLElement>('[data-hobby-tabs]')?.offsetHeight ?? 0;
-      const availableStagger = window.innerHeight - pinTop - 18 - leadingHeight - tabsHeight - tallest - padding;
-      const stagger = Math.min(desiredStagger, Math.max(24, availableStagger));
+      const availableStagger = window.innerHeight - contentPinTop - 18 - tabsHeight - tallest - padding;
+      const setStagger = (visibleLeading: number) => {
+        const stagger = Math.min(desiredStagger, Math.max(24, availableStagger - visibleLeading));
+        scrollers.forEach(row => row.style.setProperty('--run-stagger', `${stagger}px`));
+      };
       // Padding on alternating slots contributes to layout, so their lower
       // edges and hover effects remain inside the carousel's scrollable area.
-      scrollers.forEach(row => row.style.setProperty('--run-stagger', `${stagger}px`));
+      setStagger(leadingHeight);
+      let offscreenLeading = 0;
+      if (leadingHeight > 0 && sticky.offsetHeight > window.innerHeight - contentPinTop - 16) {
+        // On shorter phones the calendar can scroll above the viewport before
+        // pinning. Keep the buttons/cards visible instead of disabling Gym's
+        // vertical-to-horizontal scrolling because the calendar does not fit.
+        offscreenLeading = leadingHeight;
+        setStagger(0);
+      }
+      pinTop = contentPinTop - offscreenLeading;
       // Keep native horizontal navigation if pinning would hide part of a card,
       // or if the visitor prefers reduced motion.
       pinned = distance > 1 && !reducedMotion.matches
-        && sticky.offsetHeight <= window.innerHeight - pinTop - 16;
+        && sticky.offsetHeight - offscreenLeading <= window.innerHeight - contentPinTop - 16;
       sticky.style.setProperty('--run-pin-top', `${pinTop}px`);
       sticky.dataset.pinned = String(pinned);
       scrollers.forEach(row => { row.dataset.pinned = String(pinned); });
-      // Calendar, buttons and cards share one sticky frame, so the calendar
-      // holds its viewport position for exactly the horizontal travel range.
+      // The calendar remains still throughout horizontal travel, either
+      // visible on tall screens or above the viewport on shorter phones.
       const trackHeight = sticky.offsetHeight + distance;
       track.style.height = pinned ? `${trackHeight}px` : '';
       // Near the page bottom, reserve enough scroll distance to reach the

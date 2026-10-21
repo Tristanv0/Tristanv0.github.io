@@ -110,8 +110,9 @@ aligned with the hobby buttons on tablet/desktop. On phones it stacks above
 the buttons; Running collapses that space. The calendar shares the sticky
 frame with the buttons and cards, holding its position throughout horizontal
 travel and resuming vertical movement afterward. Calendar height is included
-when checking whether the whole frame fits the viewport; short screens retain
-native horizontal swiping rather than clipping the calendar or cards.
+when checking whether the whole frame fits the viewport. If the calendar makes
+that frame too tall on a phone, it scrolls above the viewport before the buttons
+and cards pin for horizontal travel. Taller screens keep the calendar visible.
 The calendar shares the graph/medal particle sequence: it assembles from the
 bottom up after the running arrows exit and dissolves from the top down before
 they return. `src/scripts/calendar-dust.ts` captures its current text, divider
@@ -152,8 +153,8 @@ scrolling down pins the carousel and moves
 the cards left until the last run is visible, then the page continues downward.
 Scrolling up reverses that progression. Horizontal swiping and
 keyboard navigation stay synchronized with the page's scroll position. Reduced
-motion and short viewports retain the native horizontal carousel without
-pinning. This behavior is in `src/scripts/run-carousel.ts`.
+motion and viewports too short for the buttons/cards retain the native
+horizontal carousel without pinning. This behavior is in `src/scripts/run-carousel.ts`.
 The scrollbar is hidden; swiping and keyboard navigation remain available.
 
 Run cards use a consistent scattered arrangement with five smaller widths,
