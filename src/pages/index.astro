@@ -6,9 +6,36 @@ import ExperienceEntry from '../components/ExperienceEntry.astro';
 import '../styles/global.css';
 
 const projects = [
-  { number: '01', title: 'Your next great idea', category: 'Web application', style: 'circles' },
-  { number: '02', title: 'Something useful', category: 'Developer tool', style: 'windows' },
-  { number: '03', title: 'A little experiment', category: 'Creative project', style: 'lines' },
+  {
+    id: 'vivid',
+    title: 'Vivid',
+    category: 'Fitness club management',
+    description: 'A team-built platform for fitness clubs to manage memberships, class bookings and finances, with real-time messaging between members and coaches.',
+    technologies: ['Next.js', 'Django', 'PostgreSQL', 'Supabase', 'WebSockets'],
+    logo: '/images/projects/vividfitness_logo.png',
+    githubUrl: 'https://github.com/Tristanv0/vivid',
+    theme: 'vivid',
+  },
+  {
+    id: 'strevy',
+    title: 'Strevy',
+    category: 'Personal fitness API',
+    description: 'Brings Strava runs and Hevy workouts into one API, including route images, exercise sets and training history. Powers the activity cards and calendar on this site.',
+    technologies: ['Node.js', 'Express', 'Puppeteer', 'Cloudflare Workers', 'R2'],
+    logo: '/images/projects/strevy_logo.png',
+    githubUrl: 'https://github.com/Tristanv0/Strevy',
+    theme: 'strevy',
+  },
+  {
+    id: 'ecodex',
+    title: 'EcoDex',
+    category: 'TerraHacks 2024 · Team project',
+    description: 'An AI-powered waste-scanning app that identifies items from photos, explains how to dispose of them and keeps a history of scans, with points and demo rewards.',
+    technologies: ['Next.js', 'Flask', 'OpenAI', 'MongoDB', 'Tailwind CSS'],
+    logo: '/images/projects/ecodex_logo.png',
+    githubUrl: 'https://github.com/Tristanv0/EcoDex',
+    theme: 'ecodex',
+  },
 ] as const;
 
 const experiences = [
@@ -112,8 +139,8 @@ const experiences = [
       </section>
 
       <section class="mx-auto w-[calc(100%-44px)] max-w-[1100px] scroll-mt-[30px] pt-[65px] tablet:w-[calc(100%-72px)] tablet:pt-[94px] desktop:w-[calc(100%-112px)]" id="experience" aria-labelledby="experience-title">
-        <SectionHeading id="experience-title" eyebrow="Along the way" title="A few stops so far">
-          Building useful tools,<br>and learning along the way.
+        <SectionHeading id="experience-title" eyebrow="Along the way" title="A few stops so far" showPeriod={false}>
+          Building useful tools,<br>and learning along the way
         </SectionHeading>
         <div class="border-t border-line">
           {experiences.map(experience => <ExperienceEntry experience={experience} />)}
@@ -122,7 +149,7 @@ const experiences = [
 
       <section class="mx-auto w-[calc(100%-44px)] max-w-[1100px] scroll-mt-[30px] pt-[65px] tablet:w-[calc(100%-72px)] tablet:pt-[94px] desktop:w-[calc(100%-112px)]" id="projects" aria-labelledby="projects-title">
         <SectionHeading id="projects-title" eyebrow="Things I've made" title="Ideas, made tangible">
-          Some useful. Some just<br>to see what happens.
+          Built with teams,<br>and out of curiosity.
         </SectionHeading>
         <div class="grid grid-cols-1 gap-[35px] tablet:grid-cols-3 tablet:gap-5 desktop:gap-[25px]">
           {projects.map(project => <ProjectCard {...project} />)}
