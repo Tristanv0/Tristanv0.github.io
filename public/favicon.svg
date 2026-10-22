@@ -1,1 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#faf8f3"/><text x="12" y="45" font-family="Georgia,serif" font-size="44" font-style="italic" fill="#c05228">t.</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 280" fill="none">
+  <title>Tristan Cheng TC monogram</title>
+  <style>
+    .mark { fill: #161713; }
+    @media (prefers-color-scheme: dark) { .mark { fill: #faf8f3; } }
+  </style>
+  <defs>
+    <mask id="monogram" maskUnits="userSpaceOnUse" x="0" y="0" width="280" height="280" style="mask-type: luminance">
+      <rect width="280" height="280" fill="white"/>
+      <path d="M176 140 300 45V235Z M70 86H200V124H160V270H120V124H70Z" fill="black"/>
+    </mask>
+  </defs>
+  <circle class="mark" cx="140" cy="140" r="120" mask="url(#monogram)"/>
+</svg>

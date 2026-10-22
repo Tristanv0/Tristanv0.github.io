@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 280" fill="none">
+  <title>Tristan Cheng TC monogram</title>
+  <style>
+    .mouth {
+      transform-origin: 176px 140px;
+      animation: chomp 1.6s ease-in-out infinite;
+    }
+    @keyframes chomp {
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .mouth { animation: none; }
+    }
+  </style>
+  <defs>
+    <mask id="monogram" maskUnits="userSpaceOnUse" x="0" y="0" width="280" height="280" style="mask-type: luminance">
+      <rect width="280" height="280" fill="white"/>
+      <path class="mouth" d="M176 140 300 45V235Z" fill="black"/>
+      <path d="M70 86H200V124H160V270H120V124H70Z" fill="black"/>
+    </mask>
+  </defs>
+  <circle cx="140" cy="140" r="120" fill="#161713" mask="url(#monogram)"/>
+</svg>
