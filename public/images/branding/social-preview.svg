@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#faf8f3"/>
+  <svg x="350" y="65" width="500" height="500" viewBox="0 0 280 280">
+    <defs>
+      <mask id="monogram" maskUnits="userSpaceOnUse" x="0" y="0" width="280" height="280" style="mask-type: luminance">
+        <rect width="280" height="280" fill="white"/>
+        <path d="M176 140 300 45V235Z M70 86H200V124H160V270H120V124H70Z" fill="black"/>
+      </mask>
+    </defs>
+    <circle cx="140" cy="140" r="120" fill="#161713" mask="url(#monogram)"/>
+  </svg>
+</svg>
