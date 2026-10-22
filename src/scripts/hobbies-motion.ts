@@ -7,8 +7,9 @@ export function initHobbiesMotion() {
   if (!section) return;
   const scene = section.querySelector<HTMLElement>('[data-arrow-scene]');
   const runningArt = section.querySelector<SVGSVGElement>('[data-scroll-arrows]');
+  const runningScenery = section.querySelector<SVGGElement>('[data-running-scenery]');
   const gym = createGymBackground(section);
-  const arrows = Array.from(section.querySelectorAll<SVGGElement>('[data-flow-arrow]')).map(group => {
+  const arrows = Array.from(section.querySelectorAll<SVGGElement>('[data-flow-arrow]')).map((group, index) => {
     const path = group.querySelector<SVGPathElement>('[data-arrow-path]')!;
     const guide = group.querySelector<SVGPathElement>('[data-arrow-guide]')!;
     const length = guide.getTotalLength();
@@ -20,7 +21,8 @@ export function initHobbiesMotion() {
       const point = guide.getPointAtLength(distance);
       return { distance, command: `${point.x} ${point.y}` };
     });
-    return { group, path, guide, length, points, distance: 0, direction: Number(group.dataset.direction) };
+    const scenery = Array.from(section.querySelectorAll<SVGGElement>(`[data-scenery-arrow="${index}"]`));
+    return { group, path, guide, length, points, scenery, distance: 0, direction: Number(group.dataset.direction) };
   });
   type Arrow = typeof arrows[number];
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -63,6 +65,10 @@ export function initHobbiesMotion() {
       const current = transition;
       current.started ??= time;
       const progress = Math.min(1, (time - current.started) / 720);
+      if (runningScenery) {
+        runningScenery.style.opacity = String(current.phase === 'exit'
+          ? Math.max(0, 1 - progress * 2.5) : Math.min(1, progress * 1.5));
+      }
       if (current.phase === 'exit') {
         const eased = progress * progress * (3 - 2 * progress);
         arrows.forEach((arrow, index) => {
@@ -109,7 +115,10 @@ export function initHobbiesMotion() {
       const reveal = reducedMotion.matches ? 1 : Math.min(1, 0.16 + progress * (1.06 + index * 0.09));
       arrow.distance = arrow.length * reveal;
       draw(arrow, 0, arrow.distance);
-      arrow.group.setAttribute('transform', `translate(0 ${reducedMotion.matches ? 0 : (driftProgress - 0.5) * 95 * arrow.direction})`);
+      const transform = `translate(0 ${reducedMotion.matches ? 0 : (driftProgress - 0.5) * 95 * arrow.direction})`;
+      arrow.group.setAttribute('transform', transform);
+      // A rock inside a tight loop follows its drift to preserve clearance.
+      arrow.scenery.forEach(element => element.setAttribute('transform', transform));
     });
   }
   function schedule() {
@@ -124,6 +133,7 @@ export function initHobbiesMotion() {
       arrow.guide.style.opacity = current.phase === 'exit' ? '0' : '';
     });
     if (runningArt) runningArt.style.visibility = current.phase === 'exit' ? 'hidden' : '';
+    if (runningScenery) runningScenery.style.opacity = current.phase === 'exit' ? '0' : '1';
     current.resolve();
   }
   function animateArrows(phase: 'exit' | 'enter'): Promise<void> {
@@ -133,6 +143,7 @@ export function initHobbiesMotion() {
     if (phase === 'enter') {
       arrows.forEach(arrow => { draw(arrow, 0, 0); arrow.guide.style.opacity = '0'; });
       if (runningArt) runningArt.style.visibility = '';
+      if (runningScenery) runningScenery.style.opacity = '0';
     }
     if (reducedMotion.matches || !visible || document.hidden) finishTransition();
     else schedule();
@@ -148,6 +159,7 @@ export function initHobbiesMotion() {
       applyHobbyTheme(section!, detail.hobby, detail.color);
       gym.setActive(detail.hobby === 'gym');
       if (runningArt) runningArt.style.visibility = detail.hobby === 'gym' ? 'hidden' : '';
+      if (runningScenery) runningScenery.style.opacity = detail.hobby === 'gym' ? '0' : '1';
       lastProgress = -1;
       render();
       detail.finished = Promise.resolve();

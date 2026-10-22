@@ -1,4 +1,6 @@
 ---
+import RunningScenery from './RunningScenery.astro';
+
 const arrows = [
   'M -85 155 C 80 20 226 151 148 291 C 70 431 -98 312 2 256 C 156 168 322 500 191 659 C 98 773 9 640 100 595 C 301 495 485 740 376 920 C 300 1074 64 1069 110 928 C 156 787 -280 860 -520 780',
   'M 1510 65 C 1261 -13 1040 74 1115 218 C 1190 362 1459 160 1379 414 C 1304 650 1058 467 1112 345 C 1171 213 1467 597 1348 795 C 1235 1022 1055 1006 943 1119 C 831 1232 1660 1290 1960 1320',
@@ -33,6 +35,7 @@ const arrows = [
           <path class="opacity-[0.65]" vector-effect="non-scaling-stroke" d={path} marker-end="url(#hobbies-arrow-tip)" data-arrow-path />
         </g>
       ))}
+      <RunningScenery />
     </svg>
   </div>
 </div>

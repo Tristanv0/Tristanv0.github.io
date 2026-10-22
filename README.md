@@ -151,11 +151,19 @@ reach its final card; that extra distance does not stretch the background.
 When the cards fit below the sticky header,
 scrolling down pins the carousel and moves
 the cards left until the last run is visible, then the page continues downward.
+Both hobbies use 1.8 pixels of vertical travel per horizontal pixel for a slower,
+gentler pace. Adjust `VERTICAL_SCROLL_PER_PIXEL` in `src/scripts/run-carousel.ts`
+to tune this; the rest of the page keeps native scrolling.
 Scrolling up reverses that progression. Horizontal swiping and
 keyboard navigation stay synchronized with the page's scroll position. Reduced
 motion and viewports too short for the buttons/cards retain the native
 horizontal carousel without pinning. This behavior is in `src/scripts/run-carousel.ts`.
 The scrollbar is hidden; swiping and keyboard navigation remain available.
+
+Card stats use `Odometer.astro` and `src/scripts/card-odometers.ts` to roll digits
+into place as they enter view, replaying when returning to a hobby. Separators
+and units remain still. The effect only animates transforms; reduced motion
+and JavaScript-free views show the final values immediately.
 
 Run cards use a consistent scattered arrangement with five smaller widths,
 uneven gaps and varied vertical offsets. Edit `runLayouts` in `Hobbies.astro`
@@ -171,6 +179,12 @@ the Gym artwork from the bottom up. Leaving Gym dissolves the artwork from the
 top down, with dust drifting upward before the orange arrows return. The
 "keyboard" accent changes to blue `#1E6FFF` for Gym and orange for Running.
 "Taking the scenic route" returns when the orange color transition begins.
+
+Gym also has two oversized blue weight-plate outlines and a handwritten
+"one more rep." note above the cards. These details
+fade with the hobby theme and stay fixed during horizontal travel. The note
+accounts for the stacked calendar on phones; all decorations ignore pointer
+events. Edit them in `GymBackground.astro` and `Hobbies.astro`.
 
 Gym has a longer blue line graph lower on the left and a gold wireframe medal
 lower on the right. The graph starts with five points and adds one about every
@@ -197,6 +211,13 @@ extra scroll height and uses native sticky positioning to stay fixed behind the
 pinned cards. Arrowheads keep tracing their paths with page-scroll progress,
 including throughout horizontal scrolling. Decorative drift follows the sticky
 layer's position, keeping the backdrop steady during the pinned portion.
+
+`src/components/RunningScenery.astro` adds overhead trees and faceted rocks in
+the same SVG coordinate space. Rocks leave clearance for the arrows' full
+vertical drift; the larger rock inside the middle loop follows that arrow's
+drift to remain within the loop. Paper-colored radial halos let the lines fade beneath tree
+canopy edges. The scenery stays fixed with the arrows during horizontal card
+travel and fades out/in with Running's hobby transition.
 
 Edit arrow shapes, colour and thickness in `src/components/ScrollArrows.astro`, and motion in `src/scripts/hobbies-motion.ts`.
 

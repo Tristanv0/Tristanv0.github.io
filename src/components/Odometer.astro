@@ -1,0 +1,38 @@
+---
+interface Props { value: string | number }
+const value = String(Astro.props.value);
+---
+
+<span class="odometer" data-odometer>
+  <span class="sr-only">{value}</span>
+  <span class="odometer-display" aria-hidden="true">
+    {Array.from(value).map(character => /[0-9]/.test(character) ? (
+      <span class="odometer-digit">
+        <span class="odometer-reel" style={`--odometer-stop:${10 + Number(character)}`} data-odometer-reel>
+          {Array.from({ length: 20 }, (_, index) => <span>{index % 10}</span>)}
+        </span>
+      </span>
+    ) : <span>{character}</span>)}
+  </span>
+</span>
+
+<style>
+  .odometer { white-space: pre; font-variant-numeric: tabular-nums; }
+  .odometer-display {
+    display: inline-flex;
+    height: 1.2em;
+    line-height: 1.2em;
+    vertical-align: -0.15em;
+  }
+  .odometer-digit { width: 1ch; height: 1.2em; overflow: hidden; }
+  .odometer-reel {
+    display: block;
+    transform: translateY(calc(var(--odometer-stop) * -1.2em));
+  }
+  .odometer-reel > span { display: block; height: 1.2em; }
+</style>
+
+<script>
+  import { initCardOdometers } from '../scripts/card-odometers';
+  initCardOdometers();
+</script>

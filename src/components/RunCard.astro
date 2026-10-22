@@ -1,5 +1,6 @@
 ---
 import type { Run } from '../data/runs';
+import Odometer from './Odometer.astro';
 
 interface Props {
   run: Run;
@@ -71,15 +72,15 @@ const variant = variants[index % variants.length];
     <h4 class="mt-2 mb-4 font-serif text-[21px] leading-[1.25] font-normal tracking-[-0.5px] break-words">{run.title}</h4>
     <div class="flex justify-between gap-2">
       <span class="grid gap-[7px]">
-        <strong class="text-[13px] font-normal whitespace-nowrap tabular-nums">{run.distance}<small class="text-[9px] text-muted"> km</small></strong>
+        <strong class="text-[13px] font-normal whitespace-nowrap tabular-nums"><Odometer value={run.distance} /><small class="text-[9px] text-muted"> km</small></strong>
         <span class="font-mono text-[8px] leading-[1.5] text-muted">Distance</span>
       </span>
       <span class="grid gap-[7px]">
-        <strong class="text-[13px] font-normal whitespace-nowrap tabular-nums">{run.time}</strong>
+        <strong class="text-[13px] font-normal whitespace-nowrap tabular-nums"><Odometer value={run.time} /></strong>
         <span class="font-mono text-[8px] leading-[1.5] text-muted">Moving time</span>
       </span>
       <span class="grid gap-[7px]">
-        <strong class="text-[13px] font-normal whitespace-nowrap tabular-nums">{run.pace}</strong>
+        <strong class="text-[13px] font-normal whitespace-nowrap tabular-nums"><Odometer value={run.pace} /></strong>
         <span class="font-mono text-[8px] leading-[1.5] text-muted">Pace / km</span>
       </span>
     </div>

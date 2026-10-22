@@ -1,6 +1,7 @@
 ---
 import type { Workout } from '../data/workouts';
 import WorkoutPhoto from './WorkoutPhoto.astro';
+import Odometer from './Odometer.astro';
 
 interface Props { workout: Workout; index: number }
 const { workout, index } = Astro.props;
@@ -16,9 +17,9 @@ const papers = ['bg-[#e7edfb]', 'bg-[#e9eef3]', 'bg-[#e0e9fc]', 'bg-[#edf0f7]', 
     <time class="font-mono text-[9px] text-[#52617a]" datetime={workout.startedAt}>{workout.dateLabel}</time>
     <h4 class="mt-2 mb-4 font-serif text-[23px] leading-[1.25] tracking-[-0.5px]">{workout.title}</h4>
     <dl class="flex justify-between gap-2 tabular-nums">
-      <div><dt class="font-mono text-[8px] text-muted">Duration</dt><dd class="mt-1.5 text-[13px]">{workout.duration}</dd></div>
-      <div><dt class="font-mono text-[8px] text-muted">Volume</dt><dd class="mt-1.5 text-[13px]">{workout.volume}<small class="text-[9px] text-muted"> {workout.volumeUnit}</small></dd></div>
-      <div><dt class="font-mono text-[8px] text-muted">Sets</dt><dd class="mt-1.5 text-[13px]">{workout.sets}</dd></div>
+      <div><dt class="font-mono text-[8px] text-muted">Duration</dt><dd class="mt-1.5 text-[13px]"><Odometer value={workout.duration} /></dd></div>
+      <div><dt class="font-mono text-[8px] text-muted">Volume</dt><dd class="mt-1.5 text-[13px]"><Odometer value={workout.volume} /><small class="text-[9px] text-muted"> {workout.volumeUnit}</small></dd></div>
+      <div><dt class="font-mono text-[8px] text-muted">Sets</dt><dd class="mt-1.5 text-[13px]"><Odometer value={workout.sets} /></dd></div>
     </dl>
   </div>
 </button>

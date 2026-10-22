@@ -55,6 +55,10 @@ const scrollerClass = 'flex h-full min-w-0 snap-x snap-mandatory items-start ove
 
     <div class="relative left-[calc(50%-var(--run-viewport-width,100vw)/2)] mt-[60px] w-[var(--run-viewport-width,100vw)] [--run-edge:22px] tablet:mt-20 tablet:[--run-edge:36px] desktop:[--run-edge:56px]" data-run-scroll-track>
       <div class="relative data-[pinned=true]:sticky data-[pinned=true]:top-[var(--run-pin-top)]" data-run-sticky>
+        <span class="gym-note pointer-events-none invisible absolute top-[calc(var(--run-leading-height,0px)+48px)] right-[var(--run-edge)] z-[-1] -rotate-[7deg] text-center text-[16px] leading-[1.15] text-[#4773ad] tablet:top-1 tablet:right-auto tablet:left-[40%] tablet:text-[23px] desktop:left-[46%]" data-hobby-decoration="gym" data-gym-note aria-hidden="true">
+          one more rep
+          <svg class="mx-auto mt-1 h-3 w-[110px] fill-none stroke-current opacity-45 tablet:w-[145px]" viewBox="0 0 145 12" stroke-width="1" stroke-linecap="round" focusable="false"><path d="M 4 7 Q 49 0 139 4 M 49 10 Q 89 6 119 7" /></svg>
+        </span>
         <GymCalendar workouts={workoutSnapshot.calendarEntries} />
         <div class="flex items-center gap-2 px-[var(--run-edge)] pb-4" role="tablist" aria-label="Choose a hobby" data-hobby-tabs>
           {hobbies.map(hobby => <HobbyTab id={hobby.id} label={hobby.label} />)}
@@ -95,6 +99,17 @@ const scrollerClass = 'flex h-full min-w-0 snap-x snap-mandatory items-start ove
 
 {runs.map(run => <RunModal run={run} />)}
 {recentWorkouts.map(workout => <WorkoutModal workout={workout} />)}
+
+<style>
+  .gym-note {
+    font-family: "Bradley Hand", "Segoe Print", "Comic Sans MS", cursive;
+    font-style: italic;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 450ms ease, visibility 450ms;
+  }
+  .gym-note.invisible { opacity: 0; visibility: hidden; }
+</style>
 
 <script>
   import { initRunCarousel } from '../scripts/run-carousel';

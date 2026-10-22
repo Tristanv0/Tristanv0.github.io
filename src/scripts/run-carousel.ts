@@ -1,6 +1,8 @@
 import type { HobbyChangeDetail } from './hobby-tabs';
 
 const clamp = (value: number, end: number) => Math.max(0, Math.min(end, value));
+// More vertical travel per horizontal pixel gives the cards a gentler pace.
+const VERTICAL_SCROLL_PER_PIXEL = 1.8;
 
 export function initRunCarousel() {
   const track = document.querySelector<HTMLElement>('[data-run-scroll-track]');
@@ -13,6 +15,7 @@ export function initRunCarousel() {
   const section = track.closest<HTMLElement>('[data-hobbies]');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let distance = 0;
+  let scrollDistance = 0;
   let pinTop = 0;
   let pinned = false;
   let drivenScrollLeft = 0;
@@ -30,8 +33,8 @@ export function initRunCarousel() {
     frame = 0;
     if (needsMeasure) {
       needsMeasure = false;
-      if (pendingProgress === null && pinned && window.scrollY >= start() && window.scrollY <= start() + distance) {
-        pendingProgress = distance > 0 ? clamp(window.scrollY - start(), distance) / distance : 0;
+      if (pendingProgress === null && pinned && window.scrollY >= start() && window.scrollY <= start() + scrollDistance) {
+        pendingProgress = scrollDistance > 0 ? clamp(window.scrollY - start(), scrollDistance) / scrollDistance : 0;
       }
       // A full-width viewport lets cards flow off either screen edge. The
       // first/last flex spacers provide the section inset only at the ends.
@@ -43,7 +46,9 @@ export function initRunCarousel() {
       const leadingStyle = leading ? getComputedStyle(leading) : null;
       leadingHeight = leading && leadingStyle?.position !== 'absolute' && leadingStyle?.display !== 'none'
         ? leading.offsetHeight + (parseFloat(leadingStyle?.marginBottom ?? '') || 0) : 0;
+      track.style.setProperty('--run-leading-height', `${leadingHeight}px`);
       distance = Math.max(0, scroller.scrollWidth - scroller.clientWidth);
+      scrollDistance = distance * VERTICAL_SCROLL_PER_PIXEL;
       const contentPinTop = (header?.getBoundingClientRect().height ?? 0) + 16;
       const styles = getComputedStyle(scroller);
       const cards = Array.from(track.querySelectorAll<HTMLElement>('[data-run-card], [data-hobby-card]'));
@@ -77,16 +82,16 @@ export function initRunCarousel() {
       scrollers.forEach(row => { row.dataset.pinned = String(pinned); });
       // The calendar remains still throughout horizontal travel, either
       // visible on tall screens or above the viewport on shorter phones.
-      const trackHeight = sticky.offsetHeight + distance;
+      const trackHeight = sticky.offsetHeight + scrollDistance;
       track.style.height = pinned ? `${trackHeight}px` : '';
       // Near the page bottom, reserve enough scroll distance to reach the
       // final card even without a content footer after the carousel.
       const endAllowance = pinned
-        ? Math.max(0, Math.ceil(start() + distance - (document.documentElement.scrollHeight - window.innerHeight))) : 0;
+        ? Math.max(0, Math.ceil(start() + scrollDistance - (document.documentElement.scrollHeight - window.innerHeight))) : 0;
       if (endAllowance > 0) track.style.height = `${trackHeight + endAllowance}px`;
       // The background's artwork should cover the visible section, excluding
       // the extra page height that supplies horizontal scroll distance.
-      section?.style.setProperty('--run-scroll-distance', `${pinned ? distance + endAllowance : 0}px`);
+      section?.style.setProperty('--run-scroll-distance', `${pinned ? scrollDistance + endAllowance : 0}px`);
       if (section) {
         const sectionTop = section.getBoundingClientRect().top + window.scrollY;
         // Native sticky positioning holds the artwork at its entry position
@@ -95,17 +100,18 @@ export function initRunCarousel() {
         section.style.setProperty('--run-background-top', `${pinned ? sectionTop - start() : 0}px`);
       }
       if (pendingProgress !== null) {
-        if (pinned) window.scrollTo({ top: start() + pendingProgress * distance, behavior: 'instant' });
+        if (pinned) window.scrollTo({ top: start() + pendingProgress * scrollDistance, behavior: 'instant' });
         pendingProgress = null;
       }
     }
-    const progress = pinned ? clamp(window.scrollY - start(), distance) : 0;
+    const progress = pinned && scrollDistance > 0
+      ? clamp(window.scrollY - start(), scrollDistance) / scrollDistance : 0;
     if (pinned) {
       // The page supplies the scroll distance; no wheel/touch event is blocked.
-      drivenScrollLeft = progress;
+      drivenScrollLeft = progress * distance;
       scrollers.forEach(row => {
         const rowDistance = Math.max(0, row.scrollWidth - row.clientWidth);
-        row.scrollLeft = distance > 0 ? progress / distance * rowDistance : 0;
+        row.scrollLeft = progress * rowDistance;
       });
     }
   };
@@ -125,11 +131,11 @@ export function initRunCarousel() {
     // Scroll events are asynchronous. An event from our last render may arrive
     // after a smooth page scroll has advanced; it must not cancel that scroll.
     if (Math.abs(scroller.scrollLeft - drivenScrollLeft) <= 1) return;
-    const expected = clamp(window.scrollY - start(), distance);
+    const expected = clamp(window.scrollY - start(), scrollDistance) / VERTICAL_SCROLL_PER_PIXEL;
     // Swiping, horizontal trackpad gestures and keyboard focus can also move the
     // cards. Keep the page's progress aligned so the next vertical scroll holds.
     if (Math.abs(scroller.scrollLeft - expected) > 1) {
-      window.scrollTo({ top: start() + scroller.scrollLeft, behavior: 'instant' });
+      window.scrollTo({ top: start() + scroller.scrollLeft * VERTICAL_SCROLL_PER_PIXEL, behavior: 'instant' });
     }
   };
 
@@ -138,7 +144,7 @@ export function initRunCarousel() {
     const next = section?.querySelector<HTMLElement>(`[data-hobby-panel="${hobby}"] [data-run-scroller]`);
     if (!next) return;
     // Preserve the visitor's place if switching midway through pinned travel.
-    if (pinned && window.scrollY >= start() && window.scrollY <= start() + distance) pendingProgress = progress;
+    if (pinned && window.scrollY >= start() && window.scrollY <= start() + scrollDistance) pendingProgress = progress;
     scroller = next;
     measure();
   };

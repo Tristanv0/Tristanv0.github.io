@@ -74,8 +74,14 @@ export function initHobbyTabs() {
         incoming.animate([{ transform: 'translateX(105%)' }, { transform: 'translateX(0)' }], timing),
       ];
     }
+    const cardsEntered = Promise.allSettled(animations.map(animation => animation.finished));
+    void cardsEntered.then(() => {
+      if (!disposed) {
+        section.dispatchEvent(new CustomEvent('hobby:cards-entered', { detail: { hobby } }));
+      }
+    });
     await Promise.allSettled([
-      ...animations.map(animation => animation.finished),
+      cardsEntered,
       ...(detail.finished ? [detail.finished] : []),
     ]);
     if (disposed) return;
