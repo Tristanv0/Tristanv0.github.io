@@ -107,7 +107,8 @@ export function initRunCarousel() {
     const progress = pinned && scrollDistance > 0
       ? clamp(window.scrollY - start(), scrollDistance) / scrollDistance : 0;
     if (pinned) {
-      // The page supplies the scroll distance; no wheel/touch event is blocked.
+      // The page's scroll position supplies horizontal progress, including
+      // the gentler wheel movement from the page scroll controller.
       drivenScrollLeft = progress * distance;
       scrollers.forEach(row => {
         const rowDistance = Math.max(0, row.scrollWidth - row.clientWidth);

@@ -1,0 +1,130 @@
+---
+interface Props {
+  experience: {
+    date: string;
+    title: string;
+    company: string;
+    logo: string;
+    location: string;
+    highlights: string[];
+  };
+}
+const { experience } = Astro.props;
+// Keep emphasis explicit in the content; Astro escapes every text fragment.
+const highlights = experience.highlights.map(text => text.split(/(\*\*.*?\*\*)/g));
+---
+
+<details class="group border-b border-line" data-experience-entry>
+  <summary class="grid cursor-pointer list-none grid-cols-[48px_minmax(0,1fr)_20px] gap-x-4 py-[25px] transition-colors hover:bg-ink/[0.02] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-rust tablet:grid-cols-[48px_minmax(0,1fr)_auto_20px] tablet:gap-x-6 tablet:py-7 [&::-webkit-details-marker]:hidden">
+    <span class="col-start-1 row-start-1 size-12 self-start overflow-hidden rounded-[10px] border border-line bg-white">
+      <img class="size-full object-contain" src={experience.logo} width="48" height="48" alt="" loading="lazy" decoding="async" />
+    </span>
+    <div class="col-start-2 row-start-1 min-w-0">
+      <h3 class="text-[17px] font-medium tracking-[-0.4px]">{experience.title}</h3>
+      <div class="mt-[5px] flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <span class="text-[12px] text-rust">{experience.company}</span>
+        <span class="text-[11px] text-muted">{experience.location}</span>
+      </div>
+      <span class="mt-2 block font-mono text-[10px] leading-[1.6] text-muted tablet:hidden">{experience.date}</span>
+    </div>
+    <span class="col-start-3 row-start-1 hidden pt-[3px] font-mono text-[11px] leading-[1.6] whitespace-nowrap text-muted tablet:block">{experience.date}</span>
+    <svg class="col-start-3 row-start-1 mt-1 size-4 text-muted group-open:rotate-180 tablet:col-start-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6" /></svg>
+  </summary>
+  <div class="flow-root tablet:ml-[72px]" data-experience-content>
+    <div class="pb-[25px] tablet:pb-7">
+      <ul class="max-w-[570px] list-disc space-y-2 pl-4 text-[13px] leading-[1.8] text-muted marker:text-rust/50">
+        {highlights.map(parts => <li>{parts.map(part => part.startsWith('**') && part.endsWith('**')
+          ? <strong class="font-semibold text-ink">{part.slice(2, -2)}</strong> : part)}</li>)}
+      </ul>
+    </div>
+  </div>
+</details>
+
+<script>
+  document.querySelectorAll<HTMLDetailsElement>('[data-experience-entry]').forEach(entry => {
+    const summary = entry.querySelector<HTMLElement>('summary')!;
+    const content = entry.querySelector<HTMLElement>('[data-experience-content]')!;
+    const chevron = summary.querySelector<SVGElement>('svg');
+    const canHover = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let expanded = entry.open;
+    let pinned = false;
+    let inside = false;
+    let suppressHover = false;
+    let enterTimer = 0;
+    let leaveTimer = 0;
+    let animation: Animation | null = null;
+
+    function setExpanded(next: boolean, instant = false) {
+      if (!instant && next === expanded) return;
+      const height = entry.open ? content.getBoundingClientRect().height : 0;
+      const opacity = entry.open ? getComputedStyle(content).opacity : '0';
+      animation?.cancel();
+      animation = null;
+      expanded = next;
+      summary.setAttribute('aria-expanded', String(next));
+      content.inert = !next;
+      content.setAttribute('aria-hidden', String(!next));
+      chevron?.style.setProperty('rotate', next ? '180deg' : '0deg');
+
+      if (instant || reducedMotion.matches || typeof content.animate !== 'function') {
+        entry.open = next;
+        content.style.overflow = '';
+        return;
+      }
+      // Native details remains open during closing so its content can animate.
+      entry.open = true;
+      content.style.overflow = 'hidden';
+      const current = content.animate([
+        { height: `${height}px`, opacity },
+        { height: `${next ? content.scrollHeight : 0}px`, opacity: next ? 1 : 0 },
+      ], { duration: next ? 280 : 220, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'both' });
+      animation = current;
+      void current.finished.then(() => {
+        if (animation !== current) return;
+        animation = null;
+        entry.open = next;
+        content.style.overflow = '';
+        current.cancel();
+      }).catch(() => { /* Hover/click reversals cancel the previous animation. */ });
+    }
+    const clearTimers = () => {
+      window.clearTimeout(enterTimer);
+      window.clearTimeout(leaveTimer);
+    };
+    const enter = (event: PointerEvent) => {
+      if (!canHover.matches || event.pointerType === 'touch') return;
+      clearTimers();
+      inside = true;
+      if (!pinned && !suppressHover) enterTimer = window.setTimeout(() => {
+        if (inside && !suppressHover) setExpanded(true);
+      }, 160);
+    };
+    const leave = () => {
+      clearTimers();
+      inside = suppressHover = false;
+      if (!pinned) leaveTimer = window.setTimeout(() => setExpanded(false), 140);
+    };
+    const toggle = (event: MouseEvent) => {
+      event.preventDefault();
+      clearTimers();
+      pinned = !expanded;
+      suppressHover = !pinned && inside;
+      setExpanded(pinned);
+    };
+    const motionChange = () => { if (reducedMotion.matches) setExpanded(expanded, true); };
+    setExpanded(entry.open, true);
+    entry.addEventListener('pointerenter', enter);
+    entry.addEventListener('pointerleave', leave);
+    summary.addEventListener('click', toggle);
+    reducedMotion.addEventListener('change', motionChange);
+    document.addEventListener('astro:before-swap', () => {
+      clearTimers();
+      animation?.cancel();
+      entry.removeEventListener('pointerenter', enter);
+      entry.removeEventListener('pointerleave', leave);
+      summary.removeEventListener('click', toggle);
+      reducedMotion.removeEventListener('change', motionChange);
+    }, { once: true });
+  });
+</script>

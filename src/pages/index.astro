@@ -2,6 +2,7 @@
 import Hobbies from '../components/Hobbies.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import SectionHeading from '../components/SectionHeading.astro';
+import ExperienceEntry from '../components/ExperienceEntry.astro';
 import '../styles/global.css';
 
 const projects = [
@@ -12,14 +13,39 @@ const projects = [
 
 const experiences = [
   {
-    date: '20XX — Present',
-    title: 'Your role goes here',
-    description: 'Add a short description of your work here. Focus on something you helped build, a problem you solved, or what you learned.',
+    date: 'Jan 2025 — Dec 2025',
+    title: 'Full Stack Developer Intern',
+    company: 'Workplace Safety & Insurance Board (WSIB) — Innovation Lab',
+    logo: '/images/companies/wsib-logo.jpeg',
+    location: 'Waterloo, ON',
+    highlights: [
+      'Built a React and Flask dashboard with search and verification, cutting accommodation-entry time by **over 50%**.',
+      'Automated record extraction from **320 PDF and DOCX documents** with PyMuPDF, docx2txt and Azure OpenAI. Ranked related accommodation records using embeddings, cosine similarity and weighted Jaccard similarity.',
+      'Secured APIs with JWT authentication, role-based access control, Redis rate limiting and email verification. Deployed the application on Azure and authored **172 pytest integration tests** across **10 backend modules**.',
+    ],
   },
   {
-    date: '20XX — 20XX',
-    title: 'An earlier chapter',
-    description: 'Another experience worth sharing. This could be an internship, research, volunteering, or a team you were part of.',
+    date: 'Jan 2024 — Dec 2024',
+    title: 'Student Software Developer',
+    company: 'TMU Chinese Student Association',
+    logo: '/images/companies/tmu-csa-logo.png',
+    location: 'Toronto, ON',
+    highlights: [
+      'Built a responsive Next.js application with dynamic event galleries and social media integration to showcase club activities and engage members.',
+      'Created and assigned development tickets, tracked milestones and coordinated deliverables with the project roadmap and deadlines.',
+      'Delivered the student association website, which has reached **250+ unique visitors**.',
+    ],
+  },
+  {
+    date: 'Aug 2024 — Dec 2024',
+    title: 'Quality Assurance Lead Intern',
+    company: 'Unity Health Toronto',
+    logo: '/images/companies/unity-health-toronto-logo.jpeg',
+    location: 'Toronto, ON',
+    highlights: [
+      'Coordinated black-box testing with a **99% success rate** across test cases.',
+      'Led **6 student testers**, organizing workloads and test plans to reduce duplicate work and improve testing efficiency.',
+    ],
   },
 ];
 ---
@@ -87,20 +113,10 @@ const experiences = [
 
       <section class="mx-auto w-[calc(100%-44px)] max-w-[1100px] scroll-mt-[30px] pt-[65px] tablet:w-[calc(100%-72px)] tablet:pt-[94px] desktop:w-[calc(100%-112px)]" id="experience" aria-labelledby="experience-title">
         <SectionHeading id="experience-title" eyebrow="Along the way" title="A few stops so far">
-          A space for the work,<br>and what it taught me.
+          Building useful tools,<br>and learning along the way.
         </SectionHeading>
         <div class="border-t border-line">
-          {experiences.map(experience => (
-            <article class="grid grid-cols-1 gap-3 border-b border-line py-[25px] tablet:grid-cols-[140px_1fr] tablet:gap-[30px] tablet:py-7 desktop:grid-cols-[185px_1fr_auto]">
-              <span class="pt-[3px] font-mono text-[10px] leading-[1.6] text-muted tablet:text-[11px]">{experience.date}</span>
-              <div>
-                <h3 class="text-[17px] font-medium tracking-[-0.4px]">{experience.title}</h3>
-                <span class="mt-[5px] block text-[12px] text-rust">Company or organization</span>
-                <p class="mt-3 max-w-[570px] text-[13px] leading-[1.8] text-muted">{experience.description}</p>
-              </div>
-              <span class="hidden pt-[3px] font-mono text-[10px] leading-[1.6] text-muted desktop:block">Placeholder</span>
-            </article>
-          ))}
+          {experiences.map(experience => <ExperienceEntry experience={experience} />)}
         </div>
       </section>
 
@@ -125,5 +141,9 @@ const experiences = [
       <p class="order-3 w-full text-[10px] text-muted tablet:order-none tablet:w-auto tablet:text-[11px]">Always a work in progress.</p>
       <a class="ml-auto text-[10px] text-muted tablet:ml-0 tablet:text-[11px]" href="#about">Back to the top <span class="ml-[9px] text-rust" aria-hidden="true">↑</span></a>
     </footer>
+    <script>
+      import { initPageScroll } from '../scripts/page-scroll';
+      initPageScroll();
+    </script>
   </body>
 </html>

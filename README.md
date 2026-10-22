@@ -153,7 +153,7 @@ scrolling down pins the carousel and moves
 the cards left until the last run is visible, then the page continues downward.
 Both hobbies use 1.8 pixels of vertical travel per horizontal pixel for a slower,
 gentler pace. Adjust `VERTICAL_SCROLL_PER_PIXEL` in `src/scripts/run-carousel.ts`
-to tune this; the rest of the page keeps native scrolling.
+to tune this independently of the page-wide wheel sensitivity.
 Scrolling up reverses that progression. Horizontal swiping and
 keyboard navigation stay synchronized with the page's scroll position. Reduced
 motion and viewports too short for the buttons/cards retain the native
@@ -222,6 +222,14 @@ travel and fades out/in with Running's hobby transition.
 Edit arrow shapes, colour and thickness in `src/components/ScrollArrows.astro`, and motion in `src/scripts/hobbies-motion.ts`.
 
 ## Styling
+
+`src/scripts/page-scroll.ts` scales vertical mouse-wheel and trackpad input to
+65% of its original distance and adds a short easing effect. Tune
+`WHEEL_SENSITIVITY` and `SMOOTHING_MS` there. Touch, keyboard, anchor links,
+horizontal gestures, zoom and nested scroll regions retain native behavior.
+Reduced motion keeps the lower wheel sensitivity but skips easing. The script
+uses the real document scroll position so sticky scenes and the carousel stay
+synchronized.
 
 Layout, typography, colours, responsive behaviour and interaction states use Tailwind classes directly on the relevant Astro tags. `RunCard.astro` and `ProjectCard.astro` keep repeated card markup in one place. Tailwind variants use complete, static class names so the compiler can discover them.
 
