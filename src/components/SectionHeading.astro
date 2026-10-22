@@ -4,9 +4,10 @@ interface Props {
   eyebrow: string;
   title: string;
   showPeriod?: boolean;
+  showCaptionOnMobile?: boolean;
 }
 
-const { id, eyebrow, title, showPeriod = true } = Astro.props;
+const { id, eyebrow, title, showPeriod = true, showCaptionOnMobile = false } = Astro.props;
 ---
 
 <div class="mb-7 tablet:mb-[38px] tablet:flex tablet:items-end tablet:justify-between tablet:gap-[30px]">
@@ -16,5 +17,5 @@ const { id, eyebrow, title, showPeriod = true } = Astro.props;
       {title}{showPeriod && <span class="text-rust">.</span>}
     </h2>
   </div>
-  <p class="hidden pb-0.5 text-xs leading-[1.8] text-muted tablet:block"><slot /></p>
+  <p class:list={['pb-0.5 text-xs leading-[1.8] text-muted', showCaptionOnMobile ? 'mt-4 tablet:mt-0' : 'hidden tablet:block']}><slot /></p>
 </div>

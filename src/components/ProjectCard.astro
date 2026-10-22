@@ -7,14 +7,14 @@ interface Props {
   technologies: readonly string[];
   logo: string;
   githubUrl: string;
-  theme: 'vivid' | 'strevy' | 'ecodex';
+  theme: 'vivid' | 'strevy' | 'rotify';
 }
 
 const { id, title, category, description, technologies, logo, githubUrl, theme } = Astro.props;
 const backgrounds = {
   vivid: 'bg-[#102c36]',
   strevy: 'bg-[#f1ede4]',
-  ecodex: 'bg-[#3d3d33]',
+  rotify: 'bg-[#1a1d2d]',
 };
 ---
 

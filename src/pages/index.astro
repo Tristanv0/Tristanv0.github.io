@@ -27,14 +27,14 @@ const projects = [
     theme: 'strevy',
   },
   {
-    id: 'ecodex',
-    title: 'EcoDex',
-    category: 'TerraHacks 2024 · Team project',
-    description: 'An AI-powered waste-scanning app that identifies items from photos, explains how to dispose of them and keeps a history of scans, with points and demo rewards.',
-    technologies: ['Next.js', 'Flask', 'OpenAI', 'MongoDB', 'Tailwind CSS'],
-    logo: '/images/projects/ecodex_logo.png',
-    githubUrl: 'https://github.com/Tristanv0/EcoDex',
-    theme: 'ecodex',
+    id: 'rotify',
+    title: 'Rotify',
+    category: 'HackHive 2025 · Team project',
+    description: 'Turns text, URLs and PDFs into AI summaries with narration, captions and gameplay backgrounds. Includes a chatbot and generated quizzes to explore and test what you learn.',
+    technologies: ['Next.js', 'Node.js', 'Express', 'OpenAI', 'WebSockets'],
+    logo: '/images/projects/rotify_logo.png',
+    githubUrl: 'https://github.com/Tristanv0/Rotify',
+    theme: 'rotify',
   },
 ] as const;
 
@@ -85,7 +85,7 @@ const experiences = [
     <meta name="theme-color" content="#faf8f3" />
     <meta name="description" content="Tristan Cheng's personal corner of the internet. Projects, experiments, and life beyond the keyboard." />
     <title>Tristan Cheng — a work in progress</title>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=tc" />
   </head>
   <body class="bg-paper font-sans text-ink antialiased">
     <a class="fixed top-3.75 left-5 z-100 translate-y-[-150%] bg-ink px-4.5 py-3 text-paper focus:translate-y-0" href="#main">
@@ -94,8 +94,8 @@ const experiences = [
 
     <header class="sticky top-0 z-30 border-b border-line bg-paper/95 backdrop-blur-lg">
       <div class="mx-auto flex min-h-23.75 w-[calc(100%-44px)] max-w-275 flex-wrap items-center justify-between gap-1.25 pt-4 pb-3 tablet:min-h-22 tablet:w-[calc(100%-72px)] tablet:flex-nowrap tablet:gap-6 tablet:py-0 desktop:w-[calc(100%-112px)]">
-        <a class="text-[19px] font-semibold tracking-[-1px] whitespace-nowrap tablet:text-[20px]" href="#about" aria-label="Tristan Cheng, back to About">
-          tristan cheng
+        <a class="block shrink-0 rounded-full" href="#about" aria-label="Tristan Cheng, back to About">
+          <img class="size-12 tablet:size-14" src="/website_logo.svg" width="56" height="56" alt="" fetchpriority="high" />
         </a>
         <nav class="flex w-full gap-4.75 text-[11px] phone:gap-6 tablet:w-auto tablet:gap-7.5 tablet:text-[13px]" aria-label="Main navigation">
           <a class="py-1 text-[#68685e] transition-colors duration-150 hover:text-rust tablet:py-2.5" href="#about">About</a>
@@ -148,8 +148,8 @@ const experiences = [
       </section>
 
       <section class="mx-auto w-[calc(100%-44px)] max-w-[1100px] scroll-mt-[30px] pt-[65px] tablet:w-[calc(100%-72px)] tablet:pt-[94px] desktop:w-[calc(100%-112px)]" id="projects" aria-labelledby="projects-title">
-        <SectionHeading id="projects-title" eyebrow="Things I've made" title="Ideas, made tangible">
-          Built with teams,<br>and out of curiosity.
+        <SectionHeading id="projects-title" eyebrow="Things I've made" title="Ideas, made tangible" showCaptionOnMobile>
+          <a class="text-rust underline decoration-rust/35 underline-offset-4 transition-colors hover:decoration-rust" href="https://github.com/Tristanv0" target="_blank" rel="noopener noreferrer">check out my other projects!</a>
         </SectionHeading>
         <div class="grid grid-cols-1 gap-[35px] tablet:grid-cols-3 tablet:gap-5 desktop:gap-[25px]">
           {projects.map(project => <ProjectCard {...project} />)}
