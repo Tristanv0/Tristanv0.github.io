@@ -9,6 +9,7 @@ export interface Run {
   time: string;
   pace: string;
   averageHeartRate: string;
+  calories: string;
   elevationGain: string;
   relativeEffort: string;
   stravaUrl: string | null;
@@ -34,6 +35,7 @@ interface StrevyRun {
   movingTime?: { display?: string | null; seconds?: number | null } | null;
   averagePacePerKm?: { display?: string | null; secondsPerKm?: number | null } | null;
   averageHeartRateBpm?: number | null;
+  calories?: number | null;
   elevationGainMeters?: number | null;
   elevationGain?: { value?: number | null; unit?: string | null } | null;
   relativeEffort?: number | null;
@@ -131,6 +133,8 @@ function normalizeRun(run: StrevyRun, apiOrigin: string): Run {
     pace,
     averageHeartRate: nonNegativeNumber(run.averageHeartRateBpm) && run.averageHeartRateBpm > 0
       ? String(Math.round(run.averageHeartRateBpm)) : '—',
+    calories: nonNegativeNumber(run.calories)
+      ? new Intl.NumberFormat('en-CA', { maximumFractionDigits: 0 }).format(run.calories) : '—',
     elevationGain: elevationMeters === null ? '—' : String(Math.round(elevationMeters)),
     relativeEffort: nonNegativeNumber(run.relativeEffort) ? String(Math.round(run.relativeEffort)) : '—',
     stravaUrl: httpUrl(run.url, apiOrigin),
