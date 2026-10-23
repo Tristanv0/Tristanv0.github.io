@@ -4,6 +4,7 @@ import ProjectCard from '../components/ProjectCard.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import ExperienceEntry from '../components/ExperienceEntry.astro';
 import '../styles/global.css';
+import '../styles/project-reveals.css';
 
 const pageTitle = 'Tristan Cheng';
 const pageDescription = 'A personal portfolio, with a little life beyond code.';
@@ -193,7 +194,9 @@ const experiences = [
     </footer>
     <script>
       import { initPageScroll } from '../scripts/page-scroll';
+      import { initProjectReveals } from '../scripts/project-reveals';
       initPageScroll();
+      initProjectReveals();
     </script>
   </body>
 </html>

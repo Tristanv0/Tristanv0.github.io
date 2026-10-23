@@ -20,17 +20,17 @@ const backgrounds = {
 
 <article class="h-full" data-project-card={id}>
   <a class="group flex h-full flex-col rounded-[10px] outline-offset-8 focus-visible:outline-2 focus-visible:outline-rust" href={githubUrl} target="_blank" rel="noopener noreferrer" aria-labelledby={`project-${id}-title project-${id}-source`}>
-    <div class:list={['grid h-[215px] shrink-0 place-items-center overflow-hidden rounded-[10px] border border-line/50 tablet:h-[190px]', backgrounds[theme]]}>
+    <div data-project-reveal class:list={['grid h-[215px] shrink-0 place-items-center overflow-hidden rounded-[10px] border border-line/50 tablet:h-[190px]', backgrounds[theme]]}>
       <img class="size-[160px] object-contain transition-transform duration-300 motion-safe:group-hover:scale-[1.04] tablet:size-[145px] desktop:size-[165px]" src={logo} width="165" height="165" alt="" loading="lazy" decoding="async" />
     </div>
     <div class="flex flex-1 flex-col pt-[17px] tablet:pt-[22px]">
-      <span class="block font-mono text-[9px] leading-[1.5] tracking-[1px] text-muted uppercase">{category}</span>
-      <h3 id={`project-${id}-title`} class="mt-[9px] text-[18px] font-medium tracking-[-0.6px] transition-colors group-hover:text-rust">{title}</h3>
-      <p class="mt-2.5 text-xs leading-[1.8] text-muted">{description}</p>
-      <ul class="mt-4 mb-5 flex flex-wrap gap-1.5" aria-label={`${title} technologies`}>
+      <span data-project-reveal class="block w-fit font-mono text-[9px] leading-[1.5] tracking-[1px] text-muted uppercase">{category}</span>
+      <h3 data-project-reveal id={`project-${id}-title`} class="mt-[9px] w-fit text-[18px] font-medium tracking-[-0.6px] transition-colors group-hover:text-rust">{title}</h3>
+      <p data-project-reveal class="mt-2.5 text-xs leading-[1.8] text-muted">{description}</p>
+      <ul data-project-reveal class="mt-4 mb-5 flex flex-wrap gap-1.5" aria-label={`${title} technologies`}>
         {technologies.map(technology => <li class="rounded-full border border-line px-2 py-1 font-mono text-[9px] leading-[1.4] text-muted">{technology}</li>)}
       </ul>
-      <span id={`project-${id}-source`} class="mt-auto w-fit font-mono text-[10px] leading-[1.5] text-rust underline decoration-rust/35 underline-offset-4 group-hover:decoration-rust">View on GitHub</span>
+      <span data-project-reveal id={`project-${id}-source`} class="mt-auto w-fit font-mono text-[10px] leading-[1.5] text-rust underline decoration-rust/35 underline-offset-4 group-hover:decoration-rust">View on GitHub</span>
     </div>
   </a>
 </article>
