@@ -1,0 +1,338 @@
+---
+const links = [
+  { href: '#about', label: 'About' },
+  { href: '#experience', label: 'Experience' },
+  { href: '#projects', label: 'Projects' },
+  { href: '#hobbies', label: 'Hobbies' },
+];
+---
+
+<nav class="site-nav flex text-[11px] tablet:relative tablet:text-[13px]" aria-label="Main navigation" data-navbar>
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-panel" aria-label="Open navigation" data-nav-toggle>
+    <span class="nav-toggle-line" aria-hidden="true"></span>
+    <span class="nav-toggle-line" aria-hidden="true"></span>
+  </button>
+  <div class="nav-panel" id="nav-panel" data-nav-panel>
+    <div class="nav-panel-clip">
+      <div class="nav-links flex gap-4.75 phone:gap-6 tablet:gap-7.5">
+        {links.map(({ href, label }, index) => (
+          <a class="nav-link relative block py-1 text-[#68685e] tablet:py-2.5" style={`--nav-link-index: ${index}`} href={href} aria-current={index === 0 ? 'location' : undefined}>
+            <span class="nav-word grid overflow-clip">
+              <span class="nav-label [grid-area:1/1]">{label}</span>
+              <span class="nav-label-copy text-rust [grid-area:1/1]" aria-hidden="true">{label}</span>
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+  <span class="nav-indicator pointer-events-none absolute bottom-0 left-0 h-px bg-rust" aria-hidden="true" data-nav-indicator></span>
+</nav>
+
+<style>
+  .nav-toggle { display: none; }
+  .nav-link[aria-current='location'] { color: var(--color-rust); }
+  .nav-label,
+  .nav-label-copy {
+    transition: transform 340ms cubic-bezier(0.22, 1, 0.36, 1), color 340ms ease;
+  }
+  .nav-label-copy { transform: translateY(115%); }
+
+  @media (hover: hover) and (pointer: fine) {
+    .nav-link:hover .nav-label { transform: translateY(-115%); }
+    .nav-link:hover .nav-label-copy { transform: translateY(0); }
+  }
+  .nav-link:focus-visible .nav-label { transform: translateY(-115%); }
+  .nav-link:focus-visible .nav-label-copy { transform: translateY(0); }
+
+  .nav-indicator {
+    width: var(--nav-indicator-width, 0px);
+    transform: translateX(var(--nav-indicator-x, 0px));
+    opacity: 0;
+    transition: transform 340ms cubic-bezier(0.22, 1, 0.36, 1), width 340ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .site-nav[data-nav-ready] .nav-indicator { opacity: 1; }
+
+  /* Individual underlines remain usable when JavaScript is unavailable. */
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 1px;
+    background: var(--color-rust);
+    transform: scaleX(0);
+    transition: transform 340ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .nav-link[aria-current='location']::after,
+  .nav-link:focus-visible::after { transform: scaleX(1); }
+  @media (hover: hover) and (pointer: fine) {
+    .nav-link:hover::after { transform: scaleX(1); }
+  }
+  .site-nav[data-nav-ready] .nav-link::after { display: none; }
+
+  @media (width < 701px) {
+    .site-nav[data-nav-ready] .nav-toggle {
+      display: grid;
+      place-items: center;
+      position: relative;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--color-line);
+      border-radius: 50%;
+      color: var(--color-ink);
+      transition: border-color 240ms ease, background-color 240ms ease;
+    }
+    .nav-toggle:hover,
+    .nav-toggle[aria-expanded='true'] { border-color: var(--color-rust); background: #c0522808; }
+    .nav-toggle-line {
+      position: absolute;
+      width: 18px;
+      height: 1.5px;
+      background: currentColor;
+      transform: translateY(-4px);
+      transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav-toggle-line + .nav-toggle-line { transform: translateY(4px); }
+    .nav-toggle[aria-expanded='true'] .nav-toggle-line { transform: rotate(45deg); }
+    .nav-toggle[aria-expanded='true'] .nav-toggle-line + .nav-toggle-line { transform: rotate(-45deg); }
+    .site-nav[data-nav-ready] .nav-panel {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      left: 0;
+      display: grid;
+      grid-template-rows: 0fr;
+      background: var(--color-paper);
+      border-bottom: 1px solid var(--color-line);
+      box-shadow: 0 14px 22px -18px #292a2526;
+      opacity: 0;
+      visibility: hidden;
+      transition: grid-template-rows 320ms cubic-bezier(0.22, 1, 0.36, 1), opacity 240ms ease, visibility 0s 320ms;
+    }
+    .nav-panel-clip { min-height: 0; overflow: hidden; }
+    .site-nav[data-nav-ready] .nav-links {
+      flex-direction: column;
+      gap: 0;
+      max-height: calc(100svh - 110px);
+      overflow-y: auto;
+      padding: 12px 22px 22px;
+    }
+    .site-nav[data-nav-ready] .nav-link {
+      padding: 14px 12px;
+      font-size: 17px;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: opacity 160ms ease, transform 240ms cubic-bezier(0.22, 1, 0.36, 1), color 240ms ease;
+    }
+    .site-nav[data-nav-ready] .nav-link[aria-current='location'] { background: #c0522808; border-radius: 8px; }
+    .site-nav[data-menu-open] .nav-panel {
+      grid-template-rows: 1fr;
+      opacity: 1;
+      visibility: visible;
+      transition-delay: 0s;
+    }
+    .site-nav[data-menu-open] .nav-link {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: calc(var(--nav-link-index) * 35ms);
+    }
+    .nav-indicator { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-nav[data-nav-ready] .nav-toggle,
+    .nav-toggle-line,
+    .site-nav[data-nav-ready] .nav-panel,
+    .site-nav[data-nav-ready] .nav-link,
+    .nav-label,
+    .nav-label-copy,
+    .nav-indicator,
+    .nav-link::after { transition: none; }
+    .nav-link:is(:hover, :focus-visible) .nav-label { transform: none; color: var(--color-rust); }
+    .nav-label-copy { display: none; }
+  }
+</style>
+
+<script>
+  const nav = document.querySelector<HTMLElement>('[data-navbar]');
+  if (nav) {
+    const links = [...nav.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')];
+    const sections = links.map(link => ({ link, section: document.getElementById(link.hash.slice(1)) }));
+    const header = nav.closest('header');
+    const canHover = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const mobile = window.matchMedia('(width < 701px)');
+    const toggle = nav.querySelector<HTMLButtonElement>('[data-nav-toggle]')!;
+    const panel = nav.querySelector<HTMLElement>('[data-nav-panel]')!;
+    let selected = links[0];
+    let hovered: HTMLAnchorElement | null = null;
+    let indicatorTarget: HTMLAnchorElement | null = null;
+    let needsMeasure = true;
+    let activationOffset = 0;
+    let frame = 0;
+    let navigationTarget: HTMLAnchorElement | null = null;
+    let navigationTimer = 0;
+
+    function setMenu(open: boolean, restoreFocus = false) {
+      const expanded = mobile.matches && open;
+      if (!expanded && restoreFocus && panel.contains(document.activeElement)) toggle.focus({ preventScroll: true });
+      nav!.toggleAttribute('data-menu-open', expanded);
+      toggle.setAttribute('aria-expanded', String(expanded));
+      toggle.setAttribute('aria-label', expanded ? 'Close navigation' : 'Open navigation');
+      panel.inert = mobile.matches && !expanded;
+      hovered = null;
+    }
+    function toggleMenu() {
+      setMenu(!nav!.hasAttribute('data-menu-open'));
+    }
+    function onOutsidePointer(event: PointerEvent) {
+      if (event.target instanceof Node && !nav!.contains(event.target)) setMenu(false);
+    }
+    function onFocusOut(event: FocusEvent) {
+      if (event.relatedTarget instanceof Node && !nav!.contains(event.relatedTarget)) setMenu(false);
+      schedule();
+    }
+    function onBreakpointChange() {
+      setMenu(false, mobile.matches);
+      // Return focus to a visible link when switching to desktop navigation.
+      if (!mobile.matches && document.activeElement === toggle) selected?.focus({ preventScroll: true });
+      measure();
+    }
+
+    function render() {
+      frame = 0;
+      if (needsMeasure) {
+        const scrollPadding = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+        const scrollMargin = Math.max(0, ...sections.map(({ section }) => section
+          ? parseFloat(getComputedStyle(section).scrollMarginTop) || 0 : 0));
+        activationOffset = Math.max((header?.getBoundingClientRect().height ?? 0) + 16, scrollPadding + scrollMargin) + 1;
+      }
+      let current = links[0];
+      for (const { link, section } of sections) {
+        if (section && section.getBoundingClientRect().top <= activationOffset) current = link;
+      }
+      // Keep a clicked destination selected while native smooth scrolling
+      // passes through earlier sections, even after the pointer leaves.
+      if (navigationTarget) current = navigationTarget;
+      if (current !== selected || !nav!.hasAttribute('data-nav-ready')) {
+        selected = current;
+        links.forEach(link => {
+          if (link === selected) link.setAttribute('aria-current', 'location');
+          else link.removeAttribute('aria-current');
+        });
+      }
+
+      const focused = links.find(link => link.matches(':focus-visible'));
+      const target = hovered ?? focused ?? selected;
+      if (target && (needsMeasure || target !== indicatorTarget)) {
+        const bounds = target.getBoundingClientRect();
+        const navBounds = nav!.getBoundingClientRect();
+        nav!.style.setProperty('--nav-indicator-x', `${bounds.left - navBounds.left}px`);
+        nav!.style.setProperty('--nav-indicator-width', `${bounds.width}px`);
+        indicatorTarget = target;
+      }
+      nav!.dataset.navReady = '';
+      needsMeasure = false;
+    }
+
+    function schedule() {
+      if (!frame) frame = window.requestAnimationFrame(render);
+    }
+    function measure() {
+      needsMeasure = true;
+      schedule();
+    }
+    function enter(event: PointerEvent) {
+      if (event.pointerType === 'touch' || !canHover.matches) return;
+      hovered = event.currentTarget as HTMLAnchorElement;
+      schedule();
+    }
+    function leave() {
+      hovered = null;
+      schedule();
+    }
+    function hoverChange() {
+      if (!canHover.matches) hovered = null;
+      schedule();
+    }
+    function endNavigation() {
+      window.clearTimeout(navigationTimer);
+      navigationTarget = null;
+      schedule();
+    }
+    function onClick(event: MouseEvent) {
+      if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      const link = event.currentTarget as HTMLAnchorElement;
+      if (!sections.some(item => item.link === link && item.section)) return;
+      setMenu(false, mobile.matches);
+      navigationTarget = link;
+      window.clearTimeout(navigationTimer);
+      // Also release when clicking a destination already at its final position.
+      navigationTimer = window.setTimeout(endNavigation, 250);
+      schedule();
+    }
+    function onScroll() {
+      if (navigationTarget) {
+        window.clearTimeout(navigationTimer);
+        navigationTimer = window.setTimeout(endNavigation, 180);
+      }
+      schedule();
+    }
+    function onKeydown(event: KeyboardEvent) {
+      if (event.key === 'Escape' && nav!.hasAttribute('data-menu-open')) {
+        event.preventDefault();
+        setMenu(false, true);
+      }
+      if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(event.key)) endNavigation();
+    }
+
+    links.forEach(link => {
+      link.addEventListener('pointerenter', enter);
+      link.addEventListener('click', onClick);
+    });
+    nav.addEventListener('pointerleave', leave);
+    nav.addEventListener('focusin', schedule);
+    nav.addEventListener('focusout', onFocusOut);
+    toggle.addEventListener('click', toggleMenu);
+    document.addEventListener('pointerdown', onOutsidePointer);
+    mobile.addEventListener('change', onBreakpointChange);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('wheel', endNavigation, { passive: true });
+    window.addEventListener('pointerdown', endNavigation, { passive: true });
+    window.addEventListener('touchstart', endNavigation, { passive: true });
+    window.addEventListener('keydown', onKeydown);
+    window.addEventListener('hashchange', schedule);
+    window.addEventListener('resize', measure, { passive: true });
+    canHover.addEventListener('change', hoverChange);
+    const observer = new ResizeObserver(measure);
+    observer.observe(nav);
+    if (header) observer.observe(header);
+    setMenu(false);
+    render();
+
+    document.addEventListener('astro:before-swap', () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(navigationTimer);
+      observer.disconnect();
+      links.forEach(link => {
+        link.removeEventListener('pointerenter', enter);
+        link.removeEventListener('click', onClick);
+      });
+      nav.removeEventListener('pointerleave', leave);
+      nav.removeEventListener('focusin', schedule);
+      nav.removeEventListener('focusout', onFocusOut);
+      toggle.removeEventListener('click', toggleMenu);
+      document.removeEventListener('pointerdown', onOutsidePointer);
+      mobile.removeEventListener('change', onBreakpointChange);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('wheel', endNavigation);
+      window.removeEventListener('pointerdown', endNavigation);
+      window.removeEventListener('touchstart', endNavigation);
+      window.removeEventListener('keydown', onKeydown);
+      window.removeEventListener('hashchange', schedule);
+      window.removeEventListener('resize', measure);
+      canHover.removeEventListener('change', hoverChange);
+    }, { once: true });
+  }
+</script>
