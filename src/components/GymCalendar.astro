@@ -1,5 +1,5 @@
 ---
-import { buildWorkoutCalendar, calendarDayClass, CALENDAR_TITLE_CLASS, CALENDAR_TITLE_FADE, WEEKDAYS, WORKOUT_TIME_ZONE, type WorkoutCalendarEntry } from '../data/workout-calendar';
+import { buildWorkoutCalendar, calendarDayClass, CALENDAR_BACK_CIRCLE_CLASS, CALENDAR_FRONT_CIRCLE_CLASS, CALENDAR_TITLE_CLASS, CALENDAR_TITLE_FADE, WEEKDAYS, WORKOUT_TIME_ZONE, type WorkoutCalendarEntry } from '../data/workout-calendar';
 
 interface Props { workouts: WorkoutCalendarEntry[] }
 const { workouts } = Astro.props;
@@ -7,23 +7,29 @@ const calendar = buildWorkoutCalendar(new Date(), workouts);
 ---
 
     <aside class="pointer-events-none invisible relative mx-auto mb-6 w-[calc(100%-2*var(--run-edge,22px))] max-w-[360px] max-tablet:[&.invisible]:hidden tablet:absolute tablet:top-[var(--calendar-baseline,44px)] tablet:right-[var(--run-edge,36px)] tablet:mb-0 tablet:w-[280px] tablet:max-w-none tablet:-translate-y-full desktop:w-[360px] wide:w-[380px]" aria-labelledby="gym-calendar-month" aria-hidden="true" inert data-gym-calendar data-run-leading data-workout-dates={JSON.stringify(workouts)} data-time-zone={WORKOUT_TIME_ZONE}>
-      <div data-calendar-content>
+      <div class="pointer-events-auto" data-calendar-content>
       <h3 id="gym-calendar-month" class="mb-3 text-center text-[15px] font-medium tracking-[-0.3px] text-ink tablet:text-[18px]" data-calendar-month>{calendar.monthLabel}</h3>
       <table class="w-full table-fixed border-separate border-spacing-y-1 text-center" aria-label={`${calendar.monthLabel} gym attendance`} data-calendar-table>
         <thead><tr>{WEEKDAYS.map(day => <th scope="col" class="border-b border-line pb-2 text-[10px] font-normal text-muted tablet:text-[11px]"><abbr title={day} class="no-underline">{day[0]}</abbr></th>)}</tr></thead>
         <tbody data-calendar-days>
-          {calendar.weeks.map(week => <tr>{week.map(day => <td class="h-11 p-0 align-top tablet:h-12" aria-hidden={!day ? 'true' : undefined}>
-            {day && <span class={calendarDayClass(day)} data-calendar-day={day.date} data-attended={String(day.attended)} data-calendar-today-dot={day.today ? '' : undefined}>
-              <time datetime={day.date} aria-label={day.label} aria-current={day.today ? 'date' : undefined}>{day.day}</time>
+          {calendar.weeks.map(week => <tr>{week.map(day => <td class="h-11 p-0 align-top tablet:h-12" aria-hidden={!day ? 'true' : undefined} tabindex={day?.attended ? 0 : undefined} data-calendar-entry={day?.attended ? '' : undefined} data-workout-titles={day?.attended ? JSON.stringify(day.workoutTitles) : undefined}>
+            {day && <span class={calendarDayClass(day)} data-calendar-day={day.date} data-attended={String(day.attended)} data-workout-count={day.workoutCount} data-calendar-today-dot={day.today ? '' : undefined}>
+              {day.workoutCount > 1 && <span class={CALENDAR_BACK_CIRCLE_CLASS} aria-hidden="true" data-calendar-back-circle></span>}
+              {day.workoutCount > 1 && <span class={CALENDAR_FRONT_CIRCLE_CLASS} aria-hidden="true" data-calendar-front-circle></span>}
+              <time class="relative z-10" datetime={day.date} aria-label={day.label} aria-current={day.today ? 'date' : undefined}>{day.day}</time>
             </span>}
-            {day?.title && <span class={CALENDAR_TITLE_CLASS} style={Array.from(day.title).length > 10 ? CALENDAR_TITLE_FADE : undefined} title={day.title} aria-hidden="true" data-calendar-workout-title><span class="shrink-0">{day.title}</span></span>}
+            {day?.attended && <span class={CALENDAR_TITLE_CLASS} style={Array.from(day.workoutTitles[0]).length > 10 ? CALENDAR_TITLE_FADE : undefined} aria-hidden="true" data-calendar-workout-title><span class="shrink-0">{day.workoutTitles[0]}</span></span>}
           </td>)}</tr>)}
         </tbody>
       </table>
-      <p class="sr-only" data-calendar-note>{calendar.attendanceCount ? 'Blue circles mark training days.' : calendar.hasHistory ? 'No workouts logged this month.' : 'Workout dates coming soon.'}</p>
+      <p class="sr-only" data-calendar-note>{calendar.attendanceCount ? 'Blue circles mark training days. Stacked circles mark multiple workouts.' : calendar.hasHistory ? 'No workouts logged this month.' : 'Workout dates coming soon.'}</p>
       </div>
-      <canvas class="absolute -inset-x-20 -inset-y-[120px] h-[calc(100%+240px)] w-[calc(100%+160px)]" aria-hidden="true" data-calendar-particles></canvas>
+      <canvas class="pointer-events-none absolute -inset-x-20 -inset-y-[120px] h-[calc(100%+240px)] w-[calc(100%+160px)]" aria-hidden="true" data-calendar-particles></canvas>
     </aside>
+
+<style>
+  :global([data-gym-calendar] [data-calendar-entry]:focus-visible) { outline: 1px solid #1e6fff; outline-offset: 2px; border-radius: 6px; }
+</style>
 
 <script>
   import { initWorkoutCalendars } from '../scripts/workout-calendar';

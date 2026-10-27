@@ -57,14 +57,27 @@ export function captureCalendar(calendar: HTMLElement, ratio: number) {
     if (value) text(value, label);
   });
   calendar.querySelectorAll<HTMLElement>('[data-calendar-day]').forEach(day => {
-    const rect = day.getBoundingClientRect();
-    const style = getComputedStyle(day);
-    if (style.backgroundColor !== 'rgba(0, 0, 0, 0)' && style.backgroundColor !== 'transparent') {
+    const layers = day.querySelectorAll<HTMLElement>('[data-calendar-back-circle], [data-calendar-front-circle]');
+    // Hover playback is reset before capture, so the cached image always
+    // matches the resting stack rather than an in-between orbit frame.
+    const circles = layers.length ? [...layers] : [day];
+    circles.forEach(circle => {
+      const rect = circle.getBoundingClientRect();
+      const style = getComputedStyle(circle);
+      if (style.backgroundColor === 'rgba(0, 0, 0, 0)' || style.backgroundColor === 'transparent') return;
       context.fillStyle = style.backgroundColor;
       context.beginPath();
       context.arc(rect.left - bounds.left + rect.width / 2, rect.top - bounds.top + rect.height / 2, Math.min(rect.width, rect.height) / 2, 0, Math.PI * 2);
       context.fill();
-    }
+      const border = parseFloat(style.borderTopWidth);
+      if (border) {
+        context.strokeStyle = style.borderTopColor;
+        context.lineWidth = border;
+        context.beginPath();
+        context.arc(rect.left - bounds.left + rect.width / 2, rect.top - bounds.top + rect.height / 2, (Math.min(rect.width, rect.height) - border) / 2, 0, Math.PI * 2);
+        context.stroke();
+      }
+    });
     const date = day.querySelector<HTMLElement>('time');
     if (date) text(date);
   });
