@@ -30,10 +30,11 @@ const scrollerClass = 'flex h-full min-w-0 snap-x snap-mandatory items-start ove
 ---
 
 <section
-  class="relative isolate scroll-mt-[30px] overflow-clip bg-hobby-paper pt-[67px] pb-5 [--hobby-color:#FC4C02] tablet:pt-[103px] tablet:pb-8"
+  class="relative isolate overflow-clip bg-hobby-paper pt-[67px] pb-5 [--hobby-color:#FC4C02] tablet:pt-[103px] tablet:pb-8"
   id="hobbies"
   aria-labelledby="hobbies-title"
   data-hobbies
+  data-nav-section
 >
   <ScrollArrows />
   <GymBackground />
@@ -42,7 +43,7 @@ const scrollerClass = 'flex h-full min-w-0 snap-x snap-mandatory items-start ove
       <div class="relative bg-hobby-paper shadow-[0_0_35px_22px_var(--color-hobby-paper)]">
         <span class="block font-mono text-[11px] leading-[1.5] tracking-[1.65px] text-muted uppercase">Life outside the editor</span>
         <h2 id="hobbies-title" class="mt-6 mb-[25px] font-serif text-[clamp(54px,11vw,76px)] leading-[0.99] font-normal tracking-[-2.8px] tablet:text-[clamp(60px,7vw,94px)] tablet:tracking-[-4px]">
-          Away from<br>the <em class="font-normal text-[var(--hobby-color)] transition-colors duration-200 ease-out">keyboard.</em>
+          Away from<br>the <em class="font-normal text-[var(--hobby-color)] transition-colors duration-200 ease-out">keyboard</em>
         </h2>
         <p class="max-w-[280px] text-[12px] leading-[1.9] text-[#747064] tablet:max-w-none tablet:text-[14px]">
           A little movement between projects.<br>A few miles, a few reps, and a different kind of progress.

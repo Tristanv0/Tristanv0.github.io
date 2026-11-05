@@ -168,7 +168,7 @@ const links = [
     const links = [...nav.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')];
     const items = [...nav.querySelectorAll<HTMLElement>('[data-nav-item]')];
     const contact = nav.querySelector<HTMLButtonElement>('[data-contact-open]')!;
-    const sections = links.map(link => ({ link, section: document.getElementById(link.hash.slice(1)) }));
+    const sections = links.map(link => ({ link, section: document.getElementById(link.hash.slice(1)), inset: 0 }));
     const header = nav.closest('header');
     const canHover = window.matchMedia('(hover: hover) and (pointer: fine)');
     const mobile = window.matchMedia('(width < 701px)');
@@ -212,14 +212,17 @@ const links = [
     function render() {
       frame = 0;
       if (needsMeasure) {
-        const scrollPadding = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
-        const scrollMargin = Math.max(0, ...sections.map(({ section }) => section
-          ? parseFloat(getComputedStyle(section).scrollMarginTop) || 0 : 0));
-        activationOffset = Math.max((header?.getBoundingClientRect().height ?? 0) + 16, scrollPadding + scrollMargin) + 1;
+        const root = document.documentElement;
+        root.style.setProperty('--site-header-height', `${header?.getBoundingClientRect().height ?? 0}px`);
+        for (const item of sections) {
+          item.inset = item.section ? parseFloat(getComputedStyle(item.section).paddingTop) || 0 : 0;
+          item.section?.style.setProperty('--section-anchor-inset', `${item.inset}px`);
+        }
+        activationOffset = (parseFloat(getComputedStyle(root).scrollPaddingTop) || 0) + 2;
       }
       let current = links[0];
-      for (const { link, section } of sections) {
-        if (section && section.getBoundingClientRect().top <= activationOffset) current = link;
+      for (const { link, section, inset } of sections) {
+        if (section && section.getBoundingClientRect().top + inset <= activationOffset) current = link;
       }
       // Keep a clicked destination selected while native smooth scrolling
       // passes through earlier sections, even after the pointer leaves.
