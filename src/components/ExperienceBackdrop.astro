@@ -1,0 +1,45 @@
+<div class="experience-backdrop" aria-hidden="true" data-experience-backdrop>
+  <div class="backdrop-note" data-backdrop-note>
+    <span>learning<br />by doing</span>
+    <svg viewBox="0 0 150 18" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" focusable="false">
+      <path d="M5 10c32-7 76-9 137-4M36 15c29-6 64-7 99-7" />
+    </svg>
+  </div>
+
+  <svg class="backdrop-sketch code-window" viewBox="0 0 220 140" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" focusable="false" data-backdrop-sketch>
+    <path d="M22 27V17a7 7 0 0 1 7-7h164a7 7 0 0 1 7 7v96a7 7 0 0 1-7 7h-10" />
+    <rect x="10" y="26" width="174" height="104" rx="7" />
+    <path d="M10 48h174M23 37h1m10 0h1m10 0h1m28 28L61 78l13 13m47-26 13 13-13 13m-17-33-12 40" />
+  </svg>
+
+  <svg class="backdrop-sketch open-notebook" viewBox="0 0 200 120" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" focusable="false" data-backdrop-sketch>
+    <path d="M100 31C78 17 48 17 22 24v70c27-6 55-6 78 8 23-14 51-14 78-8V24c-26-7-56-7-78 7Zm0 0v71" />
+    <path d="m22 31-9 3v70c29-6 59-5 87 6 28-11 58-12 87-6V34l-9-3M38 41c15-2 29-1 43 4M38 56c15-2 29-1 43 4M38 71c11-1 20-1 29 1m52-27c14-5 28-6 43-4m-43 19c14-5 28-6 43-4m-29 18c10-3 19-4 29-3" />
+  </svg>
+
+  <span class="draft-mark mark-one"></span>
+  <span class="draft-mark mark-two"></span>
+  <span class="draft-mark mark-three"></span>
+</div>
+
+<style>
+  .experience-backdrop { display: none; position: absolute; inset: 0; z-index: 0; pointer-events: none; user-select: none; }
+  .backdrop-note { position: absolute; left: 11%; top: 10px; width: 150px; rotate: -7deg; color: #947b67; font-family: var(--font-serif); font-size: 25px; font-style: italic; line-height: 1.12; letter-spacing: -.5px; text-align: center; }
+  .backdrop-note svg { display: block; width: 130px; height: 18px; margin: 3px auto 0; opacity: .6; }
+  .backdrop-sketch { position: absolute; display: block; height: auto; }
+  .code-window { right: 2.5%; top: calc(17% + 8px); width: clamp(180px, 20%, 220px); rotate: 6deg; color: #a57457; opacity: .22; }
+  .open-notebook { left: 10%; top: 51%; width: clamp(135px, 14%, 155px); rotate: -8deg; color: #648398; opacity: .28; }
+  .draft-mark { position: absolute; width: 9px; height: 9px; color: #b6aa9c; opacity: .5; }
+  .draft-mark::before,
+  .draft-mark::after { content: ''; position: absolute; background: currentColor; }
+  .draft-mark::before { width: 9px; height: 1px; top: 4px; }
+  .draft-mark::after { height: 9px; width: 1px; left: 4px; }
+  .mark-one { left: 44%; top: 8%; rotate: 10deg; }
+  .mark-two { right: 12%; top: 43%; rotate: -12deg; }
+  .mark-three { right: 25%; top: 78%; rotate: 15deg; }
+  @media (width >= 1001px) { .experience-backdrop { display: block; } }
+  @media (1001px <= width < 1201px) {
+    .code-window { top: calc(17% + 14px); }
+    .open-notebook { top: calc(51% + 14px); }
+  }
+</style>

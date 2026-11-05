@@ -11,6 +11,10 @@ npm run dev
 
 Open the local URL printed by Astro.
 
+The navbar Contact form includes temporary drafts, attachments, and an animated
+success screen. Its separate Cloudflare Worker sends through Resend and must be configured before
+live sending works. See [contact form setup](docs/contact-form.md).
+
 ## Production build
 
 ```sh
@@ -18,7 +22,18 @@ npm run build
 npm run preview
 ```
 
-Astro generates the static site in `dist/`. Deployment has not been configured for this rebuild yet.
+Astro generates the static site in `dist/`. The root `wrangler.jsonc` deploys
+those static assets to the `tristanv0-github-io` Cloudflare Worker. Its empty
+`previews` block enables pull-request builds using `npx wrangler preview`.
+
+In that Worker's Cloudflare build settings, use the repository root, build
+command `npm run build`, production deploy command `npx wrangler deploy`, and
+preview deploy command `npx wrangler preview`. Set `STREVY_API_ORIGIN` and
+`PUBLIC_CONTACT_ENDPOINT` in the build environment before rebuilding.
+
+The contact Worker has a separate configuration. Deploy it explicitly with
+`npx wrangler@4 deploy --config workers/contact/wrangler.jsonc`; the root
+configuration is only for the portfolio website.
 
 ## Project structure
 
@@ -33,6 +48,25 @@ astro.config.mjs    Astro and Tailwind Vite configuration
 ```
 
 The original React site is preserved on the local `archive/original-portfolio` branch. Work on the replacement happens on `rebuild`.
+
+## Experience and education
+
+Edit `src/data/experience.ts` to update timeline entries, dates, logos and modal
+bullet points. `**Emphasis**` in a bullet renders as bold text. Work entries use
+peach pills; student clubs and education use blue. TMU Blueprint and TMU CSA
+sit above the full-width degree entry. Desktop positions share date boundaries
+from each role’s `startMonth` and inclusive `endMonth`, so consecutive roles
+meet at the same horizontal position. Inactive gaps are compressed and short
+roles get enough space to keep all labels inside their bubbles. Each group
+steps across the page,
+while smaller screens use full-width entries along a vertical rail. Entries roll
+in once per visit and open accessible detail dialogs on click or keyboard
+activation. Reduced motion skips the entrance and dialog animations.
+
+The desktop background uses separate, faint code-window and notebook sketches,
+small drafting marks, and a “learning by doing” note. These are static decorative
+elements with no connections between entries. Edit `ExperienceBackdrop.astro`
+for their placement and styling. Smaller screens keep the vertical timeline rail.
 
 ## Strevy integration
 

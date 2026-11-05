@@ -1,0 +1,38 @@
+---
+import ExperienceEntry from './ExperienceEntry.astro';
+import ExperienceBackdrop from './ExperienceBackdrop.astro';
+import { experiences, campusExperiences, education } from '../data/experience';
+---
+
+<div class="experience-timeline" data-experience-timeline>
+  <ExperienceBackdrop />
+  <ol class="timeline-list" aria-label="Work experience, most recent first">
+    {experiences.map((experience, index) => <ExperienceEntry entry={experience} index={index} />)}
+  </ol>
+  <div class="timeline-education">
+    <ol class="timeline-list" aria-label="Education and student clubs">
+      {campusExperiences.map((entry, index) => <ExperienceEntry entry={entry} index={index} />)}
+      <ExperienceEntry entry={education} index={campusExperiences.length} />
+    </ol>
+  </div>
+</div>
+
+<script>
+  import { initExperienceTimeline } from '../scripts/experience-timeline';
+  initExperienceTimeline();
+</script>
+
+<style>
+  .experience-timeline { position: relative; isolation: isolate; overflow-x: clip; padding: 8px; margin: -8px; }
+  .timeline-list { position: relative; z-index: 1; display: grid; gap: 16px; padding-left: 19px; }
+  .timeline-list::before { content: ''; position: absolute; top: 24px; bottom: 24px; left: 3px; width: 1px; background: var(--color-line); }
+  .timeline-education { margin-top: 16px; }
+  @media (width >= 701px) {
+    .timeline-list { gap: 18px; }
+    .timeline-education { margin-top: 18px; }
+  }
+  @media (width >= 1001px) {
+    .timeline-list { padding-left: 0; }
+    .timeline-list::before { display: none; }
+  }
+</style>
