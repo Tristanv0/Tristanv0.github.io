@@ -11,6 +11,10 @@ npm run dev
 
 Open the local URL printed by Astro.
 
+The navbar Contact form includes temporary drafts, attachments, and an animated
+success screen. Its separate Cloudflare Worker sends through Resend and must be configured before
+live sending works. See [contact form setup](docs/contact-form.md).
+
 ## Production build
 
 ```sh
