@@ -2,7 +2,7 @@
 import Hobbies from '../components/Hobbies.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import SectionHeading from '../components/SectionHeading.astro';
-import ExperienceEntry from '../components/ExperienceEntry.astro';
+import ExperienceTimeline from '../components/ExperienceTimeline.astro';
 import Navbar from '../components/Navbar.astro';
 import '../styles/global.css';
 import '../styles/project-reveals.css';
@@ -45,44 +45,6 @@ const projects = [
     theme: 'rotify',
   },
 ] as const;
-
-const experiences = [
-  {
-    date: 'Jan 2025 — Dec 2025',
-    title: 'Full Stack Developer Intern',
-    company: 'Workplace Safety & Insurance Board (WSIB) — Innovation Lab',
-    logo: '/images/companies/wsib-logo.jpeg',
-    location: 'Waterloo, ON',
-    highlights: [
-      'Built a React and Flask dashboard with search and verification, cutting accommodation-entry time by **over 50%**.',
-      'Automated record extraction from **320 PDF and DOCX documents** with PyMuPDF, docx2txt and Azure OpenAI. Ranked related accommodation records using embeddings, cosine similarity and weighted Jaccard similarity.',
-      'Secured APIs with JWT authentication, role-based access control, Redis rate limiting and email verification. Deployed the application on Azure and authored **172 pytest integration tests** across **10 backend modules**.',
-    ],
-  },
-  {
-    date: 'Jan 2024 — Dec 2024',
-    title: 'Student Software Developer',
-    company: 'TMU Chinese Student Association',
-    logo: '/images/companies/tmu-csa-logo.png',
-    location: 'Toronto, ON',
-    highlights: [
-      'Built a responsive Next.js application with dynamic event galleries and social media integration to showcase club activities and engage members.',
-      'Created and assigned development tickets, tracked milestones and coordinated deliverables with the project roadmap and deadlines.',
-      'Delivered the student association website, which has reached **250+ unique visitors**.',
-    ],
-  },
-  {
-    date: 'Aug 2024 — Dec 2024',
-    title: 'Quality Assurance Lead Intern',
-    company: 'Unity Health Toronto',
-    logo: '/images/companies/unity-health-toronto-logo.jpeg',
-    location: 'Toronto, ON',
-    highlights: [
-      'Coordinated black-box testing with a **99% success rate** across test cases.',
-      'Led **6 student testers**, organizing workloads and test plans to reduce duplicate work and improve testing efficiency.',
-    ],
-  },
-];
 ---
 
 <!doctype html>
@@ -168,9 +130,7 @@ const experiences = [
         <SectionHeading id="experience-title" eyebrow="Along the way" title="A few stops so far" showPeriod={false}>
           Building useful tools,<br>and learning along the way
         </SectionHeading>
-        <div class="border-t border-line">
-          {experiences.map(experience => <ExperienceEntry experience={experience} />)}
-        </div>
+        <ExperienceTimeline />
       </section>
 
       <section class="mx-auto w-[calc(100%-44px)] max-w-[1100px] scroll-mt-[30px] pt-[65px] tablet:w-[calc(100%-72px)] tablet:pt-[94px] desktop:w-[calc(100%-112px)]" id="projects" aria-labelledby="projects-title">

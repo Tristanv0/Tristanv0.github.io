@@ -34,6 +34,25 @@ astro.config.mjs    Astro and Tailwind Vite configuration
 
 The original React site is preserved on the local `archive/original-portfolio` branch. Work on the replacement happens on `rebuild`.
 
+## Experience and education
+
+Edit `src/data/experience.ts` to update timeline entries, dates, logos and modal
+bullet points. `**Emphasis**` in a bullet renders as bold text. Work entries use
+peach pills; student clubs and education use blue. TMU Blueprint and TMU CSA
+sit above the full-width degree entry. Desktop positions share date boundaries
+from each role’s `startMonth` and inclusive `endMonth`, so consecutive roles
+meet at the same horizontal position. Inactive gaps are compressed and short
+roles get enough space to keep all labels inside their bubbles. Each group
+steps across the page,
+while smaller screens use full-width entries along a vertical rail. Entries roll
+in once per visit and open accessible detail dialogs on click or keyboard
+activation. Reduced motion skips the entrance and dialog animations.
+
+The desktop background uses separate, faint code-window and notebook sketches,
+small drafting marks, and a “learning by doing” note. These are static decorative
+elements with no connections between entries. Edit `ExperienceBackdrop.astro`
+for their placement and styling. Smaller screens keep the vertical timeline rail.
+
 ## Strevy integration
 
 Start the Strevy API in its own repository with `npm run dev`. The portfolio defaults to `http://localhost:3001` and fetches `GET /api/runs` from Astro frontmatter. The Running tab displays the five most recent runs with real dates, distances, moving times, paces and route PNGs. Scroll down to travel through the pinned carousel, or swipe/scroll horizontally. Clicking a run opens its details dialog.
