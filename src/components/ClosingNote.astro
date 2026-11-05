@@ -1,0 +1,58 @@
+<section class="closing-note" aria-labelledby="closing-title" data-closing-note>
+  <div class="closing-stage">
+    <div class="closing-copy">
+      <h2 id="closing-title" class="closing-title">
+        <span class="closing-accessible">Thank you for your time!</span>
+        <span class="closing-line" aria-hidden="true"><span data-closing-line>Thank you</span></span>
+        <span class="closing-line closing-line-middle" aria-hidden="true"><span data-closing-line>for</span></span>
+        <span class="closing-line closing-line-last" aria-hidden="true"><span data-closing-line>your <em>time!</em></span></span>
+      </h2>
+      <div class="closing-wish-position">
+        <p class="closing-wish" data-closing-wish>
+          <span class="closing-accessible">I hope you had fun exploring as much as I enjoyed creating it.</span>
+          <span class="closing-phrase" aria-hidden="true" data-closing-phrase>
+            <span data-closing-prefix>I hope you had fun exploring<span class="closing-period" data-closing-period>.</span></span>
+            <em class="closing-insertion" data-closing-insertion>as much as I enjoyed creating it.</em>
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initClosingNote } from '../scripts/closing-note';
+  initClosingNote();
+</script>
+
+<style>
+  .closing-note { position: relative; background: var(--color-paper); }
+  .closing-stage { position: relative; min-height: max(750px, 100svh); overflow: clip; }
+  .closing-copy { text-align: center; }
+  .closing-title { margin: 0; font-family: var(--font-serif); font-size: clamp(58px, 8.35vw, 120px); font-weight: 400; line-height: 1.04; letter-spacing: -.035em; }
+  .closing-line { position: absolute; left: 60%; top: 30%; translate: -50% -50%; display: block; overflow: clip; padding: .1em 0 .16em; white-space: nowrap; }
+  .closing-line-middle { left: 30%; top: 50%; }
+  .closing-line-last { top: 70%; }
+  .closing-line > span { display: block; transform-origin: left bottom; }
+  .closing-title em { color: var(--color-rust); font-weight: 400; }
+  .closing-wish-position { position: absolute; left: 60%; top: 88%; translate: -50% -50%; }
+  .closing-wish { margin: 0; }
+  .closing-phrase { display: inline-flex; flex-direction: column; align-items: center; width: min(520px, calc(100vw - 44px)); gap: .45em; text-wrap: balance; font-family: var(--font-sans); font-size: clamp(18px, 2.1vw, 30px); line-height: 1.4; letter-spacing: .01em; }
+  .closing-phrase > span, .closing-insertion { display: inline-block; }
+  .closing-period { opacity: 0; }
+  .closing-insertion { position: relative; color: var(--color-rust); font-family: var(--font-serif); font-weight: 400; }
+  .closing-insertion::after { content: ''; position: absolute; right: 0; bottom: .03em; left: 0; height: 1px; background: currentColor; opacity: .45; transform: rotate(-3deg); }
+  .closing-accessible { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .closing-note[data-closing-motion] { height: 240svh; }
+  [data-closing-motion] .closing-stage { position: sticky; top: 0; height: 100svh; min-height: 0; }
+  [data-closing-motion] .closing-wish-position { top: 50%; }
+  @media (width < 701px) {
+    .closing-title { font-size: clamp(46px, 12vw, 60px); }
+    .closing-line, .closing-wish-position { left: 50%; }
+    .closing-phrase { font-size: 20px; }
+  }
+  @media (height < 560px) {
+    .closing-title { font-size: clamp(36px, 11svh, 60px); }
+    .closing-phrase { font-size: 18px; }
+  }
+</style>
