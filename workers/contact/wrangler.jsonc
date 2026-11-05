@@ -1,0 +1,13 @@
+{
+  "name": "tristan-portfolio-contact",
+  "main": "index.ts",
+  "compatibility_date": "2026-11-04",
+  "vars": {
+    "ALLOWED_ORIGINS": "https://tristancheng.com,https://www.tristancheng.com,http://localhost:4321,http://127.0.0.1:4321",
+    "CONTACT_FROM_EMAIL": "contact@tristancheng.com",
+    "CONTACT_TO_EMAIL": "cheng.tristan15@gmail.com"
+  },
+  "ratelimits": [
+    { "name": "CONTACT_RATE_LIMITER", "namespace_id": "11042026", "simple": { "limit": 5, "period": 60 } }
+  ]
+}

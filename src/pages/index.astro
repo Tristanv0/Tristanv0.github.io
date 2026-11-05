@@ -4,6 +4,7 @@ import ProjectCard from '../components/ProjectCard.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import ExperienceTimeline from '../components/ExperienceTimeline.astro';
 import Navbar from '../components/Navbar.astro';
+import ContactModal from '../components/ContactModal.astro';
 import '../styles/global.css';
 import '../styles/project-reveals.css';
 
@@ -156,6 +157,7 @@ const projects = [
       <p class="whitespace-nowrap text-[10px] text-muted tablet:text-[11px]">© 2026 Tristan Cheng</p>
       <a class="shrink-0 whitespace-nowrap text-[10px] text-muted tablet:text-[11px]" href="#about">Back to the top <span class="ml-[9px] text-rust" aria-hidden="true">↑</span></a>
     </footer>
+    <ContactModal />
     <script>
       import { initPageScroll } from '../scripts/page-scroll';
       import { initProjectReveals } from '../scripts/project-reveals';
