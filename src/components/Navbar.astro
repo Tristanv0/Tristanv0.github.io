@@ -16,13 +16,19 @@ const links = [
     <div class="nav-panel-clip">
       <div class="nav-links flex gap-4.75 phone:gap-6 tablet:gap-7.5">
         {links.map(({ href, label }, index) => (
-          <a class="nav-link relative block py-1 text-[#68685e] tablet:py-2.5" style={`--nav-link-index: ${index}`} href={href} aria-current={index === 0 ? 'location' : undefined}>
+          <a class="nav-link relative block py-1 text-[#68685e] tablet:py-2.5" style={`--nav-link-index: ${index}`} href={href} aria-current={index === 0 ? 'location' : undefined} data-nav-item>
             <span class="nav-word grid overflow-clip">
               <span class="nav-label [grid-area:1/1]">{label}</span>
               <span class="nav-label-copy text-rust [grid-area:1/1]" aria-hidden="true">{label}</span>
             </span>
           </a>
         ))}
+        <button type="button" class="nav-link relative block py-1 text-left text-[#68685e] tablet:py-2.5" style="--nav-link-index: 4" aria-haspopup="dialog" aria-controls="contact-modal" aria-expanded="false" disabled data-contact-open data-nav-item>
+          <span class="nav-word grid overflow-clip">
+            <span class="nav-label [grid-area:1/1]">Contact</span>
+            <span class="nav-label-copy text-rust [grid-area:1/1]" aria-hidden="true">Contact</span>
+          </span>
+        </button>
       </div>
     </div>
   </div>
@@ -31,6 +37,7 @@ const links = [
 
 <style>
   .nav-toggle { display: none; }
+  .site-nav:not([data-nav-ready]) .nav-links { flex-wrap: wrap; }
   .nav-link[aria-current='location'] { color: var(--color-rust); }
   .nav-label,
   .nav-label-copy {
@@ -159,6 +166,8 @@ const links = [
   const nav = document.querySelector<HTMLElement>('[data-navbar]');
   if (nav) {
     const links = [...nav.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')];
+    const items = [...nav.querySelectorAll<HTMLElement>('[data-nav-item]')];
+    const contact = nav.querySelector<HTMLButtonElement>('[data-contact-open]')!;
     const sections = links.map(link => ({ link, section: document.getElementById(link.hash.slice(1)) }));
     const header = nav.closest('header');
     const canHover = window.matchMedia('(hover: hover) and (pointer: fine)');
@@ -166,8 +175,8 @@ const links = [
     const toggle = nav.querySelector<HTMLButtonElement>('[data-nav-toggle]')!;
     const panel = nav.querySelector<HTMLElement>('[data-nav-panel]')!;
     let selected = links[0];
-    let hovered: HTMLAnchorElement | null = null;
-    let indicatorTarget: HTMLAnchorElement | null = null;
+    let hovered: HTMLElement | null = null;
+    let indicatorTarget: HTMLElement | null = null;
     let needsMeasure = true;
     let activationOffset = 0;
     let frame = 0;
@@ -223,7 +232,7 @@ const links = [
         });
       }
 
-      const focused = links.find(link => link.matches(':focus-visible'));
+      const focused = items.find(link => link.matches(':focus-visible'));
       const target = hovered ?? focused ?? selected;
       if (target && (needsMeasure || target !== indicatorTarget)) {
         const bounds = target.getBoundingClientRect();
@@ -245,7 +254,7 @@ const links = [
     }
     function enter(event: PointerEvent) {
       if (event.pointerType === 'touch' || !canHover.matches) return;
-      hovered = event.currentTarget as HTMLAnchorElement;
+      hovered = event.currentTarget as HTMLElement;
       schedule();
     }
     function leave() {
@@ -287,10 +296,10 @@ const links = [
       if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(event.key)) endNavigation();
     }
 
-    links.forEach(link => {
-      link.addEventListener('pointerenter', enter);
-      link.addEventListener('click', onClick);
-    });
+    const onContactClick = () => { setMenu(false, mobile.matches); schedule(); };
+    items.forEach(item => item.addEventListener('pointerenter', enter));
+    links.forEach(link => link.addEventListener('click', onClick));
+    contact.addEventListener('click', onContactClick);
     nav.addEventListener('pointerleave', leave);
     nav.addEventListener('focusin', schedule);
     nav.addEventListener('focusout', onFocusOut);
@@ -315,10 +324,9 @@ const links = [
       window.cancelAnimationFrame(frame);
       window.clearTimeout(navigationTimer);
       observer.disconnect();
-      links.forEach(link => {
-        link.removeEventListener('pointerenter', enter);
-        link.removeEventListener('click', onClick);
-      });
+      items.forEach(item => item.removeEventListener('pointerenter', enter));
+      links.forEach(link => link.removeEventListener('click', onClick));
+      contact.removeEventListener('click', onContactClick);
       nav.removeEventListener('pointerleave', leave);
       nav.removeEventListener('focusin', schedule);
       nav.removeEventListener('focusout', onFocusOut);
