@@ -22,7 +22,18 @@ npm run build
 npm run preview
 ```
 
-Astro generates the static site in `dist/`. Deployment has not been configured for this rebuild yet.
+Astro generates the static site in `dist/`. The root `wrangler.jsonc` deploys
+those static assets to the `tristanv0-github-io` Cloudflare Worker. Its empty
+`previews` block enables pull-request builds using `npx wrangler preview`.
+
+In that Worker's Cloudflare build settings, use the repository root, build
+command `npm run build`, production deploy command `npx wrangler deploy`, and
+preview deploy command `npx wrangler preview`. Set `STREVY_API_ORIGIN` and
+`PUBLIC_CONTACT_ENDPOINT` in the build environment before rebuilding.
+
+The contact Worker has a separate configuration. Deploy it explicitly with
+`npx wrangler@4 deploy --config workers/contact/wrangler.jsonc`; the root
+configuration is only for the portfolio website.
 
 ## Project structure
 
