@@ -23,6 +23,17 @@
 @layer base {
   :root {
     color-scheme: light;
+    --section-anchor-gap: 24px;
+    scroll-padding-top: calc(var(--site-header-height, 95px) + var(--section-anchor-gap));
+  }
+
+  [data-nav-section] {
+    /* Align the start of the content, allowing section spacing to stay intact. */
+    scroll-margin-top: calc(-1 * var(--section-anchor-inset, 0px));
+  }
+
+  @media (width >= 701px) {
+    :root { --section-anchor-gap: 32px; }
   }
 
   ::selection {

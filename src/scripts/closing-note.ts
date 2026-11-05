@@ -8,8 +8,9 @@ export function initClosingNote() {
   const prefix = section.querySelector<HTMLElement>('[data-closing-prefix]')!;
   const insertedText = section.querySelector<HTMLElement>('[data-closing-insertion]')!;
   const period = section.querySelector<HTMLElement>('[data-closing-period]')!;
+  const contact = section.querySelector<HTMLElement>('[data-closing-contact]')!;
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const elements = [...lines, wish, prefix, insertedText, period];
+  const elements = [...lines, wish, prefix, insertedText, period, contact];
   let frame = 0;
   let nearby = true;
   let slot = 0;
@@ -25,7 +26,10 @@ export function initClosingNote() {
     if (disposed || motion.matches) return;
     const rect = section!.getBoundingClientRect();
     const viewport = window.innerHeight;
-    const progress = clamp(-rect.top / Math.max(1, rect.height - section!.firstElementChild!.clientHeight));
+    const timeline = clamp(-rect.top / Math.max(1, rect.height - section!.firstElementChild!.clientHeight));
+    // Keep the original message's scroll distance, then reserve a final step
+    // for the contact invitation before the sticky section releases.
+    const progress = clamp(timeline / .7);
     const entering = (viewport - rect.top) / viewport;
     const dim = between(progress, .43, .8);
     lines.forEach((line, index) => {
@@ -47,6 +51,10 @@ export function initClosingNote() {
     period.style.opacity = String(1 - insertion);
     insertedText.style.opacity = String(between(progress, .57, .79));
     insertedText.style.transform = `translate3d(0, ${(1 - insertion) * 30}px, 0) rotate(${(1 - insertion) * -5}deg)`;
+    const invitation = contact.contains(document.activeElement) ? 1 : between(timeline, .73, .91);
+    contact.style.opacity = String(invitation);
+    contact.style.transform = `translate3d(0, ${(1 - invitation) * 24}px, 0)`;
+    contact.inert = invitation === 0;
   }
 
   function schedule() {
@@ -61,7 +69,10 @@ export function initClosingNote() {
   function onMotionChange() {
     cancelAnimationFrame(frame); frame = 0;
     section!.toggleAttribute('data-closing-motion', !motion.matches);
-    if (motion.matches) elements.forEach(element => { element.style.opacity = ''; element.style.transform = ''; });
+    if (motion.matches) {
+      elements.forEach(element => { element.style.opacity = ''; element.style.transform = ''; });
+      contact.inert = false;
+    }
     else { measure(); render(); }
   }
   const observer = new IntersectionObserver(entries => {

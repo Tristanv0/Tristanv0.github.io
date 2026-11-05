@@ -50,7 +50,7 @@ const projects = [
 ---
 
 <!doctype html>
-<html lang="en" class="scroll-smooth scroll-pt-32.5 tablet:scroll-pt-25 motion-reduce:scroll-auto">
+<html lang="en" class="scroll-smooth motion-reduce:scroll-auto">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -91,7 +91,7 @@ const projects = [
     </header>
 
     <main id="main">
-      <section class="mx-auto w-[calc(100%-44px)] max-w-[1100px] scroll-mt-[30px] pt-10 tablet:w-[calc(100%-72px)] tablet:pt-[65px] desktop:w-[calc(100%-112px)]" id="about" aria-labelledby="about-title">
+      <section class="mx-auto w-[calc(100%-44px)] max-w-[1100px] pt-10 tablet:w-[calc(100%-72px)] tablet:pt-[65px] desktop:w-[calc(100%-112px)]" id="about" aria-labelledby="about-title" data-nav-section>
         <div class="flex justify-between gap-5">
           <span class="block font-mono text-[11px] leading-[1.5] tracking-[1.65px] text-muted uppercase">A bit of backstory</span>
           <span class="hidden text-[11px] text-muted tablet:block">A personal corner of the internet</span>
@@ -99,9 +99,8 @@ const projects = [
         <div class="grid grid-cols-1 items-center gap-[46px] pt-[30px] pb-[50px] tablet:grid-cols-[1fr_210px] tablet:gap-[45px] tablet:pt-[49px] tablet:pb-[66px] desktop:grid-cols-[1fr_255px] desktop:gap-20">
           <div>
             <h1 id="about-title" class="font-serif text-[clamp(43px,9.3vw,66px)] leading-[1.07] font-normal tracking-[-2px] tablet:text-[clamp(50px,5.5vw,78px)] tablet:tracking-[-3.5px]">
-              A curious mind.<br>A work <em class="font-normal text-rust">in progress.</em>
+              Hey! I'm Tristan<br>I'm a <em class="font-normal text-rust">software developer</em>
             </h1>
-            <p class="mt-[29px] text-[14px] tracking-[-0.2px] tablet:text-[16px]">Hey, I'm Tristan! Welcome to my creative space.</p>
             <p class="mt-3.5 max-w-[500px] text-[13px] leading-[1.85] text-muted tablet:text-[14px]">
               As a kid, I loved finding free workarounds for things you normally had to pay for. I even tried those apps promising free gems in Clash of Clans. They never worked, but I was always curious enough to try.
             </p>
@@ -111,9 +110,6 @@ const projects = [
             <p class="mt-3.5 max-w-[500px] text-[13px] leading-[1.85] text-muted tablet:text-[14px]">
               As a computer science student at TMU, I put what I learn into practice by building useful apps that bring together my interests in full-stack development, cloud computing, and automation.
             </p>
-            <a class="mt-[25px] inline-flex items-center gap-[26px] text-[13px] text-rust underline-offset-[5px] hover:underline" href="#projects">
-              Take a look around
-            </a>
           </div>
           <aside class="relative mr-[15px] max-w-[230px] rotate-5 justify-self-end bg-[#edeedc] px-[27px] pt-[26px] pb-5 shadow-[2px_9px_15px_#41432408] tablet:mr-0 tablet:max-w-none tablet:justify-self-stretch tablet:px-[23px] tablet:pt-9 tablet:pb-[21px] desktop:px-[27px]" aria-label="A note from Tristan">
             <span class="absolute -top-2.5 left-[calc(50%-29px)] h-[22px] w-[58px] -rotate-7 bg-[#e5c999a3]" aria-hidden="true"></span>
@@ -128,14 +124,14 @@ const projects = [
         </div>
       </section>
 
-      <section class="mx-auto w-[calc(100%-44px)] max-w-[1100px] scroll-mt-[30px] pt-[65px] tablet:w-[calc(100%-72px)] tablet:pt-[94px] desktop:w-[calc(100%-112px)]" id="experience" aria-labelledby="experience-title">
+      <section class="mx-auto w-[calc(100%-44px)] max-w-[1100px] pt-[65px] tablet:w-[calc(100%-72px)] tablet:pt-[94px] desktop:w-[calc(100%-112px)]" id="experience" aria-labelledby="experience-title" data-nav-section>
         <SectionHeading id="experience-title" eyebrow="Along the way" title="A few stops so far" showPeriod={false}>
           Building useful tools,<br>and learning along the way
         </SectionHeading>
         <ExperienceTimeline />
       </section>
 
-      <section class="mx-auto w-[calc(100%-44px)] max-w-[1100px] scroll-mt-[30px] pt-[65px] tablet:w-[calc(100%-72px)] tablet:pt-[94px] desktop:w-[calc(100%-112px)]" id="projects" aria-labelledby="projects-title">
+      <section class="mx-auto w-[calc(100%-44px)] max-w-[1100px] pt-[65px] tablet:w-[calc(100%-72px)] tablet:pt-[94px] desktop:w-[calc(100%-112px)]" id="projects" aria-labelledby="projects-title" data-nav-section>
         <SectionHeading id="projects-title" eyebrow="Things I've made" title="Ideas, made tangible" showPeriod={false} showCaptionOnMobile>
           <a class="text-rust underline decoration-rust/35 underline-offset-4 transition-colors hover:decoration-rust" href="https://github.com/Tristanv0" target="_blank" rel="noopener noreferrer">check out my other projects!</a>
         </SectionHeading>
