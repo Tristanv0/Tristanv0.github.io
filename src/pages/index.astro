@@ -95,7 +95,7 @@ const projects = [
         <div class="flex justify-between gap-5">
           <span class="block font-mono text-[11px] leading-[1.5] tracking-[1.65px] text-muted uppercase">A bit of backstory</span>
         </div>
-        <div class="grid grid-cols-1 items-center gap-[46px] pt-[30px] pb-[50px] tablet:grid-cols-[1fr_210px] tablet:gap-[45px] tablet:pt-[49px] tablet:pb-[66px] desktop:grid-cols-[1fr_255px] desktop:gap-20">
+        <div class="grid grid-cols-1 items-center gap-[46px] pt-[30px] pb-[50px] tablet:grid-cols-[1fr_240px] tablet:gap-[45px] tablet:pt-[49px] tablet:pb-[66px] desktop:grid-cols-[1fr_300px] desktop:gap-20">
           <div>
             <h1 id="about-title" class="font-serif text-[clamp(43px,9.3vw,66px)] leading-[1.07] font-normal tracking-[-2px] tablet:text-[clamp(50px,5.5vw,78px)] tablet:tracking-[-3.5px]">
               Hey! I'm Tristan<br>I'm a <em class="font-normal text-rust">software developer</em>
@@ -110,7 +110,9 @@ const projects = [
               As a computer science student at TMU, I put what I learn into practice by building useful apps that bring together my interests in full-stack development, cloud computing, and automation.
             </p>
           </div>
-          <!-- The second column is reserved for a future portrait. -->
+          <figure class="aspect-[3/4] w-full max-w-[290px] overflow-hidden rounded-xl justify-self-center tablet:max-w-none tablet:justify-self-end">
+            <img class="block h-full w-full origin-[50%_65%] scale-[1.45] object-cover" src="/images/about/tristan.webp" width="800" height="1067" alt="Tristan Cheng beneath autumn trees" decoding="async" />
+          </figure>
         </div>
         <div class="flex flex-wrap justify-between gap-3 border-y border-line py-[22px] text-[10px] text-muted tablet:flex-nowrap tablet:gap-5 tablet:text-[11px]">
           <span>Software, side projects & a few miles in between.</span>
