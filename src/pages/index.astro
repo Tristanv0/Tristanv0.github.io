@@ -6,6 +6,7 @@ import ExperienceTimeline from '../components/ExperienceTimeline.astro';
 import Navbar from '../components/Navbar.astro';
 import ContactModal from '../components/ContactModal.astro';
 import ClosingNote from '../components/ClosingNote.astro';
+import ArcadeIntro from '../components/ArcadeIntro.astro';
 import '../styles/global.css';
 import '../styles/project-reveals.css';
 
@@ -77,6 +78,7 @@ const projects = [
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=tc" />
   </head>
   <body class="bg-paper font-sans text-ink antialiased">
+    <ArcadeIntro />
     <a class="fixed top-3.75 left-5 z-100 translate-y-[-150%] bg-ink px-4.5 py-3 text-paper focus:translate-y-0" href="#main">
       Skip to content
     </a>
@@ -84,7 +86,7 @@ const projects = [
     <header class="sticky top-0 z-30 border-b border-line bg-paper/95 backdrop-blur-lg">
       <div class="mx-auto flex min-h-23.75 w-[calc(100%-44px)] max-w-275 flex-wrap items-center justify-between gap-1.25 pt-4 pb-3 tablet:min-h-22 tablet:w-[calc(100%-72px)] tablet:flex-nowrap tablet:gap-6 tablet:py-0 desktop:w-[calc(100%-112px)]">
         <a class="block shrink-0 rounded-full" href="#about" aria-label="Tristan Cheng, back to About">
-          <img class="size-12 tablet:size-14" src="/website_logo.svg" width="56" height="56" alt="" fetchpriority="high" />
+          <img class="size-12 tablet:size-14" src="/website_logo.svg" width="56" height="56" alt="" fetchpriority="high" data-site-logo />
         </a>
         <Navbar />
       </div>
