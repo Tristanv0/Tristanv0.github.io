@@ -34,13 +34,15 @@ export const ARCADE_MAZE = [
 ] as const;
 
 export type MazePoint = { x: number; y: number };
-export const INTRO_ROUTE: MazePoint[] = [[21, 8], [26, 8], [26, 5], [21, 5], [21, 1], [26, 1]].map(([x, y]) => ({ x, y }));
-export const CHASE_ROUTE: MazePoint[] = [{ x: 15, y: 5 }, { x: 21, y: 5 }, ...INTRO_ROUTE];
+export const INTRO_ROUTE: MazePoint[] = [[6, 8], [1, 8], [1, 5], [6, 5], [6, 1], [1, 1]].map(([x, y]) => ({ x, y }));
+export const CHASE_ROUTE: MazePoint[] = [{ x: 12, y: 5 }, { x: 6, y: 5 }, ...INTRO_ROUTE];
 export const CHASE_LEAD = 9;
 export const GHOST_GAPS = [2, 3.5, 5, 6.5];
 export const routeLength = (points: MazePoint[]) => points.slice(1).reduce((total, point, index) => total + Math.hypot(point.x - points[index].x, point.y - points[index].y), 0);
 export const INTRO_DISTANCE = routeLength(INTRO_ROUTE);
 export const INTRO_PELLET_DISTANCES = Array.from({ length: INTRO_DISTANCE }, (_, index) => index + 1);
+export const POINTS_PER_PELLET = 10;
+export const INTRO_START_SCORE = 1000 - INTRO_PELLET_DISTANCES.length * POINTS_PER_PELLET;
 
 export function sampleRoute(points: MazePoint[], distance: number) {
   let remaining = Math.max(0, distance);
