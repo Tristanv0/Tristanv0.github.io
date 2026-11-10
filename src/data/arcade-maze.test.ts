@@ -16,7 +16,7 @@ test('classic maze preserves the playfield, four energizers, pen and side tunnel
 });
 
 test('the finishing run and four pursuing ghosts stay in corridors and never collide', () => {
-  assert.deepEqual(INTRO_ROUTE.at(-1), { x: 26, y: 1 });
+  assert.deepEqual(INTRO_ROUTE.at(-1), { x: 1, y: 1 });
   const start = sampleRoute(CHASE_ROUTE, CHASE_LEAD);
   assert.equal(start.x, INTRO_ROUTE[0].x); assert.equal(start.y, INTRO_ROUTE[0].y);
   for (const route of [INTRO_ROUTE, CHASE_ROUTE]) {
@@ -35,7 +35,7 @@ test('the finishing run and four pursuing ghosts stay in corridors and never col
   }
 });
 
-test('remaining pellets fill consecutive original dot tiles and end in the upper-right corner', () => {
+test('remaining pellets fill consecutive original dot tiles and end in the upper-left corner', () => {
   assert.equal(INTRO_PELLET_DISTANCES.length, INTRO_DISTANCE);
   INTRO_PELLET_DISTANCES.forEach((distance, index) => assert.equal(distance, index + 1));
   for (const distance of INTRO_PELLET_DISTANCES) {

@@ -1,5 +1,5 @@
 ---
-import { INTRO_ROUTE, CHASE_ROUTE, CHASE_LEAD, GHOST_GAPS, INTRO_PELLET_DISTANCES, sampleRoute, mazeWallPath } from '../data/arcade-maze';
+import { INTRO_ROUTE, CHASE_ROUTE, CHASE_LEAD, GHOST_GAPS, INTRO_PELLET_DISTANCES, INTRO_START_SCORE, sampleRoute, mazeWallPath } from '../data/arcade-maze';
 
 const wallPath = mazeWallPath();
 const pellets = INTRO_PELLET_DISTANCES.map(distance => sampleRoute(INTRO_ROUTE, distance));
@@ -16,7 +16,7 @@ const ghosts = ['#ff4242', '#ffb8ff', '#00e8ed', '#ffb852'].map((color, index) =
   <p class="intro-accessible">A short arcade animation plays before the website. You can skip it at any time.</p>
   <div class="intro-backdrop" data-intro-backdrop></div>
   <div class="intro-hud" aria-hidden="true" data-intro-hud>
-    <span class="intro-high-score">High score<span class="intro-high-score-value">010000</span></span>
+    <span class="intro-high-score">High score<span class="intro-high-score-value" data-intro-score>{String(INTRO_START_SCORE).padStart(6, '0')}</span></span>
   </div>
   <div class="intro-board" aria-hidden="true" data-intro-board>
     <svg class="intro-maze" viewBox="0 0 28 31" data-intro-maze>
@@ -34,7 +34,7 @@ const ghosts = ['#ff4242', '#ffb8ff', '#00e8ed', '#ffb852'].map((color, index) =
           </g>
         ))}
       </g>
-      <g class="maze-preview-player" transform={`translate(${start.x + .5} ${start.y + .5})`} aria-hidden="true">
+      <g class="maze-preview-player" transform={`translate(${start.x + .5} ${start.y + .5}) rotate(${sampleRoute(INTRO_ROUTE, 0).angle * 180 / Math.PI})`} aria-hidden="true">
         <circle r=".48" fill="#ffde00" />
         <path d="M0 0 .7 -.55V.55Z" fill="#000" />
       </g>
@@ -96,11 +96,11 @@ const ghosts = ['#ff4242', '#ffb8ff', '#00e8ed', '#ffb852'].map((color, index) =
   .arcade-intro::backdrop { background: transparent; }
   .arcade-intro:focus { outline: none; }
   .intro-backdrop { position: absolute; inset: 0; background: #000; }
-  .intro-hud { position: absolute; z-index: 2; top: max(28px, env(safe-area-inset-top)); right: clamp(24px, 5vw, 72px); left: clamp(24px, 5vw, 72px); display: flex; justify-content: flex-end; font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+  .intro-hud { position: absolute; z-index: 2; top: max(28px, env(safe-area-inset-top)); right: clamp(24px, 5vw, 72px); left: clamp(24px, 5vw, 72px); display: flex; justify-content: flex-end; font-family: var(--font-mono); font-size: clamp(18px, 2vw, 26px); font-weight: 700; line-height: 1.1; letter-spacing: .1em; text-transform: uppercase; }
   .intro-high-score { position: absolute; left: 50%; translate: -50% 0; text-align: center; white-space: nowrap; }
-  .intro-high-score-value { display: block; margin-top: 9px; color: #f4d15b; }
-  .intro-board { position: absolute; inset: 0; transform-origin: var(--intro-goal-x, 75%) var(--intro-goal-y, 20%); }
-  .intro-maze { position: absolute; top: 50%; left: 50%; translate: -50% -50%; display: block; width: max(28px, min(calc(100% - 48px), calc((100svh - 140px) * 28 / 31))); height: auto; aspect-ratio: 28 / 31; overflow: visible; }
+  .intro-high-score-value { display: block; margin-top: 6px; color: #f4d15b; }
+  .intro-board { position: absolute; inset: 0; transform-origin: var(--intro-goal-x, 25%) var(--intro-goal-y, 20%); }
+  .intro-maze { position: absolute; top: 50%; left: 50%; translate: -50% -50%; display: block; width: max(28px, min(calc(100% - 48px), calc((100svh - 180px) * 28 / 31))); height: auto; aspect-ratio: 28 / 31; overflow: visible; }
   [data-intro-ready] .maze-preview-player { display: none; }
   .intro-maze :global(.maze-wall) { fill: #000014; stroke: #2525ef; stroke-width: 1.7; vector-effect: non-scaling-stroke; transition: stroke 180ms ease; }
   .intro-maze :global(.maze-door) { stroke: #ffb8ff; stroke-width: 2; vector-effect: non-scaling-stroke; }

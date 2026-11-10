@@ -1,4 +1,4 @@
-import { INTRO_ROUTE, CHASE_ROUTE, CHASE_LEAD, GHOST_GAPS, INTRO_DISTANCE, INTRO_PELLET_DISTANCES, sampleRoute } from '../data/arcade-maze';
+import { INTRO_ROUTE, CHASE_ROUTE, CHASE_LEAD, GHOST_GAPS, INTRO_DISTANCE, INTRO_PELLET_DISTANCES, INTRO_START_SCORE, POINTS_PER_PELLET, sampleRoute } from '../data/arcade-maze';
 
 const RUN_START = 400;
 const CLEAR_START = 2600;
@@ -19,6 +19,7 @@ export function initArcadeIntro() {
   const mouth = dialog.querySelector<SVGPathElement>('[data-intro-mouth]')!;
   const letter = dialog.querySelector<SVGPathElement>('[data-intro-letter]')!;
   const hud = dialog.querySelector<HTMLElement>('[data-intro-hud]')!;
+  const score = dialog.querySelector<HTMLElement>('[data-intro-score]')!;
   const message = dialog.querySelector<HTMLElement>('[data-intro-clear]')!;
   const burst = dialog.querySelector<SVGSVGElement>('[data-intro-burst]')!;
   const skip = dialog.querySelector<HTMLButtonElement>('[data-intro-skip]')!;
@@ -109,6 +110,8 @@ export function initArcadeIntro() {
   function paint() {
     const run = clamp((elapsed - RUN_START) / (CLEAR_START - RUN_START));
     const eaten = INTRO_PELLET_DISTANCES.filter(distance => distance <= run * INTRO_DISTANCE + .00001).length;
+    const scoreText = String(INTRO_START_SCORE + eaten * POINTS_PER_PELLET).padStart(6, '0');
+    if (score.textContent !== scoreText) score.textContent = scoreText;
     pellets.forEach((dot, index) => { dot.style.opacity = index < eaten ? '0' : '1'; });
     const clear = clamp((elapsed - CLEAR_START) / (LAND_START - CLEAR_START));
     const flight = clamp((elapsed - LAND_START) / (END - LAND_START));
