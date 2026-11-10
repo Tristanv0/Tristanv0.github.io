@@ -1,0 +1,128 @@
+---
+import { INTRO_ROUTE, CHASE_ROUTE, CHASE_LEAD, GHOST_GAPS, INTRO_PELLET_DISTANCES, sampleRoute, mazeWallPath } from '../data/arcade-maze';
+
+const wallPath = mazeWallPath();
+const pellets = INTRO_PELLET_DISTANCES.map(distance => sampleRoute(INTRO_ROUTE, distance));
+const start = INTRO_ROUTE[0];
+const ghosts = ['#ff4242', '#ffb8ff', '#00e8ed', '#ffb852'].map((color, index) => ({
+  color,
+  name: ['blinky', 'pinky', 'inky', 'clyde'][index],
+  position: sampleRoute(CHASE_ROUTE, CHASE_LEAD - GHOST_GAPS[index]),
+}));
+---
+
+<dialog class="arcade-intro" tabindex="-1" aria-labelledby="arcade-intro-title" data-arcade-intro>
+  <h2 id="arcade-intro-title" class="intro-accessible">Welcome to Tristan’s portfolio</h2>
+  <p class="intro-accessible">A short arcade animation plays before the website. You can skip it at any time.</p>
+  <div class="intro-backdrop" data-intro-backdrop></div>
+  <div class="intro-hud" aria-hidden="true" data-intro-hud>
+    <span class="intro-high-score">High score<span class="intro-high-score-value">010000</span></span>
+  </div>
+  <div class="intro-board" aria-hidden="true" data-intro-board>
+    <svg class="intro-maze" viewBox="0 0 28 31" data-intro-maze>
+      <path d={wallPath} class="maze-wall" fill-rule="evenodd" />
+      <path d="M13 12.5H15" class="maze-door" />
+      {pellets.map(point => <circle cx={point.x + .5} cy={point.y + .5} r=".095" class="maze-pellet" />)}
+      <g data-intro-ghosts>
+        {ghosts.map(({ color, name, position }) => (
+          <g class="maze-ghost" data-intro-ghost={name} transform={`translate(${position.x + .5} ${position.y + .5}) scale(${1 / 26})`}>
+            <path d="M-11 12V-1a11 11 0 0 1 22 0v13l-3-2-4 2-4-4-4 4-4-2Z" fill={color} data-ghost-body />
+            {[-4, 5].map(x => <>
+              <ellipse cx={x} cy="-2" rx="3.2" ry="4.2" fill="#fff" />
+              <circle cx={x + Math.cos(position.angle) * 1.5} cy={-2 + Math.sin(position.angle) * 1.5} r="1.6" fill="#1515ca" data-ghost-pupil />
+            </>)}
+          </g>
+        ))}
+      </g>
+      <g class="maze-preview-player" transform={`translate(${start.x + .5} ${start.y + .5})`} aria-hidden="true">
+        <circle r=".48" fill="#ffde00" />
+        <path d="M0 0 .7 -.55V.55Z" fill="#000" />
+      </g>
+    </svg>
+  </div>
+  <div class="intro-clear" aria-hidden="true" data-intro-clear>
+    <span>Level cleared!</span>
+  </div>
+  <svg class="intro-burst" viewBox="-60 -60 120 120" fill="none" aria-hidden="true" data-intro-burst>
+    <circle r="24" stroke="currentColor" stroke-width="1" />
+    {[0, 45, 90, 135, 180, 225, 270, 315].map(angle => <path d="M0 -37V-45" transform={`rotate(${angle})`} stroke="currentColor" stroke-width="2" stroke-linecap="round" />)}
+  </svg>
+  <div class="intro-player" aria-hidden="true" data-intro-player>
+    <svg viewBox="0 0 280 280" fill="none" data-intro-facing>
+      <defs>
+        <mask id="intro-monogram" maskUnits="userSpaceOnUse" x="0" y="0" width="280" height="280" style="mask-type:luminance">
+          <rect width="280" height="280" fill="white" />
+          <path class="intro-mouth" d="M140 140 300 20V260Z" fill="black" data-intro-mouth />
+          <path d="M70 86H200V124H160V270H120V124H70Z" fill="black" opacity="0" data-intro-letter />
+        </mask>
+      </defs>
+      <circle cx="140" cy="140" r="120" fill="currentColor" mask="url(#intro-monogram)" />
+    </svg>
+  </div>
+  <button class="intro-skip" type="button" data-intro-skip>Skip intro</button>
+</dialog>
+
+<!-- Decide before the header paints, so the normal page never flashes first. -->
+<script is:inline>
+  (() => {
+    try {
+      const refreshing = performance.getEntriesByType('navigation')[0]?.type === 'reload';
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches || (location.hash && !refreshing)) return;
+      document.documentElement.setAttribute('data-site-intro', '');
+      const dismiss = () => {
+        window.dispatchEvent(new Event('site-intro:skip'));
+        document.querySelector('[data-arcade-intro]')?.close();
+        document.documentElement.removeAttribute('data-site-intro');
+      };
+      // The button also works while the animation module is still downloading.
+      document.querySelector('[data-intro-skip]')?.addEventListener('click', dismiss, { once: true });
+      // Recover the page even if the main script fails to load.
+      setTimeout(dismiss, 8000);
+    } catch { /* Intro setup must never prevent the site from loading. */ }
+  })();
+</script>
+
+<script>
+  import { initArcadeIntro } from '../scripts/arcade-intro';
+  initArcadeIntro();
+</script>
+
+<style>
+  :global(html[data-site-intro]) { overflow: hidden; scrollbar-gutter: stable; }
+  :global(html[data-site-intro] [data-site-logo]) { visibility: hidden; }
+  .arcade-intro { position: fixed; inset: 0; z-index: 200; width: 100%; max-width: none; height: 100%; max-height: none; margin: 0; padding: 0; border: 0; overflow: hidden; background: transparent; color: #faf8f3; }
+  .arcade-intro:not([open]) { display: none; }
+  :global(html[data-site-intro]) .arcade-intro { display: block; }
+  .arcade-intro::backdrop { background: transparent; }
+  .arcade-intro:focus { outline: none; }
+  .intro-backdrop { position: absolute; inset: 0; background: #000; }
+  .intro-hud { position: absolute; z-index: 2; top: max(28px, env(safe-area-inset-top)); right: clamp(24px, 5vw, 72px); left: clamp(24px, 5vw, 72px); display: flex; justify-content: flex-end; font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+  .intro-high-score { position: absolute; left: 50%; translate: -50% 0; text-align: center; white-space: nowrap; }
+  .intro-high-score-value { display: block; margin-top: 9px; color: #f4d15b; }
+  .intro-board { position: absolute; inset: 0; transform-origin: var(--intro-goal-x, 75%) var(--intro-goal-y, 20%); }
+  .intro-maze { position: absolute; top: 50%; left: 50%; translate: -50% -50%; display: block; width: max(28px, min(calc(100% - 48px), calc((100svh - 140px) * 28 / 31))); height: auto; aspect-ratio: 28 / 31; overflow: visible; }
+  [data-intro-ready] .maze-preview-player { display: none; }
+  .intro-maze :global(.maze-wall) { fill: #000014; stroke: #2525ef; stroke-width: 1.7; vector-effect: non-scaling-stroke; transition: stroke 180ms ease; }
+  .intro-maze :global(.maze-door) { stroke: #ffb8ff; stroke-width: 2; vector-effect: non-scaling-stroke; }
+  [data-phase='clear'] :global(.maze-wall) { stroke: #c5d3e6; }
+  .intro-maze :global(.maze-pellet) { fill: #f4d15b; }
+  .intro-player { position: fixed; top: 0; left: 0; z-index: 4; width: 56px; height: 56px; visibility: hidden; color: #ffde00; transform-origin: 0 0; will-change: transform; }
+  [data-intro-ready] .intro-player { visibility: visible; }
+  .intro-player > svg { display: block; width: 100%; height: 100%; transition: rotate 100ms ease; }
+  .intro-mouth { transform-origin: 140px 140px; animation: intro-chomp 320ms ease-in-out infinite; }
+  [data-phase='landing'] .intro-mouth { animation-duration: 1.6s; }
+  @keyframes intro-chomp { 0%,100% { transform: scaleY(1); } 50% { transform: scaleY(0); } }
+  .intro-burst { position: absolute; z-index: 3; width: 120px; height: 120px; color: #f4d15b; opacity: 0; }
+  .intro-clear { position: absolute; top: 50%; left: 50%; z-index: 2; translate: -50% -50%; width: calc(100% - 40px); text-align: center; opacity: 0; }
+  .intro-clear > span { display: inline-block; padding: 14px 22px; background: #000; font-family: var(--font-mono); font-size: clamp(24px, 4vw, 44px); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #f4d15b; }
+  .intro-skip { position: absolute; z-index: 5; right: clamp(24px, 5vw, 72px); bottom: max(28px, env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 20px; min-height: 44px; color: #c6c7bd; font-family: var(--font-mono); font-size: 10px; }
+  .intro-skip:hover { color: #f4d15b; }
+  .intro-skip:focus-visible { outline-color: #f4d15b; }
+  .intro-accessible { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @media (prefers-reduced-motion: reduce) {
+    :global(html[data-site-intro]) .arcade-intro { display: none; }
+    :global(html[data-site-intro]) { overflow: revert; }
+    :global(html[data-site-intro] [data-site-logo]) { visibility: visible; }
+    .intro-mouth { animation: none; }
+  }
+</style>

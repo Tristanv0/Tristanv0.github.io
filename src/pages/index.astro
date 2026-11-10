@@ -6,6 +6,7 @@ import ExperienceTimeline from '../components/ExperienceTimeline.astro';
 import Navbar from '../components/Navbar.astro';
 import ContactModal from '../components/ContactModal.astro';
 import ClosingNote from '../components/ClosingNote.astro';
+import ArcadeIntro from '../components/ArcadeIntro.astro';
 import '../styles/global.css';
 import '../styles/project-reveals.css';
 
@@ -77,6 +78,7 @@ const projects = [
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=tc" />
   </head>
   <body class="bg-paper font-sans text-ink antialiased">
+    <ArcadeIntro />
     <a class="fixed top-3.75 left-5 z-100 translate-y-[-150%] bg-ink px-4.5 py-3 text-paper focus:translate-y-0" href="#main">
       Skip to content
     </a>
@@ -84,7 +86,7 @@ const projects = [
     <header class="sticky top-0 z-30 border-b border-line bg-paper/95 backdrop-blur-lg">
       <div class="mx-auto flex min-h-23.75 w-[calc(100%-44px)] max-w-275 flex-wrap items-center justify-between gap-1.25 pt-4 pb-3 tablet:min-h-22 tablet:w-[calc(100%-72px)] tablet:flex-nowrap tablet:gap-6 tablet:py-0 desktop:w-[calc(100%-112px)]">
         <a class="block shrink-0 rounded-full" href="#about" aria-label="Tristan Cheng, back to About">
-          <img class="size-12 tablet:size-14" src="/website_logo.svg" width="56" height="56" alt="" fetchpriority="high" />
+          <img class="size-12 tablet:size-14" src="/website_logo.svg" width="56" height="56" alt="" fetchpriority="high" data-site-logo />
         </a>
         <Navbar />
       </div>
@@ -94,9 +96,8 @@ const projects = [
       <section class="mx-auto w-[calc(100%-44px)] max-w-[1100px] pt-10 tablet:w-[calc(100%-72px)] tablet:pt-[65px] desktop:w-[calc(100%-112px)]" id="about" aria-labelledby="about-title" data-nav-section>
         <div class="flex justify-between gap-5">
           <span class="block font-mono text-[11px] leading-[1.5] tracking-[1.65px] text-muted uppercase">A bit of backstory</span>
-          <span class="hidden text-[11px] text-muted tablet:block">A personal corner of the internet</span>
         </div>
-        <div class="grid grid-cols-1 items-center gap-[46px] pt-[30px] pb-[50px] tablet:grid-cols-[1fr_210px] tablet:gap-[45px] tablet:pt-[49px] tablet:pb-[66px] desktop:grid-cols-[1fr_255px] desktop:gap-20">
+        <div class="grid grid-cols-1 items-center gap-[46px] pt-[30px] pb-[50px] tablet:grid-cols-[1fr_240px] tablet:gap-[45px] tablet:pt-[49px] tablet:pb-[66px] desktop:grid-cols-[1fr_300px] desktop:gap-20">
           <div>
             <h1 id="about-title" class="font-serif text-[clamp(43px,9.3vw,66px)] leading-[1.07] font-normal tracking-[-2px] tablet:text-[clamp(50px,5.5vw,78px)] tablet:tracking-[-3.5px]">
               Hey! I'm Tristan<br>I'm a <em class="font-normal text-rust">software developer</em>
@@ -111,12 +112,9 @@ const projects = [
               As a computer science student at TMU, I put what I learn into practice by building useful apps that bring together my interests in full-stack development, cloud computing, and automation.
             </p>
           </div>
-          <aside class="relative mr-[15px] max-w-[230px] rotate-5 justify-self-end bg-[#edeedc] px-[27px] pt-[26px] pb-5 shadow-[2px_9px_15px_#41432408] tablet:mr-0 tablet:max-w-none tablet:justify-self-stretch tablet:px-[23px] tablet:pt-9 tablet:pb-[21px] desktop:px-[27px]" aria-label="A note from Tristan">
-            <span class="absolute -top-2.5 left-[calc(50%-29px)] h-[22px] w-[58px] -rotate-7 bg-[#e5c999a3]" aria-hidden="true"></span>
-            <span class="block font-mono text-[9px] leading-[1.5] tracking-[1px] text-[#72765c] uppercase">A note to self</span>
-            <p class="mt-[19px] font-serif text-[25px] leading-[1.5] font-normal tracking-[-0.6px] tablet:text-[23px] desktop:text-[26px]">Stay curious.<br>Make useful things.<br>Go outside.</p>
-            <span class="mt-3 block text-right font-serif text-[28px] leading-[1.2] text-[#7f875c] italic" aria-hidden="true">— t.</span>
-          </aside>
+          <figure class="aspect-[3/4] w-full max-w-[290px] overflow-hidden rounded-xl justify-self-center tablet:max-w-none tablet:justify-self-end">
+            <img class="block h-full w-full origin-[50%_65%] scale-[1.45] object-cover" src="/images/about/tristan.webp" width="800" height="1067" alt="Tristan Cheng beneath autumn trees" decoding="async" />
+          </figure>
         </div>
         <div class="flex flex-wrap justify-between gap-3 border-y border-line py-[22px] text-[10px] text-muted tablet:flex-nowrap tablet:gap-5 tablet:text-[11px]">
           <span>Software, side projects & a few miles in between.</span>

@@ -63,7 +63,10 @@ export const campusExperiences: TimelineEntry[] = [
     organization: 'TMU Blueprint', shortOrganization: 'TMU Blueprint',
     logo: '/images/companies/tmu-bp-logo.png',
     location: 'Toronto, ON',
-    highlights: ['More about this experience coming soon!'],
+    highlights: [
+      'Contributed to Itty Bitty Critters Wildlife Rehabilitation’s website with TMU Blueprint, on a project featuring a blog and custom content management system.',
+      'Translated Figma designs into React interfaces, using custom CSS to implement page layouts, typography, and styling.',
+    ],
   },
   {
     id: 'tmu-csa', kind: 'club',
