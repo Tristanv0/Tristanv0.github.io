@@ -3,16 +3,21 @@ import RunCard from './RunCard.astro';
 import RunModal from './RunModal.astro';
 import ScrollArrows from './ScrollArrows.astro';
 import GymBackground from './GymBackground.astro';
-import GymCalendar from './GymCalendar.astro';
+import ActivityCalendar from './ActivityCalendar.astro';
 import WorkoutCard from './WorkoutCard.astro';
 import WorkoutModal from './WorkoutModal.astro';
 import HobbyTab from './HobbyTab.astro';
+import BadmintonBackground from './BadmintonBackground.astro';
+import BadmintonCard from './BadmintonCard.astro';
+import BadmintonModal from './BadmintonModal.astro';
+import { HOBBIES } from '../data/hobbies';
+import { getRecentBadminton } from '../data/badminton';
 import { getRecentRuns } from '../data/runs';
 import { getRecentWorkouts } from '../data/workouts';
 
 const apiOrigin = import.meta.env.STREVY_API_ORIGIN || 'http://localhost:3001';
-const [{ runs, available }, workoutSnapshot] = await Promise.all([
-  getRecentRuns(apiOrigin), getRecentWorkouts(apiOrigin),
+const [{ runs, available, calendarEntries: runDates }, workoutSnapshot, badmintonSnapshot] = await Promise.all([
+  getRecentRuns(apiOrigin), getRecentWorkouts(apiOrigin), getRecentBadminton(apiOrigin),
 ]);
 
 // A consistent scattered arrangement, with complete classes for Tailwind.
@@ -23,9 +28,14 @@ const runLayouts = [
   { width: 'w-[215px] tablet:w-[235px]', offset: 'pt-[calc(var(--run-stagger)*0.18)]', gap: 'mr-14 tablet:mr-[110px] desktop:mr-[132px]' },
   { width: 'w-[225px] tablet:w-[250px]', offset: 'pt-[var(--run-stagger)]', gap: '' },
 ];
-const hobbies = [{ id: 'running', label: 'Running' }, { id: 'gym', label: 'The gym' }];
+const hobbies = HOBBIES;
 // Attendance can use the full history while the carousel keeps five sessions.
 const recentWorkouts = workoutSnapshot.workouts;
+const calendarActivities = [
+  ...runDates,
+  ...workoutSnapshot.calendarEntries.map((entry, index) => ({ id: `gym-${index}-${entry.date}`, date: entry.date, hobby: 'gym' as const, title: entry.title || 'Workout' })),
+  ...badmintonSnapshot.calendarEntries,
+];
 const scrollerClass = 'flex h-full min-w-0 snap-x snap-mandatory items-start overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-px-[var(--run-edge)] pt-5 pb-10 [--run-stagger-max:96px] [--run-stagger:var(--run-stagger-max)] data-[pinned=true]:snap-none tablet:pt-6 tablet:pb-14 tablet:[--run-stagger-max:170px] desktop:[--run-stagger-max:210px]';
 ---
 
@@ -38,6 +48,7 @@ const scrollerClass = 'flex h-full min-w-0 snap-x snap-mandatory items-start ove
 >
   <ScrollArrows />
   <GymBackground />
+  <BadmintonBackground />
   <div class="relative mx-auto w-[calc(100%-44px)] max-w-[1100px] tablet:w-[calc(100%-72px)] desktop:w-[calc(100%-112px)]">
     <div class="flex items-start justify-between gap-5 tablet:items-center tablet:gap-[70px]">
       <div class="relative bg-hobby-paper shadow-[0_0_35px_22px_var(--color-hobby-paper)]">
@@ -46,10 +57,10 @@ const scrollerClass = 'flex h-full min-w-0 snap-x snap-mandatory items-start ove
           Away from<br>the <em class="font-normal text-[var(--hobby-color)] transition-colors duration-200 ease-out">keyboard</em>
         </h2>
         <p class="max-w-[280px] text-[12px] leading-[1.9] text-[#747064] tablet:max-w-none tablet:text-[14px]">
-          A little movement between projects.<br>A few miles, a few reps, and a different kind of progress.
+          A little movement between projects.<br>A few miles, a few reps, a few rallies.
         </p>
       </div>
-      <span class="absolute top-[245px] right-[5px] -rotate-12 bg-hobby-paper text-center font-serif text-[16px] leading-[1.1] text-rust italic shadow-[0_0_20px_12px_var(--color-hobby-paper)] phone:text-[19px] tablet:static tablet:mr-[5%] tablet:text-[29px] desktop:mr-[11%]" aria-hidden="true" data-hobby-decoration="running">
+      <span class="pointer-events-none absolute top-[225px] right-[4px] -rotate-12 bg-hobby-paper text-center font-serif text-[16px] leading-[1.1] text-rust italic shadow-[0_0_20px_12px_var(--color-hobby-paper)] phone:text-[19px] tablet:top-[260px] tablet:right-auto tablet:left-[35%] tablet:text-[22px] desktop:left-[42%] desktop:text-[26px]" aria-hidden="true" data-hobby-decoration="running">
         taking the<br>scenic route
       </span>
     </div>
@@ -60,21 +71,24 @@ const scrollerClass = 'flex h-full min-w-0 snap-x snap-mandatory items-start ove
           one more rep
           <svg class="mx-auto mt-1 h-3 w-[110px] fill-none stroke-current opacity-45 tablet:w-[145px]" viewBox="0 0 145 12" stroke-width="1" stroke-linecap="round" focusable="false"><path d="M 4 7 Q 49 0 139 4 M 49 10 Q 89 6 119 7" /></svg>
         </span>
-        <GymCalendar workouts={workoutSnapshot.calendarEntries} />
+        <ActivityCalendar activities={calendarActivities} />
         <div class="flex items-center gap-2 px-[var(--run-edge)] pb-4" role="tablist" aria-label="Choose a hobby" data-hobby-tabs>
           {hobbies.map(hobby => <HobbyTab id={hobby.id} label={hobby.label} />)}
         </div>
         <div class="grid" data-hobby-panels>
           {hobbies.map(hobby => (
             <div class:list={['min-w-0 [grid-area:1/1]', { invisible: hobby.id !== 'running' }]} id={`hobby-panel-${hobby.id}`} role="tabpanel" aria-labelledby={`hobby-tab-${hobby.id}`} aria-hidden={hobby.id !== 'running' ? 'true' : 'false'} inert={hobby.id !== 'running'} data-hobby-panel={hobby.id}>
-              <div class={scrollerClass} tabindex="0" role="region" aria-label={hobby.id === 'running' ? 'Latest runs' : 'Latest gym workouts'} data-run-scroller>
+              <div class={scrollerClass} tabindex="0" role="region" aria-label={hobby.description} data-run-scroller>
                 <div class="h-px w-[var(--run-edge)] shrink-0" aria-hidden="true" data-run-edge="start"></div>
                 {hobby.id === 'running' ? runs.map((run, index) => {
                   const layout = runLayouts[index % runLayouts.length];
                   return <div class:list={['min-w-0 shrink-0 snap-start', layout.width, layout.offset, index < runs.length - 1 ? layout.gap : '']} data-run-slot><RunCard run={run} index={index} /></div>;
-                }) : recentWorkouts.map((workout, index) => {
+                }) : hobby.id === 'gym' ? recentWorkouts.map((workout, index) => {
                   const layout = runLayouts[index % runLayouts.length];
                   return <div class:list={['min-w-0 shrink-0 snap-start', layout.width, layout.offset, index < recentWorkouts.length - 1 ? layout.gap : '']} data-run-slot><WorkoutCard workout={workout} index={index} /></div>;
+                }) : badmintonSnapshot.days.map((day, index) => {
+                  const layout = runLayouts[index % runLayouts.length];
+                  return <div class:list={['min-w-0 shrink-0 snap-start', layout.width, layout.offset, index < badmintonSnapshot.days.length - 1 ? layout.gap : '']} data-run-slot><BadmintonCard day={day} index={index} /></div>;
                 })}
                 {hobby.id === 'running' && runs.length === 0 && (
                   <p class="w-[calc(100%-2*var(--run-edge))] shrink-0 rounded-[3px] border border-line bg-run-paper px-6 py-10 text-center text-[14px] leading-[1.8] text-muted" role="status">
@@ -84,6 +98,11 @@ const scrollerClass = 'flex h-full min-w-0 snap-x snap-mandatory items-start ove
                 {hobby.id === 'gym' && recentWorkouts.length === 0 && (
                   <p class="w-[calc(100%-2*var(--run-edge))] shrink-0 rounded-[3px] border border-line bg-run-paper px-6 py-10 text-center text-[14px] leading-[1.8] text-muted" role="status">
                     {workoutSnapshot.available ? 'No workouts to show yet.' : 'Recent workouts are unavailable right now. Please check back soon.'}
+                  </p>
+                )}
+                {hobby.id === 'badminton' && badmintonSnapshot.days.length === 0 && (
+                  <p class="w-[calc(100%-2*var(--run-edge))] shrink-0 rounded-[3px] border border-line bg-run-paper px-6 py-10 text-center text-[14px] leading-[1.8] text-muted" role="status">
+                    {badmintonSnapshot.available ? 'No badminton days to show yet.' : 'Recent badminton activity is unavailable right now. Please check back soon.'}
                   </p>
                 )}
                 <div class="h-px w-[var(--run-edge)] shrink-0" aria-hidden="true" data-run-edge="end"></div>
@@ -100,6 +119,7 @@ const scrollerClass = 'flex h-full min-w-0 snap-x snap-mandatory items-start ove
 
 {runs.map(run => <RunModal run={run} />)}
 {recentWorkouts.map(workout => <WorkoutModal workout={workout} />)}
+{badmintonSnapshot.days.map(day => <BadmintonModal day={day} />)}
 
 <style>
   .gym-note {

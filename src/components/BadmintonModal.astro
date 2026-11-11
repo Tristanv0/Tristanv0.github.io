@@ -1,0 +1,35 @@
+---
+import type { BadmintonDay } from '../data/badminton';
+import BadmintonShuttle from './BadmintonShuttle.astro';
+interface Props { day: BadmintonDay }
+const { day } = Astro.props;
+const metrics = [
+  { label: 'Duration', value: day.duration, unit: '' },
+  { label: 'Active energy', value: day.calories, unit: 'kcal' },
+  { label: 'Avg. heart rate', value: day.averageHeartRate, unit: 'bpm' },
+  { label: 'Distance covered', value: day.distance, unit: 'km' },
+  { label: 'Rallies', value: day.rallies, unit: '' },
+];
+---
+
+<dialog id={`badminton-modal-${day.date}`} class="fixed inset-0 m-0 h-dvh max-h-none w-screen max-w-none flex-col items-center overflow-hidden border-0 bg-transparent px-4 pt-16 pb-4 text-ink open:flex backdrop:bg-ink/45 backdrop:backdrop-blur-[6px] tablet:p-8" aria-labelledby={`badminton-title-${day.date}`} data-activity-dialog>
+  <button type="button" class="fixed top-3 right-4 z-20 flex size-10 items-center justify-center rounded-full border border-line bg-paper p-0 text-ink shadow-sm hover:bg-hobby-paper focus-visible:outline-[#05A74F] tablet:top-5 tablet:right-6" aria-label="Close badminton details" autofocus data-activity-close>
+    <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+  </button>
+  <article class="relative my-auto max-h-[calc(100dvh-96px)] w-full max-w-[560px] overflow-y-auto overscroll-contain rounded-[16px] border border-line bg-paper p-6 shadow-[0_24px_100px_#292a2533] tablet:p-8" data-activity-panel data-activity-scroll>
+    <div class="mb-6 flex items-center gap-5">
+      <div class="h-24 w-28 shrink-0 rounded-lg bg-[#e4efe5] text-[#05A74F]"><BadmintonShuttle /></div>
+      <div>
+        <time class="font-mono text-[10px] text-muted" datetime={day.date}>{day.dateLabel}</time>
+        <h2 id={`badminton-title-${day.date}`} class="mt-2 font-serif text-[32px] leading-tight tracking-[-1px]">On the court</h2>
+      </div>
+    </div>
+    <dl class="grid grid-cols-2 gap-x-6 border-t border-[#cde0d2]">
+      {metrics.map(metric => <div class="border-b border-line py-4">
+        <dt class="text-[11px] text-muted">{metric.label}</dt>
+        <dd class="mt-1 text-[25px] tracking-[-0.5px] tabular-nums">{metric.value}{metric.value !== '—' && metric.unit && <span class="ml-1 text-[12px] tracking-normal text-muted">{metric.unit}</span>}</dd>
+      </div>)}
+    </dl>
+    <p class="mt-5 font-mono text-[10px] text-muted">Daily activity · Recorded with Shuttls</p>
+  </article>
+</dialog>

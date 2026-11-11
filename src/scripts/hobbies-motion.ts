@@ -1,6 +1,7 @@
 import type { HobbyChangeDetail } from './hobby-tabs';
 import { applyHobbyTheme } from './hobby-tabs';
 import { createGymBackground } from './gym-background';
+import { createBadmintonBackground } from './badminton-background';
 
 export function initHobbiesMotion() {
   const section = document.querySelector<HTMLElement>('[data-hobbies]');
@@ -9,6 +10,7 @@ export function initHobbiesMotion() {
   const runningArt = section.querySelector<SVGSVGElement>('[data-scroll-arrows]');
   const runningScenery = section.querySelector<SVGGElement>('[data-running-scenery]');
   const gym = createGymBackground(section);
+  const badminton = createBadmintonBackground(section);
   const arrows = Array.from(section.querySelectorAll<SVGGElement>('[data-flow-arrow]')).map((group, index) => {
     const path = group.querySelector<SVGPathElement>('[data-arrow-path]')!;
     const guide = group.querySelector<SVGPathElement>('[data-arrow-guide]')!;
@@ -154,31 +156,30 @@ export function initHobbiesMotion() {
     const version = ++changeVersion;
     finishTransition();
     gym.finish();
+    badminton.finish();
+    const previousHobby = activeHobby;
     activeHobby = detail.hobby;
     if (reducedMotion.matches) {
       applyHobbyTheme(section!, detail.hobby, detail.color);
       gym.setActive(detail.hobby === 'gym');
-      if (runningArt) runningArt.style.visibility = detail.hobby === 'gym' ? 'hidden' : '';
-      if (runningScenery) runningScenery.style.opacity = detail.hobby === 'gym' ? '0' : '1';
+      badminton.setActive(detail.hobby === 'badminton');
+      if (runningArt) runningArt.style.visibility = detail.hobby === 'running' ? '' : 'hidden';
+      if (runningScenery) runningScenery.style.opacity = detail.hobby === 'running' ? '1' : '0';
       lastProgress = -1;
       render();
       detail.finished = Promise.resolve();
       return;
     }
-    // Each hobby has its own exit/entry effect. Keep the handover sequential
-    // so running's orange arrows never overlap Gym's assembling particles.
+    // Finish the previous scene before revealing the next hobby's artwork.
     detail.finished = (async () => {
-      if (detail.hobby === 'gym') {
-        await animateArrows('exit');
-        if (disposed || version !== changeVersion) return;
-        applyHobbyTheme(section!, detail.hobby, detail.color);
-        await gym.enter();
-      } else {
-        await gym.exit();
-        if (disposed || version !== changeVersion) return;
-        applyHobbyTheme(section!, detail.hobby, detail.color);
-        await animateArrows('enter');
-      }
+      if (previousHobby === 'running') await animateArrows('exit');
+      else if (previousHobby === 'gym') await gym.exit();
+      else await badminton.exit();
+      if (disposed || version !== changeVersion) return;
+      applyHobbyTheme(section!, detail.hobby, detail.color);
+      if (detail.hobby === 'running') await animateArrows('enter');
+      else if (detail.hobby === 'gym') await gym.enter();
+      else await badminton.enter();
     })();
   }
   const onMotionChange = () => {
@@ -189,6 +190,7 @@ export function initHobbiesMotion() {
   const observer = new IntersectionObserver(entries => {
     visible = entries[0].isIntersecting;
     gym.setVisible(visible);
+    badminton.setVisible(visible);
     if (!visible) finishTransition();
     schedule();
   }, { rootMargin: '120px 0px' });
@@ -213,5 +215,6 @@ export function initHobbiesMotion() {
     transition?.resolve();
     transition = null;
     gym.dispose();
+    badminton.dispose();
   }, { once: true });
 }
