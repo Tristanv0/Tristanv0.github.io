@@ -1,3 +1,6 @@
+import { workoutDateKey } from './workout-calendar.ts';
+import type { CalendarActivity } from './activity-calendar';
+
 export interface Run {
   id: string;
   title: string;
@@ -20,6 +23,7 @@ export interface Run {
 
 export interface RunSnapshot {
   runs: Run[];
+  calendarEntries: CalendarActivity[];
   scrapedAt: string | null;
   available: boolean;
 }
@@ -157,13 +161,17 @@ export function parseStrevySnapshot(payload: unknown, apiOrigin: string, limit =
     throw new Error('Invalid Strevy response');
   }
 
-  const runs = payload.runs
+  const history = payload.runs
     .filter((run): run is StrevyRun => Boolean(
       run && typeof run === 'object' && text(run.id) && text(run.name),
     ))
     .map(run => normalizeRun(run, apiOrigin))
-    .sort((a, b) => (b.dateTime ? Date.parse(b.dateTime) : 0) - (a.dateTime ? Date.parse(a.dateTime) : 0))
-    .slice(0, Math.max(0, limit));
+    .sort((a, b) => (b.dateTime ? Date.parse(b.dateTime) : 0) - (a.dateTime ? Date.parse(a.dateTime) : 0));
+  const runs = history.slice(0, Math.max(0, limit));
+  const calendarEntries = history.flatMap((run): CalendarActivity[] => {
+    const date = run.dateTime && workoutDateKey(run.dateTime);
+    return date ? [{ id: run.id, date, hobby: 'running', title: run.title }] : [];
+  });
 
   if (payload.runs.length > 0 && runs.length === 0 && limit > 0) {
     throw new Error('Strevy did not return valid runs');
@@ -171,6 +179,7 @@ export function parseStrevySnapshot(payload: unknown, apiOrigin: string, limit =
 
   return {
     runs,
+    calendarEntries,
     scrapedAt: 'scrapedAt' in payload ? validDate(payload.scrapedAt)?.toISOString() ?? null : null,
     available: true,
   };
@@ -187,6 +196,6 @@ export async function getRecentRuns(apiOrigin: string, limit = 5): Promise<RunSn
     return parseStrevySnapshot(await response.json(), apiOrigin, limit);
   } catch {
     // An offline API should not prevent the rest of the portfolio from rendering.
-    return { runs: [], scrapedAt: null, available: false };
+    return { runs: [], calendarEntries: [], scrapedAt: null, available: false };
   }
 }

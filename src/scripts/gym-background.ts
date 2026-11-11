@@ -1,5 +1,3 @@
-import { captureCalendar } from './calendar-dust';
-
 // This is decorative progress, independent of recorded workout statistics.
 // Most new sessions improve or hold steady; occasional setbacks stay visible.
 export function nextWorkoutValue(value: number, random = Math.random) {
@@ -17,7 +15,6 @@ interface GymArt {
   source: SVGSVGElement | HTMLElement;
   svg?: SVGSVGElement;
   canvas: HTMLCanvasElement;
-  calendar?: boolean;
 }
 
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
@@ -28,8 +25,6 @@ export function createGymBackground(section: HTMLElement) {
     const svg = element.querySelector<SVGSVGElement>('svg')!;
     return { element, source: svg, svg, canvas: element.querySelector<HTMLCanvasElement>('canvas')! };
   });
-  const calendar = section.querySelector<HTMLElement>('[data-gym-calendar]');
-  if (calendar) arts.push({ element: calendar, source: calendar.querySelector<HTMLElement>('[data-calendar-content]')!, canvas: calendar.querySelector<HTMLCanvasElement>('[data-calendar-particles]')!, calendar: true });
   const sprites = new Map<string, HTMLCanvasElement>();
   function particleSprite(color: string) {
     let sprite = sprites.get(color);
@@ -45,17 +40,8 @@ export function createGymBackground(section: HTMLElement) {
     }
     return sprite;
   }
-  function setArtVisible(art: GymArt, value: boolean, accessible = value) {
+  function setArtVisible(art: GymArt, value: boolean) {
     art.element.classList.toggle('invisible', !value);
-    if (art.calendar) {
-      art.element.inert = !accessible;
-      art.element.setAttribute('aria-hidden', String(!accessible));
-    }
-  }
-  function calendarDust(value: boolean) {
-    if (!calendar) return;
-    calendar.dataset.dustActive = String(value);
-    calendar.dispatchEvent(new Event('gym:dust'));
   }
   const line = section.querySelector<SVGPathElement>('[data-graph-line]');
   const dots = Array.from(section.querySelectorAll<SVGCircleElement>('[data-graph-dot]'));
@@ -240,7 +226,6 @@ export function createGymBackground(section: HTMLElement) {
       art.source.style.visibility = '';
       art.canvas.getContext('2d')?.clearRect(0, 0, art.canvas.width, art.canvas.height);
     });
-    calendarDust(false);
     lastFrame = 0;
     lastPointAt = performance.now();
     current.resolve();
@@ -300,7 +285,6 @@ export function createGymBackground(section: HTMLElement) {
     finishDust();
     active = value;
     arts.forEach(art => setArtVisible(art, value));
-    calendarDust(false);
     lastFrame = 0;
     lastPointAt = performance.now();
     if (value) { drawGraph(lastPointAt, true); drawMedal(); }
@@ -315,25 +299,18 @@ export function createGymBackground(section: HTMLElement) {
       setActive(entering);
       return Promise.resolve();
     }
-    calendarDust(true);
     const layers = arts.flatMap(art => {
       const context = art.canvas.getContext('2d');
       if (!context) return [];
-      // Make the calendar's mobile layout measurable while concealing its live
-      // contents. The original slot stays in place until dissolution ends.
       art.source.style.visibility = 'hidden';
-      setArtVisible(art, true, false);
+      setArtVisible(art, true);
       const bounds = art.source.getBoundingClientRect();
-      const { width, height } = art.svg?.viewBox.baseVal ?? bounds;
+      const { width, height } = art.svg!.viewBox.baseVal;
       const scale = bounds.width / width;
       const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
-      const captured = art.calendar ? captureCalendar(art.element, ratio) : null;
-      const image = captured?.image ?? captureInk(art.svg!, bounds.width, bounds.height, ratio, scale);
+      const image = captureInk(art.svg!, bounds.width, bounds.height, ratio, scale);
       const sprite = particleSprite(art.element.dataset.particleColor ?? '#1E6FFF');
-      const particles: Particle[] = captured ? captured.samples.map(sample => ({
-        x: sample.x, y: sample.y, drift: -30 - Math.random() * 75, rise: 100 + Math.random() * 150,
-        size: 0.55 + Math.random() * 1.1, phase: Math.random() * Math.PI * 2, sprite: particleSprite(sample.color),
-      })) : sampleInk(art.element.dataset.gymArt === 'graph');
+      const particles = sampleInk(art.element.dataset.gymArt === 'graph');
       art.canvas.width = Math.ceil((bounds.width + 160) * ratio);
       art.canvas.height = Math.ceil((bounds.height + 240) * ratio);
       context.setTransform(ratio, 0, 0, ratio, 0, 0);

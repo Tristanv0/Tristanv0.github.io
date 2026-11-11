@@ -1,13 +1,13 @@
 ---
+import { HOBBIES } from '../data/hobbies';
 interface Props { id: string; label: string }
 const { id, label } = Astro.props;
 const running = id === 'running';
-const color = running ? '#FC4C02' : '#1E6FFF';
-const trail = running ? '#bc3900' : '#134cc7';
+const { color, trail } = HOBBIES.find(hobby => hobby.id === id)!;
 ---
 
 <button
-  class="group relative isolate rounded-full border border-[var(--tab-rest-border)] bg-paper px-5 py-2.5 text-[13px] font-bold text-muted transition-colors hover:text-ink focus-visible:outline-[var(--tab-trail-color)] aria-selected:border-[var(--tab-color)] aria-selected:bg-[var(--tab-color)] aria-selected:text-white"
+  class="group relative isolate shrink-0 rounded-full border border-[var(--tab-rest-border)] bg-paper px-3 py-2.5 text-[13px] font-bold text-muted transition-colors hover:text-ink focus-visible:outline-[var(--tab-trail-color)] aria-selected:border-[var(--tab-color)] aria-selected:bg-[var(--tab-color)] aria-selected:text-white phone:px-4 tablet:px-5"
   style={`--tab-color:${color};--tab-trail-color:${trail};--tab-rest-border:color-mix(in srgb,${trail} 24%,var(--color-line))`}
   type="button"
   role="tab"
@@ -50,6 +50,10 @@ const trail = running ? '#bc3900' : '#134cc7';
 
   button[aria-selected='false'][data-motion-visible='true']:not(:disabled) .hobby-orbit {
     animation-play-state: running;
+  }
+
+  button[data-hobby-tab='badminton'] .hobby-orbit {
+    animation-delay: -1.8s;
   }
 
   @keyframes hobby-border-orbit {

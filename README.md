@@ -94,13 +94,13 @@ The native dialog keeps keyboard focus inside it. Close with Escape, the close b
 
 ## Hobbies motion
 
-Running and Gym tabs sit above the cards and stay available during pinned
+Running, Gym and Badminton tabs sit above the cards and stay available during pinned
 scrolling. Switching hobbies slides the old row left and the new row in from
 the right, preserving horizontal progress. The inactive panel is inert and
 hidden from assistive technology. Tabs support arrow keys, Home and End;
 rapid changes queue the latest choice. Reduced motion switches immediately.
 Inactive tabs have a rotating gradient border with a soft halo: darker orange
-for Running and darker blue for Gym. `src/components/HobbyTab.astro` keeps
+for Running, darker blue for Gym and darker green for Badminton. `src/components/HobbyTab.astro` keeps
 the glow around the edge, behind the label. Active tabs remain solid; orbit
 animations pause offscreen or in a hidden tab, and reduced motion keeps them still.
 The Gym tab fetches `GET /api/workouts` from the same `STREVY_API_ORIGIN` at
@@ -110,6 +110,25 @@ Cards show the first valid `photos[].url`, or the dumbbell placeholder when
 there is no photo or it fails to load. Below the image are the date, title,
 duration, volume in the scraped unit, and set count. Runs and workouts load independently, with an unavailable message
 for a failed source. Tab transitions live in `src/scripts/hobby-tabs.ts`.
+
+The Badminton tab fetches `GET /api/badminton` from `STREVY_API_ORIGIN` at build
+time and displays the latest five daily summaries. Its theme is `#05A74F`.
+Cards show duration, active energy in kcal and rallies with odometer animations;
+clicking a card opens the shared zoom dialog with average heart rate and distance
+covered as well. Date-only API values retain their original calendar day, missing
+metrics show dashes, and a failed badminton request does not affect the other tabs.
+`src/components/BadmintonBackground.astro` draws a doubles court with service
+lines, singles sidelines and a mesh net in the middle. The court reveals when
+entering the tab and stays still throughout pinned horizontal scrolling.
+Each horizontal and vertical court line has a tapered dark green highlight (`#037535`, matching
+the inactive tab border) that glides back and forth with a randomized phase and
+moderate speed. Highlights pause offscreen, in inactive hobbies and hidden browser
+tabs, and are omitted for reduced motion.
+When leaving Badminton, each trail accelerates offscreen in its current travel
+direction while the court outline and net fade away. The temporary clipping
+removal lets highlights continue past the court boundary; resting geometry is
+restored before the next entry. The shared activity calendar stays visible.
+Shared tab labels and colors live in `src/data/hobbies.ts`.
 
 Clicking a Gym card uses the same center-and-zoom animation as a run card.
 `src/components/WorkoutModal.astro` puts a small photo gallery and compact
@@ -139,40 +158,33 @@ Strevy reads `strava/latest-runs.json`, `strava/media/...` and
 before rebuilding the portfolio with the hosted API origin. Updating R2 alone
 does not refresh this static website; rebuild it after each scrape/upload.
 
-The wider, transparent Gym calendar sits at the upper right, with its bottom
-aligned with the hobby buttons on tablet/desktop. On phones it stacks above
-the buttons; Running collapses that space. The calendar shares the sticky
-frame with the buttons and cards, holding its position throughout horizontal
-travel and resuming vertical movement afterward. Calendar height is included
-when checking whether the whole frame fits the viewport. If the calendar makes
-that frame too tall on a phone, it scrolls above the viewport before the buttons
-and cards pin for horizontal travel. Taller screens keep the calendar visible.
-The calendar shares the graph/medal particle sequence: it assembles from the
-bottom up after the running arrows exit and dissolves from the top down before
-they return. `src/scripts/calendar-dust.ts` captures its current text, divider
-and blue markers once for each transition; the same canvas renderer handles
-all three artworks. Today's blink pauses during the effect and resumes when
-the live calendar reappears. Mobile keeps the calendar's layout space until
-its dissolution finishes. Reduced motion switches it immediately.
-The calendar shows only the current month. It updates in the
-browser on page load, return to the tab, hobby changes and once per minute,
-so today and month rollover do not require a site rebuild. It uses
-`America/Toronto` for both today and workout timestamps. Training dates have
-filled blue circles; today's fully filled blue circle pulses, including when
-today also has a workout. The pulse stops with reduced motion and pauses
-when hidden or offscreen. Running hides the calendar from view and assistive
-technology.
+The transparent activity calendar is shared across Running, Gym and Badminton.
+It sits at the upper right with its bottom aligned to the hobby buttons on
+tablet/desktop; on phones it stacks above the buttons. It stays visible when
+switching hobbies and shares the pinned frame with the cards. On short screens
+the calendar scrolls above the viewport before the buttons/cards pin, allowing
+horizontal travel to remain usable. The running note sits beside the intro
+copy, clear of the calendar. A soft fade conceals artwork behind the dates.
 
-The calendar uses every valid workout `date` (Toronto `YYYY-MM-DD`), falling
-back to a zoned `startTime`. Each training day's title is centered below its
-circle. Long labels show roughly ten characters with fades at both edges;
-the complete title remains in the accessible date label. Multiple titles on
-one day are combined. Older date/time-only summaries still mark attendance
-without inventing a title. The Hevy scraper now exports titles for summaries;
-re-scrape and upload to fill those older labels. Publishing updated workout
-dates still requires the usual static-site rebuild. Layout is in `src/components/GymCalendar.astro`,
-date handling in `src/data/workout-calendar.ts`, and live updates in
-`src/scripts/workout-calendar.ts`.
+Each activity gets its own colored circle: orange for runs, blue for gym and
+green for badminton. Multiple activities stack, including multiple workouts
+of the same hobby. Switching tabs rotates the first matching activity to the
+front, leaving days without that hobby alone. Hovering or keyboard-focusing a
+day scrolls long titles and cycles through every activity with an animated
+circle swap. Leaving restores the selected hobby's front circle. Reduced
+motion shows all titles without scrolling or rotating them. Full activity
+names remain available in the accessible date label.
+
+The calendar uses all dates supplied by each API before limiting the card rows
+to five entries. The run endpoint currently supplies five runs; Hevy summaries
+and the full badminton history also contribute dates. It shows the current
+Toronto month and refreshes today/month on load, focus and once per minute.
+Today's filled marker pulses unless reduced motion is enabled or the calendar
+is hidden/offscreen. The calendar is independent of Gym's particle transitions.
+Updating the activity history still requires rebuilding the static site.
+Layout is in `src/components/ActivityCalendar.astro`, the combined model in
+`src/data/activity-calendar.ts`, and interactions in `src/scripts/activity-calendar.ts`,
+`calendar-stack.ts` and `activity-calendar-hover.ts`.
 
 The runs carousel spans the viewport. Leading and trailing spacers align the
 first and last cards with the section margins at either end; those spacers move

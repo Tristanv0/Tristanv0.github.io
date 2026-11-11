@@ -1,3 +1,5 @@
+import { HOBBIES } from '../data/hobbies';
+
 export interface HobbyChangeDetail {
   hobby: string;
   color: string;
@@ -62,7 +64,8 @@ export function initHobbyTabs() {
       if (decoration.dataset.hobbyDecoration !== hobby) setDecorationVisible(decoration, false);
     });
 
-    const detail: HobbyChangeDetail = { hobby, color: hobby === 'gym' ? '#1E6FFF' : '#FC4C02', progress };
+    const selectedHobby = HOBBIES.find(item => item.id === hobby)!;
+    const detail: HobbyChangeDetail = { hobby, color: selectedHobby.color, progress };
     // The background supplies its completion promise so rapid clicks can queue
     // the latest choice without overlapping arrow colors or card transitions.
     section.dispatchEvent(new CustomEvent('hobby:change', { detail }));
@@ -89,7 +92,7 @@ export function initHobbyTabs() {
     animations.forEach(animation => animation.cancel());
     animations = [];
     incoming.inert = false;
-    if (status) status.textContent = hobby === 'gym' ? 'Gym: latest workouts.' : 'Running: latest runs.';
+    if (status) status.textContent = `${selectedHobby.label}: ${selectedHobby.description.toLowerCase()}.`;
     switching = false;
     if (requested && requested !== active) void select(requested);
   }

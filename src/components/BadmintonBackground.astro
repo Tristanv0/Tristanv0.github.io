@@ -1,0 +1,69 @@
+---
+import { HOBBIES } from '../data/hobbies';
+const trailColor = HOBBIES.find(hobby => hobby.id === 'badminton')!.trail;
+const horizontalLines = [
+  { x: 50, y: 100, length: 1340 },
+  { x: 50, y: 146, length: 1340 },
+  { x: 50, y: 405, length: 472 },
+  { x: 918, y: 405, length: 472 },
+  { x: 50, y: 664, length: 1340 },
+  { x: 50, y: 710, length: 1340 },
+];
+const courtLines = [
+  ...horizontalLines.map(line => ({ ...line, rotation: 0 })),
+  ...[50, 126, 522, 918, 1314, 1390].map(x => ({ x, y: 100, length: 610, rotation: 90 })),
+];
+---
+
+<div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+  <div class="sticky top-[var(--run-background-top,0px)] h-[calc(100%-var(--run-scroll-distance,0px))] [--court-offset:max(0px,calc(-1*var(--run-background-top,0px)))]">
+    <div class="invisible absolute top-[calc(var(--court-offset)+120px)] left-1/2 w-[max(820px,94%)] -translate-x-1/2 text-[#05A74F] tablet:top-[calc(var(--court-offset)+20px)]" data-badminton-art>
+      <svg class="block h-auto w-full overflow-visible fill-none stroke-current" viewBox="0 0 1440 760" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+        <!-- 13.4 × 6.1 m doubles court, including singles sidelines and service boxes. -->
+        <g opacity=".22" data-court-outline>
+          <rect x="50" y="100" width="1340" height="610" />
+          <path d="M50 146H1390M50 664H1390M126 100V710M1314 100V710M522 100V710M918 100V710M50 405H522M918 405H1390" />
+        </g>
+        <defs>
+          <linearGradient id="badminton-line-trail" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="180" y2="0" style={`--court-trail-color:${trailColor}`}>
+            <stop offset="0" stop-color="var(--court-trail-color)" stop-opacity="0" />
+            <stop offset=".35" stop-color="var(--court-trail-color)" stop-opacity=".35" />
+            <stop offset=".65" stop-color="var(--court-trail-color)" stop-opacity=".9" />
+            <stop offset=".8" stop-color="var(--court-trail-color)" />
+            <stop offset="1" stop-color="var(--court-trail-color)" stop-opacity="0" />
+          </linearGradient>
+          {courtLines.map((line, index) => <clipPath id={`badminton-line-clip-${index}`}>
+            <rect x="0" y="-3" width={line.length} height="6" />
+          </clipPath>)}
+          <pattern id="badminton-net-mesh" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" stroke-width=".6" /></pattern>
+        </defs>
+        {courtLines.map((line, index) => <g transform={`translate(${line.x} ${line.y}) rotate(${line.rotation})`} clip-path={`url(#badminton-line-clip-${index})`}>
+          <path class="court-line-trail" d="M0 0H180" stroke="url(#badminton-line-trail)" style={`--trail-travel:${line.length - 180}px`} data-court-line-length={line.length} />
+        </g>)}
+        <g opacity=".38" data-court-outline>
+          <rect x="704" y="90" width="32" height="630" fill="url(#badminton-net-mesh)" stroke-width="1" />
+          <path d="M720 90V720" stroke-width="3" />
+          <circle cx="720" cy="90" r="4" fill="currentColor" />
+          <circle cx="720" cy="720" r="4" fill="currentColor" />
+        </g>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<style>
+  .court-line-trail {
+    opacity: .8;
+    animation: court-line-glide var(--trail-duration, 10s) ease-in-out var(--trail-delay, 0s) infinite alternate;
+    animation-play-state: paused;
+    will-change: transform;
+  }
+  [data-court-flow='true'] .court-line-trail { animation-play-state: running; }
+  @keyframes court-line-glide {
+    from { transform: translateX(0); }
+    to { transform: translateX(var(--trail-travel)); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .court-line-trail { display: none; animation: none; }
+  }
+</style>
