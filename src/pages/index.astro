@@ -6,6 +6,7 @@ import ExperienceTimeline from '../components/ExperienceTimeline.astro';
 import Navbar from '../components/Navbar.astro';
 import ContactModal from '../components/ContactModal.astro';
 import ClosingNote from '../components/ClosingNote.astro';
+import BadmintonGame from '../components/BadmintonGame.astro';
 import '../styles/global.css';
 import '../styles/project-reveals.css';
 
@@ -75,6 +76,7 @@ const projects = [
     <meta name="twitter:image" content={previewImageUrl} />
     <meta name="twitter:image:alt" content={previewImageAlt} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=tc" />
+    <link rel="preload" href="/fonts/swanky-and-moo-moo/latin-400.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
   </head>
   <body class="bg-paper font-sans text-ink antialiased">
     <a class="fixed top-3.75 left-5 z-100 translate-y-[-150%] bg-ink px-4.5 py-3 text-paper focus:translate-y-0" href="#main">
@@ -83,7 +85,7 @@ const projects = [
 
     <header class="sticky top-0 z-30 border-b border-line bg-paper/95 backdrop-blur-lg">
       <div class="mx-auto flex min-h-23.75 w-[calc(100%-44px)] max-w-275 flex-wrap items-center justify-between gap-1.25 pt-4 pb-3 tablet:min-h-22 tablet:w-[calc(100%-72px)] tablet:flex-nowrap tablet:gap-6 tablet:py-0 desktop:w-[calc(100%-112px)]">
-        <a class="block shrink-0 rounded-full" href="#about" aria-label="Tristan Cheng, back to About">
+        <a class="block shrink-0 rounded-full" href="#home" aria-label="Tristan Cheng, back to the top">
           <img class="size-12 tablet:size-14" src="/website_logo.svg" width="56" height="56" alt="" fetchpriority="high" />
         </a>
         <Navbar />
@@ -91,16 +93,23 @@ const projects = [
     </header>
 
     <main id="main">
-      <section class="mx-auto w-[calc(100%-44px)] max-w-[1100px] pt-10 tablet:w-[calc(100%-72px)] tablet:pt-[65px] desktop:w-[calc(100%-112px)]" id="about" aria-labelledby="about-title" data-nav-section>
-        <div class="flex justify-between gap-5">
-          <span class="block font-mono text-[11px] leading-[1.5] tracking-[1.65px] text-muted uppercase">A bit of backstory</span>
-        </div>
-        <div class="grid grid-cols-1 items-center gap-[46px] pt-[30px] pb-[50px] tablet:grid-cols-[1fr_240px] tablet:gap-[45px] tablet:pt-[49px] tablet:pb-[66px] desktop:grid-cols-[1fr_300px] desktop:gap-20">
+      <section class="home-layout mx-auto flex min-h-[calc(100svh-var(--site-header-height,95px))] w-[calc(100%-44px)] max-w-[1100px] items-center py-12 tablet:w-[calc(100%-72px)] tablet:py-20 desktop:w-[calc(100%-112px)]" id="home" aria-labelledby="home-title">
+        <h1 id="home-title" class="-translate-y-6 font-handwritten text-[clamp(43px,9.3vw,66px)] leading-[1.07] font-normal tracking-normal tablet:-translate-y-8 tablet:text-[clamp(60px,7vw,100px)]">
+          <span class="mb-1 block text-[.65em]">Hey! I'm</span>
+          <span class="block text-[1.35em] leading-[.9] [-webkit-text-stroke:.45px_currentColor] [paint-order:stroke_fill]">Tristan</span>
+          <span class="mt-2 block text-[22px] leading-[1.5] tablet:text-[clamp(26px,2.6vw,36px)]">
+            <span class="block">I like <em class="font-normal text-rust not-italic">building stuff for the web.</em></span>
+            <span class="block text-muted">It usually starts with “I could make that.”</span>
+          </span>
+        </h1>
+        <BadmintonGame />
+      </section>
+
+      <section class="mx-auto w-[calc(100%-44px)] max-w-[1100px] pt-[clamp(80px,14svh,144px)] tablet:w-[calc(100%-72px)] tablet:pt-[clamp(104px,16svh,176px)] desktop:w-[calc(100%-112px)]" id="about" aria-labelledby="about-title" data-nav-section>
+        <div class="grid max-w-[1030px] grid-cols-1 items-center gap-[46px] pb-[50px] tablet:grid-cols-[1fr_240px] tablet:gap-[45px] tablet:pb-[66px] desktop:grid-cols-[1fr_300px] desktop:gap-20">
           <div>
-            <h1 id="about-title" class="font-serif text-[clamp(43px,9.3vw,66px)] leading-[1.07] font-normal tracking-[-2px] tablet:text-[clamp(50px,5.5vw,78px)] tablet:tracking-[-3.5px]">
-              Hey! I'm Tristan<br>I'm a <em class="font-normal text-rust">software developer</em>
-            </h1>
-            <p class="mt-3.5 max-w-[500px] text-[13px] leading-[1.85] text-muted tablet:text-[14px]">
+            <h2 id="about-title" class="block font-handwritten text-[24px] leading-[1.5] font-normal tracking-normal text-muted">A bit of backstory</h2>
+            <p class="mt-[30px] max-w-[500px] text-[13px] leading-[1.85] text-muted tablet:mt-[49px] tablet:text-[14px]">
               As a kid, I loved finding free workarounds for things you normally had to pay for. I even tried those apps promising free gems in Clash of Clans. They never worked, but I was always curious enough to try.
             </p>
             <p class="mt-3.5 max-w-[500px] text-[13px] leading-[1.85] text-muted tablet:text-[14px]">
@@ -109,9 +118,12 @@ const projects = [
             <p class="mt-3.5 max-w-[500px] text-[13px] leading-[1.85] text-muted tablet:text-[14px]">
               As a computer science student at TMU, I put what I learn into practice by building useful apps that bring together my interests in full-stack development, cloud computing, and automation.
             </p>
+            <p class="mt-3.5 max-w-[500px] text-[13px] leading-[1.85] text-muted tablet:text-[14px]">
+              Outside of coding, I enjoy running, playing badminton, working out, and reading.
+            </p>
           </div>
-          <figure class="aspect-[3/4] w-full max-w-[290px] overflow-hidden rounded-xl justify-self-center tablet:max-w-none tablet:justify-self-end">
-            <img class="block h-full w-full origin-[50%_65%] scale-[1.45] object-cover" src="/images/about/tristan.webp" width="800" height="1067" alt="Tristan Cheng beneath autumn trees" decoding="async" />
+          <figure class="aspect-[3/4] w-full max-w-[290px] overflow-hidden rounded-xl justify-self-center tablet:max-w-none tablet:-translate-x-[30px] tablet:justify-self-end">
+            <img class="block h-full w-full origin-[50%_65%] scale-[1.45] object-cover" src="/images/about/tristan.webp" width="800" height="1067" alt="Tristan Cheng beneath autumn trees" loading="lazy" decoding="async" />
           </figure>
         </div>
         <div class="flex flex-wrap justify-between gap-3 border-y border-line py-[22px] text-[10px] text-muted tablet:flex-nowrap tablet:gap-5 tablet:text-[11px]">
@@ -145,11 +157,11 @@ const projects = [
     </main>
 
     <footer class="mx-auto flex min-h-23.75 w-[calc(100%-44px)] max-w-[1100px] items-center justify-between gap-3 border-t border-transparent pt-4 pb-3 tablet:min-h-[89px] tablet:w-[calc(100%-72px)] tablet:gap-[25px] tablet:py-0 desktop:w-[calc(100%-112px)]">
-      <a class="block shrink-0 rounded-full" href="#about" aria-label="Tristan Cheng, back to About">
+      <a class="block shrink-0 rounded-full" href="#home" aria-label="Tristan Cheng, back to the top">
         <img class="size-12 tablet:size-14" src="/website_logo.svg" width="56" height="56" alt="" />
       </a>
       <p class="whitespace-nowrap text-[10px] text-muted tablet:text-[11px]">© 2026 Tristan Cheng</p>
-      <a class="shrink-0 whitespace-nowrap text-[10px] text-muted tablet:text-[11px]" href="#about">Back to the top <span class="ml-[9px] text-rust" aria-hidden="true">↑</span></a>
+      <a class="shrink-0 whitespace-nowrap text-[10px] text-muted tablet:text-[11px]" href="#home">Back to the top <span class="ml-[9px] text-rust" aria-hidden="true">↑</span></a>
     </footer>
     <ContactModal />
     <script>
@@ -160,3 +172,12 @@ const projects = [
     </script>
   </body>
 </html>
+
+<style>
+  .home-layout { flex-direction: column; align-items: stretch; justify-content: center; gap: 36px; }
+  @media (width >= 1001px) {
+    .home-layout { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); align-items: center; gap: 24px; }
+    #home-title { min-width: 0; }
+    #home-title > span:last-child { font-size: clamp(23px, 2.25vw, 30px); }
+  }
+</style>

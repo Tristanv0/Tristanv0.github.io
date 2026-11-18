@@ -14,21 +14,31 @@ const links = [
   </button>
   <div class="nav-panel" id="nav-panel" data-nav-panel>
     <div class="nav-panel-clip">
-      <div class="nav-links flex gap-4.75 phone:gap-6 tablet:gap-7.5">
-        {links.map(({ href, label }, index) => (
-          <a class="nav-link relative block py-1 text-[#68685e] tablet:py-2.5" style={`--nav-link-index: ${index}`} href={href} aria-current={index === 0 ? 'location' : undefined} data-nav-item>
+      <div class="nav-content">
+        <div class="nav-links flex gap-4.75 phone:gap-6 tablet:gap-7.5">
+          {links.map(({ href, label }, index) => (
+            <a class="nav-link relative block py-1 text-[#68685e] tablet:py-2.5" style={`--nav-link-index: ${index}`} href={href} data-nav-item>
+              <span class="nav-word grid overflow-clip">
+                <span class="nav-label [grid-area:1/1]">{label}</span>
+                <span class="nav-label-copy text-rust [grid-area:1/1]" aria-hidden="true">{label}</span>
+              </span>
+            </a>
+          ))}
+        </div>
+        <div class="nav-actions">
+          <a class="nav-link nav-action nav-resume relative block" style="--nav-link-index: 4" href="/documents/tristan-cheng-resume.pdf" target="_blank" rel="noopener noreferrer" aria-label="Resume (PDF, opens in a new tab)" data-resume-link>
             <span class="nav-word grid overflow-clip">
-              <span class="nav-label [grid-area:1/1]">{label}</span>
-              <span class="nav-label-copy text-rust [grid-area:1/1]" aria-hidden="true">{label}</span>
+              <span class="nav-label [grid-area:1/1]">Resume</span>
+              <span class="nav-label-copy [grid-area:1/1]" aria-hidden="true">Resume</span>
             </span>
           </a>
-        ))}
-        <button type="button" class="nav-link relative block py-1 text-left text-[#68685e] tablet:py-2.5" style="--nav-link-index: 4" aria-haspopup="dialog" aria-controls="contact-modal" aria-expanded="false" disabled data-contact-open data-nav-item>
-          <span class="nav-word grid overflow-clip">
-            <span class="nav-label [grid-area:1/1]">Contact</span>
-            <span class="nav-label-copy text-rust [grid-area:1/1]" aria-hidden="true">Contact</span>
-          </span>
-        </button>
+          <button type="button" class="nav-link nav-action nav-contact relative block" style="--nav-link-index: 5" aria-haspopup="dialog" aria-controls="contact-modal" aria-expanded="false" disabled data-contact-open>
+            <span class="nav-word grid overflow-clip">
+              <span class="nav-label [grid-area:1/1]">Contact</span>
+              <span class="nav-label-copy text-rust [grid-area:1/1]" aria-hidden="true">Contact</span>
+            </span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -37,6 +47,16 @@ const links = [
 
 <style>
   .nav-toggle { display: none; }
+  .nav-content { display: flex; align-items: center; gap: 22px; }
+  .nav-actions { display: flex; align-items: center; gap: 10px; padding-left: 22px; border-left: 1px solid var(--color-line); }
+  .nav-action { padding: 8px 14px; border: 1px solid var(--color-line); border-radius: 999px; line-height: 1.4; text-align: center; white-space: nowrap; transition: background-color 200ms ease, border-color 200ms ease; }
+  .nav-resume { color: var(--color-ink); }
+  .nav-resume:hover { background: var(--color-hobby-paper); border-color: #292a2560; }
+  .nav-contact { color: var(--color-paper); background: var(--color-ink); border-color: var(--color-ink); }
+  .nav-contact:hover { background: #41423b; border-color: #41423b; }
+  .nav-contact .nav-label-copy { color: var(--color-paper); }
+  .nav-action::after { display: none; }
+  .site-nav:not([data-nav-ready]) .nav-content { flex-wrap: wrap; }
   .site-nav:not([data-nav-ready]) .nav-links { flex-wrap: wrap; }
   .nav-link[aria-current='location'] { color: var(--color-rust); }
   .nav-label,
@@ -119,13 +139,14 @@ const links = [
       transition: grid-template-rows 320ms cubic-bezier(0.22, 1, 0.36, 1), opacity 240ms ease, visibility 0s 320ms;
     }
     .nav-panel-clip { min-height: 0; overflow: hidden; }
-    .site-nav[data-nav-ready] .nav-links {
-      flex-direction: column;
-      gap: 0;
+    .site-nav[data-nav-ready] .nav-content {
+      display: block;
       max-height: calc(100svh - 110px);
       overflow-y: auto;
       padding: 12px 22px 22px;
     }
+    .site-nav[data-nav-ready] .nav-links { flex-direction: column; gap: 0; }
+    .nav-actions { display: grid; grid-template-columns: 1fr 1fr; margin-top: 8px; padding: 16px 12px 0; border-left: 0; border-top: 1px solid var(--color-line); }
     .site-nav[data-nav-ready] .nav-link {
       padding: 14px 12px;
       font-size: 17px;
@@ -134,6 +155,7 @@ const links = [
       transition: opacity 160ms ease, transform 240ms cubic-bezier(0.22, 1, 0.36, 1), color 240ms ease;
     }
     .site-nav[data-nav-ready] .nav-link[aria-current='location'] { background: #c0522808; border-radius: 8px; }
+    .site-nav[data-nav-ready] .nav-action { padding: 12px 16px; font-size: 14px; }
     .site-nav[data-menu-open] .nav-panel {
       grid-template-rows: 1fr;
       opacity: 1;
@@ -168,13 +190,14 @@ const links = [
     const links = [...nav.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')];
     const items = [...nav.querySelectorAll<HTMLElement>('[data-nav-item]')];
     const contact = nav.querySelector<HTMLButtonElement>('[data-contact-open]')!;
+    const resume = nav.querySelector<HTMLAnchorElement>('[data-resume-link]')!;
     const sections = links.map(link => ({ link, section: document.getElementById(link.hash.slice(1)), inset: 0 }));
     const header = nav.closest('header');
     const canHover = window.matchMedia('(hover: hover) and (pointer: fine)');
     const mobile = window.matchMedia('(width < 701px)');
     const toggle = nav.querySelector<HTMLButtonElement>('[data-nav-toggle]')!;
     const panel = nav.querySelector<HTMLElement>('[data-nav-panel]')!;
-    let selected = links[0];
+    let selected: HTMLAnchorElement | undefined;
     let hovered: HTMLElement | null = null;
     let indicatorTarget: HTMLElement | null = null;
     let needsMeasure = true;
@@ -220,7 +243,7 @@ const links = [
         }
         activationOffset = (parseFloat(getComputedStyle(root).scrollPaddingTop) || 0) + 2;
       }
-      let current = links[0];
+      let current: HTMLAnchorElement | undefined;
       for (const { link, section, inset } of sections) {
         if (section && section.getBoundingClientRect().top + inset <= activationOffset) current = link;
       }
@@ -243,6 +266,9 @@ const links = [
         nav!.style.setProperty('--nav-indicator-x', `${bounds.left - navBounds.left}px`);
         nav!.style.setProperty('--nav-indicator-width', `${bounds.width}px`);
         indicatorTarget = target;
+      } else if (!target && (needsMeasure || indicatorTarget)) {
+        nav!.style.setProperty('--nav-indicator-width', '0px');
+        indicatorTarget = null;
       }
       nav!.dataset.navReady = '';
       needsMeasure = false;
@@ -299,10 +325,13 @@ const links = [
       if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(event.key)) endNavigation();
     }
 
-    const onContactClick = () => { setMenu(false, mobile.matches); schedule(); };
+    const onActionClick = () => { setMenu(false, mobile.matches); schedule(); };
     items.forEach(item => item.addEventListener('pointerenter', enter));
     links.forEach(link => link.addEventListener('click', onClick));
-    contact.addEventListener('click', onContactClick);
+    contact.addEventListener('click', onActionClick);
+    resume.addEventListener('click', onActionClick);
+    contact.addEventListener('pointerenter', leave);
+    resume.addEventListener('pointerenter', leave);
     nav.addEventListener('pointerleave', leave);
     nav.addEventListener('focusin', schedule);
     nav.addEventListener('focusout', onFocusOut);
@@ -329,7 +358,10 @@ const links = [
       observer.disconnect();
       items.forEach(item => item.removeEventListener('pointerenter', enter));
       links.forEach(link => link.removeEventListener('click', onClick));
-      contact.removeEventListener('click', onContactClick);
+      contact.removeEventListener('click', onActionClick);
+      resume.removeEventListener('click', onActionClick);
+      contact.removeEventListener('pointerenter', leave);
+      resume.removeEventListener('pointerenter', leave);
       nav.removeEventListener('pointerleave', leave);
       nav.removeEventListener('focusin', schedule);
       nav.removeEventListener('focusout', onFocusOut);

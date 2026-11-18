@@ -12,8 +12,8 @@ const { id, eyebrow, title, showPeriod = true, showCaptionOnMobile = false } = A
 
 <div class="mb-7 tablet:mb-[38px] tablet:flex tablet:items-end tablet:justify-between tablet:gap-[30px]">
   <div>
-    <span class="block font-mono text-[11px] leading-[1.5] tracking-[1.65px] text-muted uppercase">{eyebrow}</span>
-    <h2 id={id} class="mt-3 font-serif text-[32px] leading-[1.2] font-normal tracking-[-1.4px] tablet:mt-[13px] tablet:text-[clamp(30px,3.5vw,41px)]">
+    <span class="block font-handwritten text-[24px] leading-[1.5] tracking-normal text-muted">{eyebrow}</span>
+    <h2 id={id} class="mt-3 font-handwritten text-[37px] leading-[1.2] font-semibold tracking-normal tablet:mt-[13px] tablet:text-[clamp(35px,4vw,47px)]">
       {title}{showPeriod && <span class="text-rust">.</span>}
     </h2>
   </div>

@@ -1,0 +1,61 @@
+<div class="badminton-game" data-badminton-game>
+  <div class="game-heading">
+    <div class="game-heading-label">
+      <span class="game-leave-countdown" role="status" data-game-leave-countdown hidden>Pausing in <b data-game-leave-seconds>2</b>s</span>
+    </div>
+    <div class="game-controls">
+      <div class="game-score" aria-label="Score" aria-live="polite" aria-atomic="true">
+        <span>You <b data-player-score>0</b></span>
+        <span class="score-divider" aria-hidden="true">:</span>
+        <span>NPC <b data-npc-score>0</b></span>
+      </div>
+      <button class="game-stop" type="button" aria-label="Pause badminton game" data-game-stop hidden>
+        <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15" /></svg>
+      </button>
+    </div>
+  </div>
+  <div class="game-surface" data-game-surface>
+    <canvas width="640" height="600" tabindex="0" aria-label="Badminton court. Use the Play or Resume button first, then move your racket with the pointer or arrow keys. Press Escape to pause." aria-describedby="badminton-instructions" data-game-canvas></canvas>
+    <div class="game-overlay" data-game-overlay>
+      <span class="game-overline" data-game-overline hidden></span>
+      <span class="game-message" aria-live="polite" data-game-message>Fancy a rally?</span>
+      <button class="game-play" type="button" data-game-play>Play badminton</button>
+    </div>
+  </div>
+  <p class="game-instructions" id="badminton-instructions">Swing through the shuttle to aim. Keep it inside the lines.<br /><span>Faster swings, faster shots · Mouse, touch or arrow keys · Esc to pause</span></p>
+  <p class="game-status" role="status" data-game-status></p>
+</div>
+
+<script>
+  import { initBadmintonGame } from '../scripts/badminton-game';
+  initBadmintonGame();
+</script>
+
+<style>
+  .badminton-game { width: 100%; max-width: 500px; justify-self: end; color: #24533e; --game-green: #05a74f; }
+  .game-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 36px; padding-inline: 12px; }
+  .game-leave-countdown { font-family: var(--font-mono); font-size: 11px; color: var(--color-rust); white-space: nowrap; }
+  .game-leave-countdown b { font-weight: 500; font-variant-numeric: tabular-nums; }
+  .game-controls, .game-score { display: flex; align-items: center; gap: 12px; }
+  .game-score { font-family: var(--font-mono); font-size: 10px; white-space: nowrap; }
+  .game-score span { display: flex; align-items: center; gap: 6px; }
+  .game-score b { font-size: 18px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .score-divider { opacity: .35; }
+  .game-stop { display: grid; place-items: center; width: 28px; height: 28px; border: 1px solid #24533e33; border-radius: 50%; transition: background .2s; }
+  .game-stop[hidden] { display: none; }
+  .game-stop:hover { background: #05a74f16; }
+  .game-surface { position: relative; width: 100%; aspect-ratio: 640 / 600; }
+  canvas { display: block; width: 100%; height: 100%; outline: none; touch-action: pan-y; }
+  canvas:focus-visible { outline: 1px solid #058e4780; outline-offset: 4px; }
+  canvas[data-playing="true"] { cursor: none; touch-action: none; }
+  .game-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; pointer-events: none; gap: 8px; }
+  .game-overlay[hidden] { display: none; }
+  .game-overline { font-family: var(--font-mono); font-size: 9px; letter-spacing: 1.3px; text-transform: uppercase; padding: 4px 8px; background: var(--color-paper); }
+  .game-message { font-family: var(--font-handwritten); font-size: clamp(30px, 4vw, 46px); line-height: 1.1; background: var(--color-paper); padding: 0 12px; }
+  .game-play { pointer-events: auto; border-bottom: 1px solid #24533e66; background: var(--color-paper); padding: 5px 3px; font-size: 12px; }
+  .game-status { min-height: 2.8em; margin: 8px 12px 0; text-align: center; font-family: var(--font-mono); font-size: 10px; line-height: 1.4; }
+  .game-instructions { position: relative; margin: -20px 0 0; text-align: center; color: var(--color-muted); font-size: 11px; line-height: 1.7; }
+  .game-instructions span { font-size: 9px; opacity: .75; }
+  @media (width < 1001px) { .badminton-game { justify-self: center; max-width: 440px; } }
+  @media (width < 381px) { .game-controls, .game-score { gap: 8px; } }
+</style>

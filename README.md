@@ -49,6 +49,49 @@ astro.config.mjs    Astro and Tailwind Vite configuration
 
 The original React site is preserved on the local `archive/original-portfolio` branch. Work on the replacement happens on `rebuild`.
 
+The homepage opens on a full-height landing section with the introduction
+headline. The About text and portrait follow below the first screen, with
+additional space above “A bit of backstory.” Logo links and “Back to the top”
+return to the landing section; the About navigation link goes to the backstory.
+The landing text uses Swanky and Moo Moo, self-hosted as a preloaded WOFF2 in
+`public/fonts/swanky-and-moo-moo/`. Its SIL Open Font License is included there.
+
+The navbar keeps the four section links together, followed by separate Resume
+and Contact buttons. On mobile, those two actions sit below the section links
+inside the dropdown. Resume opens `public/documents/tristan-cheng-resume.pdf`
+in a new tab. This website copy has the phone number removed and the contact
+line re-centered; the original resume is unchanged.
+
+The landing page also has a canvas badminton mini game, beside the introduction
+on desktop and below it on smaller screens. Click Play or Resume to start a
+three-second countdown; hovering, clicking the court, and arrow keys never
+start or resume play. Move the racket onto the shuttle to return it; swing direction
+controls its direction and swing speed controls power. Sideways, backward and
+overpowered shots can land out and award the point to the NPC. A still racket
+gives a gentle forward block. The NPC serves first, then the rally winner serves from
+the right box on even scores and the left on odd scores. The NPC has a short
+reaction delay, limited movement speed (boosted by 25%) and a flat 10% chance of
+misreading each incoming shot, regardless of shot speed or rally length. It also
+has a separate 5% chance of returning a shot wide or long; leaving it to land
+out awards you the point. On your serve, move
+into the marked service box. Games go to 21, win by two, capped at 30.
+Leaving the court starts a two-second countdown in the heading above it while
+play continues. Returning before it expires cancels it; staying outside pauses
+the game, which then requires clicking Resume. Keyboard
+and touch play do not use this pointer countdown. The close button pauses and
+preserves the score; click Resume to continue. Scrolling past the homepage to
+About also pauses play. Court clicks do not take focus; keyboard users can Tab
+to the court or activate Play to use arrow keys. Escape pauses the rally and
+preserves its position and score; clicking Resume continues it after the countdown.
+Touch dragging is also supported.
+Shuttle flight runs at 1.5× speed while retaining its arc and feather drag.
+Tune `SHUTTLE_SPEED_MULTIPLIER` alongside the physics and court dimensions in
+`src/scripts/badminton-physics.ts`. Rendering and input live in
+`src/scripts/badminton-game.ts`, with presentation in
+`src/components/BadmintonGame.astro`. Tune the opponent's reaction time and
+mistakes in `src/scripts/badminton-opponent.ts`. Run its checks with
+`node --test src/scripts/badminton-physics.test.ts src/scripts/badminton-opponent.test.ts`.
+
 ## Experience and education
 
 Edit `src/data/experience.ts` to update timeline entries, dates, logos and modal
