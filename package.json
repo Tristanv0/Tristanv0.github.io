@@ -7,12 +7,14 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "test:private": "node --test workers/site/index.test.ts",
     "test": "node --test src/data/runs.test.ts",
     "astro": "astro"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
-    "astro": "^7.4.1",
+    "astro": "^7.4.7",
+    "jose": "^6.2.18",
     "tailwindcss": "^4.3.3"
   }
 }

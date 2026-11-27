@@ -38,7 +38,7 @@ export function initBadmintonGame() {
   let shuttle: Shuttle | null = null;
   let npc = { x: -1.3, y: 3.2 };
   let npcResponse: NpcResponse = { target: { ...npc }, reaction: 0, speed: 3 };
-  let racket: Point = project(1.3, 11, 1);
+  let racket: Point = { x: WIDTH / 2, y: 420 };
   let previousRacket = { ...racket }, swingVelocity: Point = { x: 0, y: 0 };
   let pointerTime = 0, pointerInside = false, keyboard = false;
   let countdown = 3, timer = 0, lastTime = 0, accumulator = 0, frame = 0;
@@ -46,6 +46,17 @@ export function initBadmintonGame() {
   let trail: Point[] = [], keys = new Set<string>();
   let mousePointer = false;
   let leaveTimer = 0, leaveDeadline = 0;
+
+  function parkRacket() {
+    let y = 420;
+    if (!overlay.hidden && !play.hidden) {
+      const surface = canvas.getBoundingClientRect(), button = play.getBoundingClientRect();
+      if (surface.height > 0) y = Math.max(y, (button.bottom - surface.top) / surface.height * HEIGHT + 44);
+    }
+    racket = { x: WIDTH / 2, y: Math.min(HEIGHT - 90, y) };
+    previousRacket = { ...racket };
+    swingVelocity = { x: 0, y: 0 }; pointerTime = 0;
+  }
 
   function cancelLeaveCountdown() {
     window.clearTimeout(leaveTimer); leaveTimer = 0; leaveDeadline = 0;
@@ -76,6 +87,7 @@ export function initBadmintonGame() {
     overline.hidden = !eyebrow;
     play.hidden = !button;
     play.textContent = phase === 'finished' ? 'Play again' : phase === 'paused' ? 'Resume rally' : 'Play badminton';
+    if (button && !pointerInside && !keyboard) parkRacket();
   }
   function activeCursor(active: boolean) { canvas.dataset.playing = String(active); stop.hidden = !active; }
 
@@ -203,7 +215,7 @@ export function initBadmintonGame() {
 
     const screen = project(shuttle.x, shuttle.y, shuttle.z);
     // Swept racket contact avoids missing fast mouse movements between frames.
-    if (shuttle.hitter === 'npc' && shuttle.y > COURT.netY + .12
+    if ((pointerInside || keyboard) && shuttle.hitter === 'npc' && shuttle.y > COURT.netY + .12
       && segmentDistance(screen, previousRacket, racket) < 27) {
       const swing = performance.now() - pointerTime < 140 ? swingVelocity : { x: 0, y: 0 };
       shuttle = launchPlayerShot(shuttle, swing);
@@ -364,6 +376,7 @@ export function initBadmintonGame() {
   canvas.addEventListener('pointermove', move, { signal });
   canvas.addEventListener('pointerleave', () => {
     pointerInside = false;
+    if (!keyboard) { parkRacket(); draw(); }
     startLeaveCountdown();
   }, { signal });
   canvas.addEventListener('pointerdown', event => {
@@ -400,7 +413,9 @@ export function initBadmintonGame() {
   function resize() {
     const density = Math.min(window.devicePixelRatio || 1, 2);
     canvas.width = WIDTH * density; canvas.height = HEIGHT * density;
-    ctx!.setTransform(density, 0, 0, density, 0, 0); updateHomeVisibility(); draw();
+    ctx!.setTransform(density, 0, 0, density, 0, 0); updateHomeVisibility();
+    if (!pointerInside && !keyboard) parkRacket();
+    draw();
   }
   drawCourt(); resize();
   window.addEventListener('resize', resize, { passive: true, signal });
