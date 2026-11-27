@@ -22,8 +22,8 @@
       <button class="game-play" type="button" data-game-play>Play badminton</button>
     </div>
   </div>
-  <p class="game-instructions" id="badminton-instructions">Swing through the shuttle to aim. Keep it inside the lines.<br /><span>Faster swings, faster shots · Mouse, touch or arrow keys · Esc to pause</span></p>
-  <p class="game-status" role="status" data-game-status></p>
+  <p class="sr-only" id="badminton-instructions">Swing through the shuttle to aim. Keep it inside the lines. Faster swings, faster shots. Mouse, touch or arrow keys. Escape to pause.</p>
+  <p class="sr-only" role="status" data-game-status></p>
 </div>
 
 <script>
@@ -52,10 +52,9 @@
   .game-overlay[hidden] { display: none; }
   .game-overline { font-family: var(--font-mono); font-size: 9px; letter-spacing: 1.3px; text-transform: uppercase; padding: 4px 8px; background: var(--color-paper); }
   .game-message { font-family: var(--font-handwritten); font-size: clamp(30px, 4vw, 46px); line-height: 1.1; background: var(--color-paper); padding: 0 12px; }
-  .game-play { pointer-events: auto; border-bottom: 1px solid #24533e66; background: var(--color-paper); padding: 5px 3px; font-size: 12px; }
-  .game-status { min-height: 2.8em; margin: 8px 12px 0; text-align: center; font-family: var(--font-mono); font-size: 10px; line-height: 1.4; }
-  .game-instructions { position: relative; margin: -20px 0 0; text-align: center; color: var(--color-muted); font-size: 11px; line-height: 1.7; }
-  .game-instructions span { font-size: 9px; opacity: .75; }
+  .game-play { pointer-events: auto; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--game-green); border-radius: 999px; background: #f4f6ef; color: #037535; padding: 10px 22px; font-size: 12px; line-height: 1.4; transform: translateY(10px); transition: background-color 200ms ease, border-color 200ms ease; }
+  .game-play[hidden] { display: none; }
+  .game-play:hover { background: #eaf2e7; border-color: #037535; }
   @media (width < 1001px) { .badminton-game { justify-self: center; max-width: 440px; } }
   @media (width < 381px) { .game-controls, .game-score { gap: 8px; } }
 </style>
