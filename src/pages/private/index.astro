@@ -1,0 +1,26 @@
+---
+import PrivateLayout from '../../layouts/PrivateLayout.astro';
+---
+<PrivateLayout title="Private dashboard" signedIn>
+  <span class="mb-3 font-mono text-[10px] tracking-[1.5px] text-muted uppercase">Private dashboard</span>
+  <h1 class="font-handwritten text-[58px] leading-[1.1] tablet:text-[70px]">Welcome back.</h1>
+  <p class="mt-4 text-[13px] leading-[1.8] text-muted" data-private-session>Checking your session…</p>
+  <div class="mt-8 rounded-2xl border border-line bg-white/40 p-7">
+    <span class="inline-flex items-center gap-2 text-[11px] text-[#037535]"><span class="size-1.5 rounded-full bg-[#05A74F]" aria-hidden="true"></span>Just for you</span>
+    <h2 class="mt-4 font-handwritten text-[36px] leading-[1.2]">A clean slate.</h2>
+    <p class="mt-3 text-sm leading-[1.85] text-muted">Your personal dashboard will live here. For now, this is your space to build on.</p>
+  </div>
+<script>
+  const status = document.querySelector<HTMLElement>('[data-private-session]');
+  if (status) {
+    fetch('/private/api/session', { credentials: 'same-origin', cache: 'no-store', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+      .then(async response => {
+        if (response.status === 401 || response.status === 403 || response.redirected) { window.location.replace('/login/'); return; }
+        if (!response.ok) throw new Error('Session unavailable');
+        const session = await response.json();
+        status.textContent = typeof session.email === 'string' ? `Signed in as ${session.email}` : 'Signed in.';
+      })
+      .catch(() => { status.textContent = 'Your session could not be loaded. Try signing in again.'; });
+  }
+</script>
+</PrivateLayout>

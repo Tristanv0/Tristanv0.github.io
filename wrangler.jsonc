@@ -1,8 +1,16 @@
 {
   "name": "tristanv0-github-io",
+  "main": "workers/site/index.ts",
   "compatibility_date": "2026-11-04",
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "vars": {
+    "ACCESS_TEAM_DOMAIN": "https://tristan-personal-website.cloudflareaccess.com",
+    "ACCESS_AUD": "27926145faa7d0de66d6249f14e2f95e2d438db4ea2f1eec4072f001f2573ec0",
+    "PRIVATE_ALLOWED_EMAIL": "cheng.tristan15@gmail.com"
   },
   "previews": {}
 }

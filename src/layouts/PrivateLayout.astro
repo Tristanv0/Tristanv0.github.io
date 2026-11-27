@@ -1,0 +1,27 @@
+---
+import '../styles/global.css';
+interface Props { title: string; signedIn?: boolean; }
+const { title, signedIn = false } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#faf8f3" />
+    <title>{title} | Tristan Cheng</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=tc" />
+    <link rel="preload" href="/fonts/swanky-and-moo-moo/latin-400.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+  </head>
+  <body class="flex min-h-svh flex-col bg-paper font-sans text-ink antialiased">
+    <header class="mx-auto flex min-h-24 w-[calc(100%-44px)] max-w-[1100px] items-center justify-between border-b border-line tablet:w-[calc(100%-72px)]">
+      <a class="rounded-full" href="/" aria-label="Back to Tristan's portfolio"><img class="size-12" src="/website_logo.svg" width="48" height="48" alt="" /></a>
+      <a class="rounded-full border border-line px-4 py-2 text-xs text-muted transition-colors hover:border-ink hover:text-ink" href={signedIn ? '/cdn-cgi/access/logout' : '/'}>{signedIn ? 'Sign out' : 'Back to portfolio'}</a>
+    </header>
+    <main class="mx-auto flex w-[calc(100%-44px)] max-w-[440px] flex-1 flex-col justify-center py-16 tablet:py-24">
+      <slot />
+    </main>
+    <footer class="mx-auto w-[calc(100%-44px)] max-w-[1100px] pb-7 text-center text-[10px] text-muted">A little space behind the scenes.</footer>
+  </body>
+</html>
